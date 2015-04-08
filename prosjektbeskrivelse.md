@@ -10,3 +10,4 @@ Planen er for øyeblikket å bruke libSDL som dependency for rendering.
 ### Gruppemedlemmer
 
 s188080 - Joakim Rishaug - NegatioN
+s181130 - Sondre Sparby Boge - NaughtyLlama

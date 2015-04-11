@@ -9,12 +9,13 @@ Om det blir tid, vil vi prøve å implementere andre ting som: Skyting, Mobs, Te
 Planen er for øyeblikket å bruke libSDL som dependency for rendering.
 
 ## Hovedfunksjonalitet i korte trekk
-(Hva skal man kunne gjøre med / i programmet? )
+Rendere en enkel verden i 3D, User skal kunne gå rundt i denne. Annen funksjonalitet vil forhåpentligvis være skyting av mobs, som i Doom.
 
 ## Designmål: 
-(Bruke lite minne? Gå raskest mulig? Være mest mulig responsivt? Skalerbart? Utvidbart? Modulært? Sikkert (som i secure)? Valg av designmål vil avgjøre hva som er "hensiktsmessig" bruk av objektorientering, design patterns og andre teknikker.)
-
+* Skalerbart og utvidbart.
 
 ## Avgrensning:
-* (Hva vi håper å oppnå: En fungerende angry-birds-klone, med 4-5 brett, fysikkmotor og animasjon imellom.)
-* (Hva vi minimum skal få til: En enkel scene av kasser koblet til fysikkmotor, der man kan stable kassene oppå hverandre med "drag'n drop", og så "kaste" noe på dem så de velter.)
+* Rendere 3D-verden. User skal kunne gå
+* Mobs som randomly går rundt og kan skytes
+* Mobs med lett AI
+* Textures

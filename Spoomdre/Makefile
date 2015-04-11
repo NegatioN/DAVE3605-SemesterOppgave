@@ -1,10 +1,10 @@
 GPP=g++
 GPPOPT=-std=c++11
 
-DEPENDENCIES=-lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer
+DEPENDENCIES= -lSDL2
 OUTPUT=spoomdre
 
-OFILES= nothing.o
+OFILES= hello_world.o
 
 
 
@@ -15,7 +15,7 @@ all: $(OUTPUT)
 	$(GPP) $(GPPOPT) -c $< -o $@ $(DEPENDENCIES)
 
 
-spoomdre: $(FIREWORKSO)
+spoomdre: $(OFILES)
 	$(GPP) $(GPPOPT)  $(OFILES) -o $(OUTPUT) $(DEPENDENCIES)
 
 

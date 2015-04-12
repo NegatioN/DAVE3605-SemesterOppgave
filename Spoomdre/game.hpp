@@ -1,11 +1,13 @@
 #ifndef CLASS_GAME_H
 #define CLASS_GAME_H
 
-
+//External Dependencies
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <cstdlib>
 #include <iostream>
+//internal dependencies
+//#include "game_util.hpp"
 
 
 //Defines the underlaying rendering-process
@@ -14,7 +16,7 @@ class Game{
 	SDL_Window* window = NULL; 			//Window to render to
 	SDL_Surface* screenSurface = NULL; 	//surface of window
 
-	void makeSurface();
+	void makeSurface();					//simply creates the SDL_Surface
 
 public:
 

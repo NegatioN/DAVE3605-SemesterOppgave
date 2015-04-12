@@ -42,3 +42,7 @@ void Game::terminate(){
 void Game::wait(int seconds){
 	SDL_Delay(seconds*1000);
 }
+
+void fpsCounter(){
+	
+}

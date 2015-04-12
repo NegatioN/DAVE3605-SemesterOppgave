@@ -10,6 +10,9 @@ class Entity{
 float xpos;
 float ypos;
 
+public:
+	virtual void move()=0;
+
 };
 
 #endif

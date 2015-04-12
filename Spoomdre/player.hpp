@@ -8,6 +8,9 @@
 //should probably contain the user-input in some way.
 class Player : public Entity {
 
+public:
+	void move() override;
+
 };
 
 

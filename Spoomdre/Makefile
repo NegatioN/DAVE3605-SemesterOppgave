@@ -2,13 +2,15 @@ GPP=g++
 GPPOPT=-std=c++11
 
 DEPENDENCIES= -lSDL2
-OUTPUT=spoomdre
+SPOOMDRE_OUT=spoomdre
+TEST_OUT=test
 
-OFILES= hello_world.o
+OFILES= game.o spoomdre_main.o
+OTEST= hello_world.o
 
 
 
-all: $(OUTPUT)
+all: $(SPOOMDRE_OUT)
 
 
 %.o: %.cpp
@@ -16,11 +18,14 @@ all: $(OUTPUT)
 
 
 spoomdre: $(OFILES)
-	$(GPP) $(GPPOPT)  $(OFILES) -o $(OUTPUT) $(DEPENDENCIES)
+	$(GPP) $(GPPOPT)  $(OFILES) -o $(SPOOMDRE_OUT) $(DEPENDENCIES)
+
+test: $(OTEST)
+	$(GPP) $(GPPOPT)  $(OTEST) -o $(TEST_OUT) $(DEPENDENCIES)
 
 
 
 clean: 
-	-$(RM) $(OUTPUT)
+	-$(RM) $(SPOOMDRE_OUT) $(TEST_OUT)
 	
-again: clean spoomdre
+again: clean spoomdre test

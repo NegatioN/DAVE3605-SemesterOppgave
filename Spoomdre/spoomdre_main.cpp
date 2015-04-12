@@ -4,7 +4,9 @@
 #include <iostream>
 #include "game.hpp"
 
-	
+//screen dimension constants
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
 int main(int argc, char* args[]){
 //DECLARE TEST VARIABLES
@@ -18,10 +20,11 @@ int main(int argc, char* args[]){
 	int x = (rect.w-rect.x) / 2;
 	int y = (rect.h-rect.y) / 2;
 
-	
+
 
 	Game game;
-	game.initialize();
+	game.initialize(SCREEN_HEIGHT, SCREEN_WIDTH);
+	//SDL_Window 
 
 
 	game.fillRect(rect);

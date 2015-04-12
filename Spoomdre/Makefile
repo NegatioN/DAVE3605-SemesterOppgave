@@ -1,7 +1,11 @@
+##COMPILER
 GPP=g++
 GPPOPT=-std=c++11
 
+##DEPENDENCIES
 DEPENDENCIES= -lSDL2
+
+##FILES FOR OUTPUT
 SPOOMDRE_OUT=spoomdre
 TEST_OUT=test
 
@@ -10,7 +14,7 @@ OTEST= hello_world.o
 
 
 
-all: $(SPOOMDRE_OUT)
+all: $(SPOOMDRE_OUT) $(TEST_OUT)
 
 
 %.o: %.cpp
@@ -26,6 +30,7 @@ test: $(OTEST)
 
 
 clean: 
-	-$(RM) $(SPOOMDRE_OUT) $(TEST_OUT)
+	-$(RM) $(SPOOMDRE_OUT)
+	-$(RM) $(TEST_OUT)
 	
 again: clean spoomdre test

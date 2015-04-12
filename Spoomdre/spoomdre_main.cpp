@@ -20,16 +20,24 @@ int main(int argc, char* args[]){
 	int x = (rect.w-rect.x) / 2;
 	int y = (rect.h-rect.y) / 2;
 
+	//SDL-VARIABLES
+	Game game;			//SDL_WINDOW + SDL_SURFACE
+	SDL_Event event;	// Holds the next event to be handled (user-input)
 
-
-	Game game;
 	game.initialize(SCREEN_HEIGHT, SCREEN_WIDTH);
 	//SDL_Window 
+	int R = 0x00;
+	bool running = true;
 
-
-	game.fillRect(rect);
-	game.update();
-	game.wait(2);
+	while(running){
+		std::cout << "Rendering, R=" << R << std::endl;
+		R+=10;
+		game.fillRect(rect, R, R, R);
+		game.update();
+		game.wait(1);
+		if(R > 150)
+			running = false;
+	}
 
 	game.terminate();
 	

@@ -6,12 +6,12 @@ void Game::makeSurface(){
 }
 
 void Game::initialize(int height, int width){
-		//INIT SDL
+	//INIT SDL
 	if(SDL_Init( SDL_INIT_VIDEO) < 0){
 		printf("SDL Could not initialize! SDL_ERROR: %s\n",
 			SDL_GetError());
 	}else{
-		//Create Window
+	//Create Window
 		window = SDL_CreateWindow("SDL Hello World", 
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
 			width, height, SDL_WINDOW_SHOWN);
@@ -28,8 +28,8 @@ void Game::initialize(int height, int width){
 void Game::update(){
 	SDL_UpdateWindowSurface(window);
 }
-void Game::fillRect(SDL_Rect rect){
-	SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0x00, 0xFF, 0xFF));
+void Game::fillRect(SDL_Rect rect, int r, int g, int b){
+	SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, r, g, b));
 }
 
 void Game::terminate(){

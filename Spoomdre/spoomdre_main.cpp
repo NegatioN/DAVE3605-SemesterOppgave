@@ -17,8 +17,8 @@ int main(int argc, char* args[]){
 	rect.w = 200;
 	rect.h = 200;
 	// coordinates for the middle of the rectangle
-	int x = (rect.w-rect.x) / 2;
-	int y = (rect.h-rect.y) / 2;
+	int x = (rect.x + rect.w) - rect.w / 2;
+	int y = (rect.y + rect.h) - rect.h / 2;
 
 	//SDL-VARIABLES
 	Game game;			//SDL_WINDOW + SDL_SURFACE

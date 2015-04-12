@@ -9,8 +9,8 @@ DEPENDENCIES= -lSDL2
 SPOOMDRE_OUT=spoomdre
 TEST_OUT=test
 
-OFILES= game.o spoomdre_main.o entity.o player.o
-OTEST= hello_world.o
+OFILES= game.o spoomdre_main.o
+OTEST= hello_world.o keyboard_handler.o
 
 
 

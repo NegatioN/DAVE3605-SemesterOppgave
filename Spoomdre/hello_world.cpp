@@ -3,9 +3,13 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "keyboard_handler.hpp"
+
 //screen dimension constants
 const int SCREEN_WIDHT = 640;
 const int SCREEN_HEIGHT = 480;
+
+KeyboardHandler keyboard;
 
 int main( int argc, char* args[]){
 
@@ -54,8 +58,8 @@ int main( int argc, char* args[]){
 	rect.w = 200;
 	rect.h = 200;
 	// coordinates for the middle of the rectangle
-	int x = (rect.w-rect.x) / 2;
-	int y = (rect.h-rect.y) / 2;
+	int x = (rect.x + rect.w) - rect.w / 2;
+	int y = (rect.y + rect.h) - rect.h / 2;
 
 
 	// Holds the next event to be handled, ie keyboard-press
@@ -84,20 +88,8 @@ int main( int argc, char* args[]){
       		{
       			// Keyboard-press
         		case SDL_KEYDOWN:
-        		// Exit program if esc-key is pressed
-        		if (event.key.keysym.sym == SDLK_ESCAPE)
-                    running = false;
-
-                // wasd for movement, should be moved to a seperate KeyboardHandler
-                if (event.key.keysym.sym == SDLK_w)
-                    rect.y -= 2;
-                if (event.key.keysym.sym == SDLK_a)
-                    rect.x -= 2;
-                if (event.key.keysym.sym == SDLK_s)
-                    rect.y += 2;
-                if (event.key.keysym.sym == SDLK_d)
-                    rect.x += 2;
-
+        		case SDL_KEYUP:
+        			keyboard.handleKeyboardEvent(event.key);
 				break;
 
                 // User-requested exit
@@ -107,10 +99,24 @@ int main( int argc, char* args[]){
       		}
     	}
 
+		// Exit program if esc-key is pressed
+		if (keyboard.isPressed(SDLK_ESCAPE))
+            running = false;
 
 
 		// LOGIC
 		
+        // wasd for movement, should be moved to a seperate KeyboardHandler
+        if (keyboard.isPressed(SDLK_w))
+            rect.y -= 2;
+        if (keyboard.isPressed(SDLK_a))
+            rect.x -= 2;
+        if (keyboard.isPressed(SDLK_s))
+            rect.y += 2;
+        if (keyboard.isPressed(SDLK_d))
+            rect.x += 2;
+
+
 		// RENDER
 
     	// clears screen

@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "game.hpp"
+#include <Eigen/Dense>
 
 //screen dimension constants
 const int SCREEN_WIDTH = 640;

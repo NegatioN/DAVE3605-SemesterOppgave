@@ -12,7 +12,7 @@
 class KeyboardHandler{
 
 	// each keyboard-key has its own value, being the index in the array
-	bool keyStates[1024];
+	bool keyStates[128];
 public:
 	void handleKeyboardEvent(SDL_KeyboardEvent event);
 	bool isPressed(int keyCode);

@@ -6,7 +6,9 @@ class vertex{
 int x_;
 int y_;
 public:
-	vertex(int x, int y);
+	vertex(int x, int y) : x_{x}, y_{y}{};
+	int x(){ return x_; };
+	int y(){ return y_; };
 };
 
 #endif

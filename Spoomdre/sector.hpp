@@ -2,6 +2,7 @@
 #define CLASS_SECTOR_H
 
 #include "vertex.hpp"
+#include <SDL2/SDL.h>
 #include <vector>
 
 class sector{
@@ -29,7 +30,7 @@ public:
 
 	//Calculate neighbouring sectors, based on this sector's vertices
 	void findNeighbours();
-	void render();
+	void render(SDL_Renderer* renderer);
 
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };

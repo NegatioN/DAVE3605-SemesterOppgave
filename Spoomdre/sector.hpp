@@ -10,23 +10,23 @@ class sector{
 //ID of sector, to identify neighbours
 int id_;
 
-int floor_height_;
-int ceiling_height_;
+float floor_height_;
+float ceiling_height_;
 //Floor + ceiling texturesz
 
 //Number of vertexes in the sector (4 for cubical sector)
 int vCount;
 
 //All vertexes in the sector
-std::vector<vertex*> vertices;
+std::vector<vertex> vertices;
 
 //Id of all neighbouring sectors
 std::vector<int> neighbours;
 
 public:
-	sector(int id_, int floor_height, int ceiling_height);
+	sector(int id_, float floor_height, float ceiling_height);
 
-	void addVertex(vertex* v);
+	void addVertex(vertex v);
 
 	//Calculate neighbouring sectors, based on this sector's vertices
 	void findNeighbours();

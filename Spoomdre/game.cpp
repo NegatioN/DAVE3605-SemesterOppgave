@@ -1,7 +1,10 @@
 #include "game.hpp"
 #include "player.hpp"
+#include "sector.hpp"
+#include "vertex.hpp"
 
 Player player;
+sector test_sector{1, 10.f, 40.f};
 SDL_Rect rect;
 
 //get window surface
@@ -29,6 +32,11 @@ void Game::initialize(int height, int width) {
 		}
 	}
 
+	vertex v1 = vertex{400, 100};
+	vertex v2 = vertex{400, 400};
+	test_sector.addVertex(v1);
+	test_sector.addVertex(v2);
+
 	player.init();
 }
 
@@ -44,7 +52,7 @@ void Game::render() {
 
     //fillRect(rect, 0, 0, 0);
     player.render(renderer);
-
+    test_sector.render(renderer);
     // render screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw

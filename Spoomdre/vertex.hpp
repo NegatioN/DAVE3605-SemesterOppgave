@@ -3,12 +3,12 @@
 
 //vertex is merely a point on our map
 class vertex{
-int x_;
-int y_;
+float x_;
+float y_;
 public:
-	vertex(int x, int y) : x_{x}, y_{y}{};
-	int x(){ return x_; };
-	int y(){ return y_; };
+	vertex(float x, float y) : x_{x}, y_{y}{};
+	float x(){ return x_; };
+	float y(){ return y_; };
 };
 
 #endif

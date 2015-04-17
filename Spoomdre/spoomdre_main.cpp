@@ -6,39 +6,40 @@
 #include "keyboard_handler.hpp"
 #include <Eigen/Dense>
 
+#include <vector>
+
 //screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+KeyboardHandler keyboardHandler;
+
 int main(int argc, char* args[]){
-//Functionality-providing variables
-	KeyboardHandler keyboardHandler;
+	//Functionality-providing variables
+	
 	Game game;			//SDL_WINDOW + SDL_SURFACE
 	SDL_Event event;	// Holds the next event to be handled (user-input)
 
-//init variables
-	game.initialize(SCREEN_HEIGHT, SCREEN_WIDTH);
+	std::vector<bool> wasd;
+	for(int i = 0; i < 4; i++) // values for wasd
+		wasd.push_back(false);
+
+	//init variables
+	game.initialize(SCREEN_HEIGHT, SCREEN_WIDTH);//, keyboardHandler);
 	bool running = true;
 
-//DECLARE TEST VARIABLES
-
-	SDL_Rect rect;
-	rect.x = 200;
-	rect.y = 150;
-	rect.w = 200;
-	rect.h = 200;
-	// coordinates for the middle of the rectangle
-	int x = (rect.x + rect.w) - rect.w / 2;
-	int y = (rect.y + rect.h) - rect.h / 2;
-
-
-
-	int R = 0x00;
-
+	// time for current frame
+	Uint32 frametime;
+	// frames per second
+	Uint32 fps = 50;
+	// interval between each frame in millisec
+	Uint32 interval = 1000 / fps;
 
 	//START GAME-LOOP
-	while(running){
+	while(running) {
 
+		// update time for current frame
+		frametime = SDL_GetTicks();
 
 		// EVENTS
 		// Polls/gets any pending events
@@ -48,12 +49,20 @@ int main(int argc, char* args[]){
       		{
       			// Keyboard-press
         		case SDL_KEYDOWN:
+        			if(event.key.keysym.sym == SDLK_w) wasd.at(0) = true;
+        			if(event.key.keysym.sym == SDLK_a) wasd.at(1) = true;
+        			if(event.key.keysym.sym == SDLK_s) wasd.at(2) = true;
+        			if(event.key.keysym.sym == SDLK_d) wasd.at(3) = true;
         			keyboardHandler.handleKeyboardEvent(event.key);
         		break;
         		case SDL_KEYUP:
-        			//keyboardHandler.handleKeyboardEvent(event.key);
-				break;
-
+        			if(event.key.keysym.sym == SDLK_w) wasd.at(0) = false;
+        			if(event.key.keysym.sym == SDLK_a) wasd.at(1) = false;
+        			if(event.key.keysym.sym == SDLK_s) wasd.at(2) = false;
+        			if(event.key.keysym.sym == SDLK_d) wasd.at(3) = false;
+        			keyboardHandler.handleKeyboardEvent(event.key);
+        		break;
+        			
                 // User-requested exit
                 case SDL_QUIT:
                 	running = false;
@@ -62,20 +71,18 @@ int main(int argc, char* args[]){
     	}
 
 		// Exit program if esc-key is pressed
-		//if (keyboardHandler.isPressed(SDLK_ESCAPE))
-        //    running = false;
+		if (keyboardHandler.isPressed(SDLK_ESCAPE))
+        	running = false;
 
-		std::cout << "Rendering, R=" << R << std::endl;
-		R+=10;
-		game.fillRect(rect, R, R, R);
-		game.update();
-		game.wait(1);
-		if(R > 150)
-			running = false;
+		game.update(wasd);
+		game.render();
+
+		// game-loop timer check
+		if (SDL_GetTicks() - frametime < interval)
+      		game.wait(interval-(SDL_GetTicks()-frametime));
 	}
 
 	game.terminate();
-	
 
 	return 0;
 

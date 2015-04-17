@@ -42,7 +42,7 @@ int main( int argc, char* args[]){
 	SDL_Renderer *renderer = NULL;
 
 	//surface of window
-	SDL_Surface* screenSurface = NULL;
+	//SDL_Surface* screenSurface = NULL;
 
 	//INIT SDL
 	if(SDL_Init( SDL_INIT_VIDEO) < 0){
@@ -62,14 +62,14 @@ int main( int argc, char* args[]){
 			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 			//get window surface
-			screenSurface = SDL_GetWindowSurface(window);
+			//screenSurface = SDL_GetWindowSurface(window);
 
 			//Fill surface with white
-			SDL_FillRect(screenSurface, NULL, SDL_MapRGB(
-				screenSurface->format, 0x00, 0x00, 0x00));
+			//SDL_FillRect(screenSurface, NULL, SDL_MapRGB(
+			//	screenSurface->format, 0x00, 0x00, 0x00));
 
 			//update surface
-			SDL_UpdateWindowSurface(window);
+			//SDL_UpdateWindowSurface(window);
 
 			//wait 2 sec
 			//SDL_Delay(2000);

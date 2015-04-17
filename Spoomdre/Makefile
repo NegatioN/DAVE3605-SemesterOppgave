@@ -10,7 +10,7 @@ EIGENLOCAL=-I/usr/include/eigen3
 SPOOMDRE_OUT=spoomdre
 TEST_OUT=test
 
-OFILES= game.o spoomdre_main.o keyboard_handler.o sector.o
+OFILES= game.o spoomdre_main.o keyboard_handler.o player.o sector.o
 OTEST= hello_world.o keyboard_handler.o
 
 

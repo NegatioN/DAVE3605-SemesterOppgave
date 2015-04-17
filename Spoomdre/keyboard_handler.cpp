@@ -15,3 +15,9 @@ bool KeyboardHandler::isReleased(int keyCode) {
 	if(keyCode > 127) return true;
 	return !keyStates[keyCode];
 }
+
+void KeyboardHandler::clear() {
+	/*for(int i = 0; i < keyStates.length; i++) {
+		keyStates[i] = false;
+	}*/
+}

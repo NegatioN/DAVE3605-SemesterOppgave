@@ -33,6 +33,8 @@ test: $(OTEST)
 clean: 
 	-$(RM) $(SPOOMDRE_OUT)
 	-$(RM) $(TEST_OUT)
+	-$(RM) $(OFILES)
+	-$(RM) $(OTEST)
 	
 again: clean spoomdre test
 

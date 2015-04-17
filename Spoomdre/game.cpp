@@ -32,12 +32,21 @@ void Game::initialize(int height, int width) {
 		}
 	}
 
-	vertex v1 = vertex{400, 100};
-	vertex v2 = vertex{400, 400};
+	vertex v1 = vertex{200, 100};
+	vertex v2 = vertex{400, 100};
+	vertex v3 = vertex{500, 300};
+	vertex v4 = vertex{400, 500};
+	vertex v5 = vertex{200, 500};
+	vertex v6 = vertex{100, 300};
+
 	test_sector.addVertex(v1);
 	test_sector.addVertex(v2);
+	test_sector.addVertex(v3);
+	test_sector.addVertex(v4);
+	test_sector.addVertex(v5);
+	test_sector.addVertex(v6);
 
-	player.init();
+	player.init(width/2, height/2);
 }
 
 void Game::update(std::vector<bool> wasd){
@@ -52,7 +61,7 @@ void Game::render() {
 
     //fillRect(rect, 0, 0, 0);
     player.render(renderer);
-    test_sector.render(renderer);
+    test_sector.render(renderer, player.x(), player.y(), player.angle());
     // render screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw

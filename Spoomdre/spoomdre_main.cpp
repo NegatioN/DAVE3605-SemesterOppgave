@@ -21,11 +21,11 @@ int main(int argc, char* args[]){
 	SDL_Event event;	// Holds the next event to be handled (user-input)
 
 	std::vector<bool> wasd;
-	for(int i = 0; i < 4; i++) // values for wasd
+	for(int i = 0; i < 6; i++) // values for wasd (movement) & km (rotation)
 		wasd.push_back(false);
 
 	//init variables
-	game.initialize(SCREEN_HEIGHT, SCREEN_WIDTH);//, keyboardHandler);
+	game.initialize(SCREEN_HEIGHT, SCREEN_WIDTH);
 	bool running = true;
 
 	// time for current frame
@@ -53,6 +53,8 @@ int main(int argc, char* args[]){
         			if(event.key.keysym.sym == SDLK_a) wasd.at(1) = true;
         			if(event.key.keysym.sym == SDLK_s) wasd.at(2) = true;
         			if(event.key.keysym.sym == SDLK_d) wasd.at(3) = true;
+        			if(event.key.keysym.sym == SDLK_k) wasd.at(4) = true;
+        			if(event.key.keysym.sym == SDLK_m) wasd.at(5) = true;
         			keyboardHandler.handleKeyboardEvent(event.key);
         		break;
         		case SDL_KEYUP:
@@ -60,6 +62,8 @@ int main(int argc, char* args[]){
         			if(event.key.keysym.sym == SDLK_a) wasd.at(1) = false;
         			if(event.key.keysym.sym == SDLK_s) wasd.at(2) = false;
         			if(event.key.keysym.sym == SDLK_d) wasd.at(3) = false;
+        			if(event.key.keysym.sym == SDLK_k) wasd.at(4) = false;
+        			if(event.key.keysym.sym == SDLK_m) wasd.at(5) = false;
         			keyboardHandler.handleKeyboardEvent(event.key);
         		break;
         			

@@ -17,6 +17,7 @@ public:
 	void handleKeyboardEvent(SDL_KeyboardEvent event);
 	bool isPressed(int keyCode);
 	bool isReleased(int keyCode);
+	void clear();
 };
 
 

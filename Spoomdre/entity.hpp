@@ -4,23 +4,24 @@
 #include <Eigen/Core>
 
 
-
+using namespace Eigen;
 //Abstract class for entities. Meaning "Player", "Mob", "Moose"
 //should this extend properties? "Position_Vector", "Velocity_vector", "Moveable"
 class Entity{
 
 float x_, y_, z_; //coordinates for entity
-Eigen::Vector3f position, velocity, accelleration; //(math)vectors of floats of length = 3
-unsigned int sector;				//sector of player
+Vector3f position_, velocity_, accelleration_; //(math)vectors of floats of length = 3
+unsigned int sector_;				//sector of entity
 
 
 public:
 	//TODO create override constructor with start-position
 	virtual void move()=0;
-	Eigen::Vector3f position();	//return position-vector
-	Eigen::Vector3f velocity();	//return velocity-vector
-	Eigen::Vector3f accelleration(); //return accelleration-vector
-	unsigned int sector();		//return sectorId
+	Vector3f position(){ return position_;};			//return position-vector
+	Vector3f velocity(){return velocity_;};				//return velocity-vector
+	Vector3f accelleration(){return accelleration_;}; 	//return accelleration-vector
+	unsigned int sector(){return sector_;};				//return sectorId
+	
 
 };
 

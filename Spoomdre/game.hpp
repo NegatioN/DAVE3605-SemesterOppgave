@@ -29,6 +29,7 @@ public:
 	void fillRect(SDL_Rect rect, int r, int g, int b);	//renders rectangle on screen
 	void terminate();				//terminate screen
 	void wait(int seconds);			//pause render for x seconds
+	void createWorld(); 			//creates vertexes and sectors (for now)
 	
 
 };

@@ -15,7 +15,16 @@ unsigned int sector_;				//sector of entity
 
 
 public:
+	Entity(){};
 	//TODO create override constructor with start-position
+	Entity(Vector3f pos){
+		position_ = pos;
+	};
+	Entity(Vector3f pos, Vector3f vel, Vector3f acc){
+		position_ = pos;
+		velocity_ = vel;
+		accelleration_ = acc;
+	};
 	virtual void move()=0;
 	Vector3f position(){ return position_;};			//return position-vector
 	Vector3f velocity(){return velocity_;};				//return velocity-vector

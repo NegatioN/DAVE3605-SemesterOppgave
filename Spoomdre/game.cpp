@@ -33,7 +33,8 @@ void Game::initialize(int height, int width) {
 	}
 
 	createWorld();
-
+	//Vector3f position(width/2, height/2, 20);
+	//player{position};
 	player.init(width/2, height/2, 20); // x, y, z
 }
 

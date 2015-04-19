@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "entity.hpp"
+#include <Eigen/Core>
 
 //represents the player and everything related
 //should probably contain the user-input in some way.
@@ -15,6 +16,8 @@ class Player : public Entity {
 	std::vector<bool> wasd_;
 
 public:
+	Player(){};
+	Player(Vector3f &pos) : Entity(pos){};
 	void init(int x, int y, int z);
 	void move();
 	void render(SDL_Renderer* renderer);

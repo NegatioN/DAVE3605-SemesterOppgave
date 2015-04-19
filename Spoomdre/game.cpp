@@ -33,9 +33,10 @@ void Game::initialize(int height, int width) {
 	}
 
 	createWorld();
-	//Vector3f position(width/2, height/2, 20);
+	Vector3f position(width/2, height/2, 20);
 	//player{position};
-	player.init(width/2, height/2, 20); // x, y, z
+	//player.init(width/2, height/2, 20); // x, y, z
+	player.init(position); // x, y, z
 }
 
 void Game::update(std::vector<bool> wasd){

@@ -8,16 +8,14 @@
 //represents the player and everything related
 //should probably contain the user-input in some way.
 class Player : public Entity {
-	float angle_, anglesin, anglecos, yaw_;
-	float x_;
-	float y_;
-	float z_;
+	float angle_, anglesin_, anglecos_, yaw_;
 	unsigned int sector;
 	std::vector<bool> wasd_;
 
 public:
 	Player(){};
 	Player(Vector3f &pos) : Entity(pos){};
+	void init(Vector3f pos);
 	void init(int x, int y, int z);
 	void move();
 	void render(SDL_Renderer* renderer);
@@ -26,9 +24,9 @@ public:
 
 	float angle(){ return angle_; };
 	float yaw() { return yaw_; }
-	float x(){ return x_; };
-	float y(){ return y_; };
-	float z(){ return z_; }
+	float x(){ return position()(0); };
+	float y(){ return position()(1); };
+	float z(){ return position()(2); }
 
 };
 

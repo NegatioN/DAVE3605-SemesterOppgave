@@ -9,7 +9,7 @@ using namespace Eigen;
 //should this extend properties? "Position_Vector", "Velocity_vector", "Moveable"
 class Entity{
 
-float x_, y_, z_; //coordinates for entity
+//float x_, y_, z_; //coordinates for entity
 Vector3f position_, velocity_, accelleration_; //(math)vectors of floats of length = 3
 unsigned int sector_;				//sector of entity
 
@@ -26,10 +26,11 @@ public:
 		accelleration_ = acc;
 	};
 	virtual void move()=0;
-	Vector3f position(){ return position_;};			//return position-vector
+	Vector3f& position(){ return position_;};			//return position-vector
 	Vector3f velocity(){return velocity_;};				//return velocity-vector
 	Vector3f accelleration(){return accelleration_;}; 	//return accelleration-vector
 	unsigned int sector(){return sector_;};				//return sectorId
+	void setPosition(Vector3f pos){position_ = pos;};	//sets position-vector
 	
 
 };

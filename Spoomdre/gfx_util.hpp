@@ -8,8 +8,6 @@ struct xy{float x,y;}; // struct used for returning a pos
 
 class gfx_util {
 	public:
-	static float min(float value_a, float value_b);//return smaller of two floats -should use template in future
-	static float max(float value_a, float value_b);//return greater of two floats -should use template in future
 	static float clamp(float input, float min, float max); //limits the input to be within min-max
 	static float vcp(float x0, float y0, float x1, float y1);//Vector cross product
 	static bool overlap(float a0, float b0, float a1, float b1); //determine if number-ranges overlap.

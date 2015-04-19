@@ -2,15 +2,6 @@
 #include <stdio.h>
 #include <Eigen/Core>
 
-float gfx_util::min(float value_a, float value_b){
-	float value = (value_a < value_b) ? value_a : value_b;
-	return value;
-}
-
-float gfx_util::max(float value_a, float value_b){
-	float value = (value_a > value_b) ? value_a : value_b;
-	return value;
-}
 
 //if input is higher than max or lower than min, return closest option
 float gfx_util::clamp(float input, float min, float max){

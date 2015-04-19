@@ -32,6 +32,8 @@ public:
 	void findNeighbours();
 	void render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw);
 
+	void drawline(SDL_Renderer* renderer, int x, int y1,int y2, int top, int type);
+
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };
 

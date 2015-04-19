@@ -32,7 +32,58 @@ void Game::initialize(int height, int width) {
 		}
 	}
 
-	/* // old hexagon
+	createWorld();
+
+	player.init(width/2, height/2, 20); // x, y, z
+}
+
+void Game::update(std::vector<bool> wasd){
+	player.setMoveVector(wasd);
+	player.move();
+	//SDL_UpdateWindowSurface(window);
+	//fillRect(rect, 0, 0, 0);
+}
+
+void Game::render() {
+	// empty renderer from previous iteration
+    SDL_RenderClear(renderer);
+
+    //fillRect(rect, 0, 0, 0);
+    player.render(renderer);
+    test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+    // render screen
+	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
+    SDL_RenderPresent(renderer); // draw
+}
+
+void Game::fillRect(SDL_Rect rect, int r, int g, int b){
+	//SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, r, g, b));
+// render commands here
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
+	SDL_RenderDrawRect(renderer, &rect);
+}
+
+void Game::terminate(){
+	//Destroy renderer
+	SDL_DestroyRenderer(renderer);
+
+	//Destroy window
+	SDL_DestroyWindow(window);
+
+	//quit SDL Subsystems
+	SDL_Quit();
+}
+void Game::wait(int milliseconds){
+	SDL_Delay(milliseconds);
+}
+
+void fpsCounter(){
+	
+}
+
+void Game::createWorld(){
+
+		/* // old hexagon
 	vertex v1 = vertex{200, 100};
 	vertex v2 = vertex{400, 100};
 	vertex v3 = vertex{500, 300};
@@ -73,49 +124,4 @@ void Game::initialize(int height, int width) {
 	test_sector.addVertex(v10);
 	test_sector.addVertex(v11);
 	test_sector.addVertex(v12);
-
-	player.init(width/2, height/2, 20); // x, y, z
-}
-
-void Game::update(std::vector<bool> wasd){
-	player.move(wasd);
-	//SDL_UpdateWindowSurface(window);
-	//fillRect(rect, 0, 0, 0);
-}
-
-void Game::render() {
-	// empty renderer from previous iteration
-    SDL_RenderClear(renderer);
-
-    //fillRect(rect, 0, 0, 0);
-    player.render(renderer);
-    test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
-    // render screen
-	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
-    SDL_RenderPresent(renderer); // draw
-}
-
-void Game::fillRect(SDL_Rect rect, int r, int g, int b){
-	//SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, r, g, b));
-// render commands here
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
-	SDL_RenderDrawRect(renderer, &rect);
-}
-
-void Game::terminate(){
-	//Destroy renderer
-	SDL_DestroyRenderer(renderer);
-
-	//Destroy window
-	SDL_DestroyWindow(window);
-
-	//quit SDL Subsystems
-	SDL_Quit();
-}
-void Game::wait(int milliseconds){
-	SDL_Delay(milliseconds);
-}
-
-void fpsCounter(){
-	
 }

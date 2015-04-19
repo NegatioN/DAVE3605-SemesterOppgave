@@ -32,6 +32,7 @@ void Game::initialize(int height, int width) {
 		}
 	}
 
+	/* // old hexagon
 	vertex v1 = vertex{200, 100};
 	vertex v2 = vertex{400, 100};
 	vertex v3 = vertex{500, 300};
@@ -44,9 +45,36 @@ void Game::initialize(int height, int width) {
 	test_sector.addVertex(v3);
 	test_sector.addVertex(v4);
 	test_sector.addVertex(v5);
-	test_sector.addVertex(v6);
+	test_sector.addVertex(v6);*/
 
-	player.init(width/2, height/2);
+	// vertexes for test-map
+	vertex v1 = vertex{200, 200};
+	vertex v2 = vertex{400, 100};
+	vertex v3 = vertex{500, 200};
+	vertex v4 = vertex{500, 300};
+	vertex v5 = vertex{400, 400};
+	vertex v6 = vertex{500, 500};
+	vertex v7 = vertex{600, 300};
+	vertex v8 = vertex{700, 500};
+	vertex v9 = vertex{600, 700};
+	vertex v10= vertex{400, 700};
+	vertex v11= vertex{200, 600};
+	vertex v12= vertex{100, 400};
+
+	test_sector.addVertex(v1);
+	test_sector.addVertex(v2);
+	test_sector.addVertex(v3);
+	test_sector.addVertex(v4);
+	test_sector.addVertex(v5);
+	test_sector.addVertex(v6);
+	test_sector.addVertex(v7);
+	test_sector.addVertex(v8);
+	test_sector.addVertex(v9);
+	test_sector.addVertex(v10);
+	test_sector.addVertex(v11);
+	test_sector.addVertex(v12);
+
+	player.init(width/2, height/2, 20); // x, y, z
 }
 
 void Game::update(std::vector<bool> wasd){
@@ -61,7 +89,7 @@ void Game::render() {
 
     //fillRect(rect, 0, 0, 0);
     player.render(renderer);
-    test_sector.render(renderer, player.x(), player.y(), player.angle());
+    test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
     // render screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw

@@ -30,7 +30,7 @@ public:
 
 	//Calculate neighbouring sectors, based on this sector's vertices
 	void findNeighbours();
-	void render(SDL_Renderer* renderer, float px, float py, float angle);
+	void render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw);
 
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };

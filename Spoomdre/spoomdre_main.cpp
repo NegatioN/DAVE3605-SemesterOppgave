@@ -82,7 +82,11 @@ int main(int argc, char* args[]){
 		if (keyboardHandler.isPressed(SDLK_ESCAPE))
         	running = false;
 
-		game.update(wasd);
+        // get any mouse-changes since last frame
+        int mx; int my;
+        SDL_GetRelativeMouseState(&mx, &my);
+
+		game.update(wasd, mx, my);
 		game.render();
 
 		// game-loop timer check
@@ -93,6 +97,4 @@ int main(int argc, char* args[]){
 	game.terminate();
 
 	return 0;
-
-
 }

@@ -8,7 +8,7 @@
 //represents the player and everything related
 //should probably contain the user-input in some way.
 class Player : public Entity {
-	float angle_, anglesin_, anglecos_, yaw_;
+	float angle_, anglesin_, anglecos_, yaw_, mouse_x, mouse_y;
 	unsigned int sector;
 	std::vector<bool> wasd_;
 
@@ -20,7 +20,8 @@ public:
 	void move();
 	void render(SDL_Renderer* renderer);
 
-	void setMoveVector(std::vector<bool> &wasd){wasd_ = wasd;}
+	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }
+	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }
 
 	float angle(){ return angle_; };
 	float yaw() { return yaw_; }

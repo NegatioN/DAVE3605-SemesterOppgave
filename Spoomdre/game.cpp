@@ -33,6 +33,9 @@ void Game::initialize(int height, int width) {
 		}
 	}
 
+	width_ = width;
+	height_ = height;
+
 	createWorld();
 	Vector3f position(width/2, height/2, 20);
 	//player{position};
@@ -40,31 +43,29 @@ void Game::initialize(int height, int width) {
 	player.init(position); // x, y, z
 }
 
-void Game::update(std::vector<bool> wasd){
+void Game::update(std::vector<bool> wasd, int mouse_x, int mouse_y){
 	player.setMoveVector(wasd);
+	player.setMouseValues(mouse_x, mouse_y);
 	player.move();
-	//SDL_UpdateWindowSurface(window);
-	//fillRect(rect, 0, 0, 0);
 }
 
 void Game::render() {
 	// empty renderer from previous iteration
     SDL_RenderClear(renderer);
 
-    //fillRect(rect, 0, 0, 0);
-    player.render(renderer);
+    // render player & world
+    //player.render(renderer);
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
     test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+
+    // render crosshair
+    SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);
+    SDL_RenderDrawLine(renderer, width_/2-10, height_/2, width_/2+10, height_/2);
+    SDL_RenderDrawLine(renderer, width_/2, height_/2-10, width_/2, height_/2+10);
 
     // render screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw
-}
-
-void Game::fillRect(SDL_Rect rect, int r, int g, int b){
-	//SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, r, g, b));
-// render commands here
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
-	SDL_RenderDrawRect(renderer, &rect);
 }
 
 void Game::terminate(){

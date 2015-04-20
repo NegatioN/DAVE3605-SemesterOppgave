@@ -14,6 +14,8 @@
 //Defines the underlaying rendering-process
 class Game{
 
+	int height_, width_;
+
 	SDL_Window* window = NULL; 			//Window to render to
 	//SDL_Surface* screenSurface = NULL; 	//surface of window
 	SDL_Renderer* renderer = NULL; 		//renderer renders
@@ -26,9 +28,8 @@ public:
 
 	//Game(int height, int width);
 	void initialize(int height, int width);//, KeyboardHandler* keyboard); //initialize the screen and surface
-	void update(std::vector<bool> wasd);					//updates the surface
+	void update(std::vector<bool> wasd, int mouse_x, int mouse_y);					//updates the surface
 	void render();
-	void fillRect(SDL_Rect rect, int r, int g, int b);	//renders rectangle on screen
 	void terminate();				//terminate screen
 	void wait(int seconds);			//pause render for x seconds
 	void createWorld(); 			//creates vertexes and sectors (for now)

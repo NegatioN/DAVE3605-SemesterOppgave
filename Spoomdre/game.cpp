@@ -11,7 +11,8 @@ SDL_Rect rect;
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	//surface = SDL_GetWindowSurface(window);
+	//texture = SDL_CreateTexture(renderer,
+        //SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
 }
 
 void Game::initialize(int height, int width) {
@@ -53,8 +54,11 @@ void Game::render() {
 
     //fillRect(rect, 0, 0, 0);
     player.render(renderer);
-    test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+    test_sector.render(renderer, texture, player.x(), player.y(), player.z(), player.angle(), player.yaw());
 
+    //update window
+    /*SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, NULL, NULL);*/
     // render screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw
@@ -68,6 +72,9 @@ void Game::fillRect(SDL_Rect rect, int r, int g, int b){
 }
 
 void Game::terminate(){
+	//Destry texture
+	SDL_DestroyTexture(texture);
+
 	//Destroy renderer
 	SDL_DestroyRenderer(renderer);
 

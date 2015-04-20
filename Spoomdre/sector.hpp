@@ -37,9 +37,9 @@ public:
 
 	//Calculate neighbouring sectors, based on this sector's vertices
 	void findNeighbours();
-	void render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw);
+	void render(SDL_Renderer* renderer, SDL_Texture * texture, float px, float py, float pz, float angle, float yaw);
 
-	void drawline(SDL_Renderer* renderer, int x, int x2,int y1, int y2, int type, int top, int mid, int bot);
+	void drawline(SDL_Renderer* renderer, Uint32 * pixels, int x, int x2,int y1, int y2, int type, int top, int mid, int bot);
 
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };

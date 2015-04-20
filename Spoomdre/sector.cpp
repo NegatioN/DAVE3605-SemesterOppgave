@@ -20,7 +20,11 @@ void sector::addVertex(vertex v){
 void sector::findNeighbours(){};
 
 void sector::render(SDL_Renderer* renderer, SDL_Texture * texture, float px, float py, float pz, float angle, float yaw){
-	for (int i = 0; i < vCount; i++) {
+	//pixels on screen
+    /*Uint32 * pixels = new Uint32[640 * 480];
+    memset(pixels, 255, 640 * 480 * sizeof(Uint32));*/
+
+    for (int i = 0; i < vCount; i++) {
 		vertex a = vertices[i];
 		vertex b = vertices[0];
 		if (i < vCount-1)
@@ -108,17 +112,13 @@ void sector::render(SDL_Renderer* renderer, SDL_Texture * texture, float px, flo
         int y2b = H / 2 - (int) ((yfloor + tz2 * yaw) * yscale2);
 
         // Render wall
-		SDL_RenderDrawLine(renderer, x1, y1a, x2, y2a);
+		/*SDL_RenderDrawLine(renderer, x1, y1a, x2, y2a);
 		SDL_RenderDrawLine(renderer, x1, y1b, x2, y2b);
 		SDL_RenderDrawLine(renderer, x1, y1a, x1, y1b);
-		SDL_RenderDrawLine(renderer, x2, y2a, x2, y2b);
-        /*
+		SDL_RenderDrawLine(renderer, x2, y2a, x2, y2b);*/
+        
         // Render the wall. 
         int beginx = x1, endx = x2;
-        //pixels on screen
-        Uint32 * pixels = new Uint32[640 * 480];
-        memset(pixels, 255, 640 * 480 * sizeof(Uint32));
-
         for(int x = beginx; x <= endx; ++x)
         {
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
@@ -154,37 +154,41 @@ void sector::render(SDL_Renderer* renderer, SDL_Texture * texture, float px, flo
                 //unsigned r = 0x010101 * (255-z);
             //drawline(renderer, texture, x, x, ya, yb, 0,0x0000FF,0xFFFFFF,0x0000FF);
             //copi pixels into window
-            /*SDL_UpdateTexture(texture, NULL, pixels, 640 * sizeof(Uint32));
+            //SDL_UpdateTexture(texture, NULL, pixels, 640 * sizeof(Uint32));
             
-            drawline(renderer, pixels, x, x, ya, yb, 0,0xFF,0xFFFFFF,0x0000FF);
+            drawline(renderer, NULL, x, x, ya, yb, 0,0xFF,0xFFFFFF,0x0000FF);
             
-        }*/
-        //delete[] pixels;
+        }
 
 	} 
+    //delete[] pixels;
 };
 /* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
 void sector::drawline(SDL_Renderer* renderer, Uint32 * pixels, int x1, int x2, int y1,int y2, int type, int top, int mid, int bot)
 {
-  /*  if(type == 0)//vegg
+    /*if(type == 0)//vegg
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
     else if(type == 1)//gulv
         SDL_SetRenderDrawColor(renderer, 0x00, 0x22, 0x22, 0x22);
     else if(type == 2)//tak
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0x77);
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0x77);*/
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x22, 0x22, 0x22); //gulv
+    SDL_RenderDrawLine(renderer, x1, 480, x2, y2);
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0x77);//tak
+    SDL_RenderDrawLine(renderer, x1, y1, x2, 0);
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);//vegg
+    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
 
-    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);*/
-
-    /*for(int i = 1;  i < 480 ; i++){
+    /*for(int i = y1;  i < y2 ; i++){
         int index = i*640+x1;
-        if(i < y1)
-            pixels[index] = 0xFF;
-        else if( y1 <= i && i < y2)
-            pixels[index] = top;
-        else
-            pixels[index] = 0x7A;
+        pixels[index] = 0xFF;
+        //if(i < y1)
+        //    pixels[index] = 0xFF;
+        //else if( y1 <= i && i < y2)
+        //    pixels[index] = top;
+        //else
+        //    pixels[index] = 0x7A;
     }*/
-    pixels[(x1)*640+x1] = top;
 
      /*
      delete[] pixels;

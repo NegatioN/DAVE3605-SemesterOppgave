@@ -11,8 +11,8 @@ SDL_Rect rect;
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	//texture = SDL_CreateTexture(renderer,
-        //SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
+	/*texture = SDL_CreateTexture(renderer,
+        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);*/
 }
 
 void Game::initialize(int height, int width) {
@@ -57,6 +57,8 @@ void Game::render() {
     // render player & world
     //player.render(renderer);
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
+
+    //memset(pixels, 255, 640 * 480 * sizeof(Uint32));
     test_sector.render(renderer, texture, player.x(), player.y(), player.z(), player.angle(), player.yaw());
 
     // render crosshair
@@ -65,16 +67,18 @@ void Game::render() {
     SDL_RenderDrawLine(renderer, width_/2, height_/2-10, width_/2, height_/2+10);
 
     //update window
-    /*SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture, NULL, NULL);*/
+    //SDL_RenderClear(renderer);
+    //SDL_RenderCopy(renderer, texture, NULL, NULL);
     // render screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw
 }
 
 void Game::terminate(){
+	//delete[] pixels;
+
 	//Destry texture
-	SDL_DestroyTexture(texture);
+	//SDL_DestroyTexture(texture);
 
 	//Destroy renderer
 	SDL_DestroyRenderer(renderer);

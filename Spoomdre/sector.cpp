@@ -18,13 +18,7 @@ void sector::addVertex(vertex v){
 //Calculate neighbouring sectors, based on this sector's vertices
 void sector::findNeighbours(){};
 
-int H = 480; // window-height
-int W = 640; // window-width
-
-float hfov = 0.73f*H;  		// Horizontal fov (Field of Vision)
-float vfov = 0.2f*H;    	// Vertical fov (Field of Vision)
-
-void sector::render(SDL_Renderer* renderer,float px, float py, float pz, float angle, float yaw){
+void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw){
 	for (int i = 0; i < vCount; i++) {
 		vertex a = vertices[i];
 		vertex b = vertices[0];
@@ -112,29 +106,29 @@ void sector::render(SDL_Renderer* renderer,float px, float py, float pz, float a
         int y2a = H / 2 - (int) ((yceil + tz2 * yaw) * yscale2);
         int y2b = H / 2 - (int) ((yfloor + tz2 * yaw) * yscale2);
 
-        /* Render wall
+        // Render wall
 		SDL_RenderDrawLine(renderer, x1, y1a, x2, y2a);
 		SDL_RenderDrawLine(renderer, x1, y1b, x2, y2b);
 		SDL_RenderDrawLine(renderer, x1, y1a, x1, y1b);
-		SDL_RenderDrawLine(renderer, x2, y2a, x2, y2b);*/
+		SDL_RenderDrawLine(renderer, x2, y2a, x2, y2b);
 
-        /* Render the wall. */
+        /* Render the wall. *//*
         int beginx = x1, endx = x2;
         for(int x = beginx; x <= endx; ++x)
         {
-            /* Calculate the Z coordinate for this point. (Only used for lighting.) */
+            // Calculate the Z coordinate for this point. (Only used for lighting.) 
             //int z = ((x - x1) * (tz2-tz1) / (x2-x1) + tz1) * 8;
-            /* Acquire the Y coordinates for our ceiling & floor for this X coordinate. Clamp them. */
+            // Acquire the Y coordinates for our ceiling & floor for this X coordinate. Clamp them. 
             int ya = H / 2 - (int) ((yceil + tz1 * yaw) * yscale1);//(x - x1) * (y2a-y1a) / (x2-x1) + y1a, cya = gfx_util::clamp(ya, ytop[x],ybottom[x]); // top
             int yb = H / 2 - (int) ((yfloor + tz1 * yaw) * yscale1);//(x - x1) * (y2b-y1b) / (x2-x1) + y1b, cyb = gfx_util::clamp(yb, ytop[x],ybottom[x]); // bottom
 
             int yrest = ( H / 2 ) - ( ( ya + yb) / 2 );
-            /* Render ceiling: everything above this sector's ceiling height. */
-            drawline(renderer, x, x, ya, ya - yrest, 1);
-            /* Render floor: everything below this sector's floor height. */
-            drawline(renderer, x, x, yb, yb + yrest, 2);
-
-            /* Is there another sector behind this edge? */
+            // Render ceiling: everything above this sector's ceiling height. 
+            drawline(renderer, x, x, ya, ya - H, 2,0x0000FF,0xFFFFFF,0x0000FF);
+            // Render floor: everything below this sector's floor height. 
+            drawline(renderer, x, x, yb, yb + H, 1,0x0000FF,0xFFFFFF,0x0000FF);
+*/
+            // Is there another sector behind this edge? 
             /*if(neighbor >= 0)
             {
                 /* Same for _their_ floor and ceiling */
@@ -152,24 +146,28 @@ void sector::render(SDL_Renderer* renderer,float px, float py, float pz, float a
             //{
                 /* There's no neighbor. Render wall from top (cya = ceiling level) to bottom (cyb = floor level). */
                 //unsigned r = 0x010101 * (255-z);
-            drawline(renderer, x, x, ya, yb, 0);
-        }
+            /*drawline(renderer, x, x, ya, yb, 0,0x0000FF,0xFFFFFF,0x0000FF);
+        }*/
 	} 
 };
-
-
 /* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
-void sector::drawline(SDL_Renderer* renderer,int x1, int x2, int y1,int y2, int type)
+void sector::drawline(SDL_Renderer* renderer, int x1, int x2, int y1,int y2, int type, int top, int mid, int bot)
 {
     if(type == 0)//vegg
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
-    else if(type == 1)//tak
+    else if(type == 1)//gulv
         SDL_SetRenderDrawColor(renderer, 0x00, 0x22, 0x22, 0x22);
-    else if(type == 2)//gulv
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFA, 0xAA, 0xAA);
-    //int *pix = (int*) surface->pixels;
+    else if(type == 2)//tak
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0x77);
 
     SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+
+    /*forsøk med drawpoint
+    for(int i = y1;  i < y2 ; i++){
+        SDL_RenderDrawPoint(renderer, x1, i);
+    }*/
+
+
     /*
     y1 = gfx_util::clamp(y1, 0, H-1);
     y2 = gfx_util::clamp(y2, 0, H-1);
@@ -181,4 +179,16 @@ void sector::drawline(SDL_Renderer* renderer,int x1, int x2, int y1,int y2, int 
         for(int y=y1+1; y<y2; ++y) pix[y*W+x] = middle;
         pix[y2*W+x] = bottom;
     }*/
+    /*int *pix = (int*) surface->pixels;
+    y1 = gfx_util::clamp(y1, 0, H-1);
+    y2 = gfx_util::clamp(y2, 0, H-1);
+    if(y2 == y1)
+        pix[y1*W+x] = mid;
+    else if(y2 > y1)
+    {
+        pix[y1*W+x] = top;
+        for(int y=y1+1; y<y2; ++y) pix[y*W+x] = mid;
+        pix[y2*W+x] = bot;
+    }*/
+    //SDL_RenderDrawLine(renderer, x, y1, x2, y2);
 }

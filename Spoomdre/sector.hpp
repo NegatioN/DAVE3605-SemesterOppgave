@@ -14,6 +14,13 @@ float floor_height_;
 float ceiling_height_;
 //Floor + ceiling texturesz
 
+
+int H = 480; // window-height
+int W = 640; // window-width
+
+float hfov = 0.73f*H;  		// Horizontal fov (Field of Vision)
+float vfov = 0.2f*H;    	// Vertical fov (Field of Vision)
+
 //Number of vertexes in the sector (4 for cubical sector)
 int vCount;
 
@@ -32,7 +39,7 @@ public:
 	void findNeighbours();
 	void render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw);
 
-	void drawline(SDL_Renderer* renderer, int x, int y1,int y2, int top, int type);
+	void drawline(SDL_Renderer* renderer, int x, int x2,int y1, int y2, int type, int top, int mid, int bot);
 
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };

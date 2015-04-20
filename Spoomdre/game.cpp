@@ -11,6 +11,7 @@ SDL_Rect rect;
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	//surface = SDL_GetWindowSurface(window);
 }
 
 void Game::initialize(int height, int width) {
@@ -51,6 +52,7 @@ void Game::render() {
     //fillRect(rect, 0, 0, 0);
     player.render(renderer);
     test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+
     // render screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw

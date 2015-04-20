@@ -40,8 +40,8 @@ void Player::move() {
     if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * 2; vecAddition(1) += anglecos_  * 2; } 	// D
     if (wasd_.at(4)) { angle_ += 0.1; }									// right
     if (wasd_.at(5)) { angle_ -= 0.1; }									// left
-    if (wasd_.at(6)) { yaw_ += 0.1; }											// up
-    if (wasd_.at(7)) { yaw_ -= 0.1; }											// down
+    if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
+    if (wasd_.at(7)) { yaw_ += 0.1; }											// down
 
 	angle_ += mouse_x * 0.015f;
     yaw_ += -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);

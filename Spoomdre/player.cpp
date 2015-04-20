@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include "player.hpp"
+#include "gfx_util.hpp"
 
 #include <iostream>
 
@@ -37,20 +38,19 @@ void Player::move() {
     if (wasd_.at(1)) { vecAddition(0) += anglesin_ * 2; vecAddition(1) -= anglecos_  * 2; } 	// A
     if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * 2;  vecAddition(1) -= anglesin_ * 2; } 	// S
     if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * 2; vecAddition(1) += anglecos_  * 2; } 	// D
-    if (wasd_.at(4)) { angle_ = angle_ + 0.1; }									// right
-    if (wasd_.at(5)) { angle_ = angle_ - 0.1; }									// left
-    if (wasd_.at(6)) { yaw_ += 0.05; }											// up
-    if (wasd_.at(7)) { yaw_ -= 0.05; }											// down
+    if (wasd_.at(4)) { angle_ += 0.1; }									// right
+    if (wasd_.at(5)) { angle_ -= 0.1; }									// left
+    if (wasd_.at(6)) { yaw_ += 0.1; }											// up
+    if (wasd_.at(7)) { yaw_ -= 0.1; }											// down
+
+	angle_ += mouse_x * 0.015f;
+    yaw_ += -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
 
     //old position-vector += movement.
     setPosition(position() + vecAddition);
-
 }
 
 void Player::render(SDL_Renderer* renderer) {
-	//sprite.x = x - sprite.w / 2;
-	//sprite.y = y - sprite.h / 2;
-
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderDrawLine(renderer, 320, 240, 320, 225);
 

@@ -16,7 +16,7 @@ public:
 	Player(){};
 	Player(Vector3f &pos) : Entity(pos){};
 	void init(Vector3f pos);
-	void init(Vector3f pos, Vector3f vel, Vector3f acc);
+	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
 	void init(int x, int y, int z);
 	void update();
 	void move(float dx, float dy);

@@ -9,10 +9,11 @@ using namespace std;
 SDL_Rect sprite;
 
 
-void Player::init(Vector3f pos, Vector3f vel, Vector3f acc){
+void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setPosition(pos);
 	setVelocity(vel);
 	setAcceleration(acc);
+	setSector(sec);
 	yaw_ = 0;
 }
 

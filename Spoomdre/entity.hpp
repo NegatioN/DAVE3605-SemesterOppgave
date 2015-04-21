@@ -30,10 +30,7 @@ public:
 	virtual void update()=0;
 	virtual void move(float dx, float dy)=0;
 
-	void setsector(sector* sec)
-	{
-		sector_ = sec;
-	};
+	
 
 	Vector3f& position(){ return position_;};			//return position-vector
 	Vector3f velocity(){return velocity_;};				//return velocity-vector
@@ -42,7 +39,7 @@ public:
 	void setPosition(Vector3f pos){position_ = pos;};	//sets position-vector
 	void setVelocity(Vector3f vel){velocity_ = vel;};
 	void setAcceleration(Vector3f acc){acceleration_ = acc;};	
-
+	void setSector(sector* sec){sector_ = sec;};
 };
 
 #endif

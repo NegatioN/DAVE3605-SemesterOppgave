@@ -43,7 +43,7 @@ void Game::initialize(int height, int width) {
 	Vector3f acceleration(0, 0, 0);
 	//player{position};
 	//player.init(width/2, height/2, 20); // x, y, z
-	player.init(position, velocity, acceleration); // x, y, z
+	player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 }
 
 void Game::update(std::vector<bool> wasd, int mouse_x, int mouse_y){

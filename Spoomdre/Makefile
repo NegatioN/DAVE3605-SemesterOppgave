@@ -28,14 +28,10 @@ spoomdre: $(OFILES)
 test: $(OTEST)
 	$(GPP) $(GPPOPT)  $(OTEST) -o $(TEST_OUT) $(DEPENDENCIES)
 
-
-
 clean: 
 	-$(RM) $(SPOOMDRE_OUT)
 	-$(RM) $(TEST_OUT)
 	-$(RM) $(OFILES)
 	-$(RM) $(OTEST)
 	
-again: clean spoomdre test
-
-check: again clean
+again: clean spoomdre

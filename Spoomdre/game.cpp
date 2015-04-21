@@ -6,15 +6,13 @@
 Player player;
 std::vector<sector*> sectors;
 SDL_Rect rect;
-// sector s1{1, 10.f, 40.f};
-
 
 //get window surface
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	/*texture = SDL_CreateTexture(renderer,
-        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);*/
+	// texture = SDL_CreateTexture(renderer,
+ //        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
 }
 
 void Game::initialize(int height, int width) {
@@ -61,7 +59,7 @@ void Game::render() {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
 
     //memset(pixels, 255, 640 * 480 * sizeof(Uint32));
-   	sectors[0]->render(renderer, texture, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+   	sectors[0]->render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
 	sectors[0]->render_map(renderer, player.x(), player.y(), player.z(), player.angle());
 
     // render crosshair
@@ -121,13 +119,6 @@ void Game::createWorld(){
 	vertex v10= vertex{80, 140};
 	vertex v11= vertex{40, 120};
 	vertex v12= vertex{20, 80};
-
-	// s1->addVertex(v1);
-	// s1->addVertex(v2);
-	// s1->addVertex(v3);
-	// s1->addVertex(v4);
-	// s1->addVertex(v5);
-	// s1->addVertex(v6);
 
 	s1.addVertex(v1);
 	s1.addVertex(v2);

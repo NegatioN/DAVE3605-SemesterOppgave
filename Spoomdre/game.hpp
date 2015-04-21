@@ -20,7 +20,7 @@ class Game{
 	//SDL_Surface* screenSurface = NULL; 	//surface of window
 	SDL_Renderer* renderer = NULL; 		//renderer renders
 
-	SDL_Texture * texture = NULL;
+	//SDL_Texture * texture = NULL;
 
 	void makeRenderer();					//simply creates the SDL_Surface
 

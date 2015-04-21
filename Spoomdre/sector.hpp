@@ -36,10 +36,10 @@ public:
 	void addVertex(vertex v);
 	void addNeighbour(sector* s);
 
-	void render(SDL_Renderer* renderer, SDL_Texture * texture, float px, float py, float pz, float angle, float yaw);
+	void render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw);
 	void render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle);
 
-	void drawline(SDL_Renderer* renderer, Uint32 * pixels, int x, int x2,int y1, int y2, int type, int top, int mid, int bot);
+	void drawline(SDL_Renderer* renderer, int x,int y1, int y2, int red, int green, int blue, int alpha);
 
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };

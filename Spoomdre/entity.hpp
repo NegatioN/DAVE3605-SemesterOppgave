@@ -2,16 +2,18 @@
 #define CLASS_ENTITY_H
 
 #include <Eigen/Core>
+#include "sector.hpp"
 
 
 using namespace Eigen;
 //Abstract class for entities. Meaning "Player", "Mob", "Moose"
 //should this extend properties? "Position_Vector", "Velocity_vector", "Moveable"
+class sector;
 class Entity{
 
 //float x_, y_, z_; //coordinates for entity
 Vector3f position_, velocity_, accelleration_; //(math)vectors of floats of length = 3
-unsigned int sector_;				//sector of entity
+sector* sector_;				//sector of entity
 
 
 public:
@@ -26,10 +28,16 @@ public:
 		accelleration_ = acc;
 	};
 	virtual void move()=0;
+
+	void setsector(sector* sec)
+	{
+		sector_ = sec;
+	};
+
 	Vector3f& position(){ return position_;};			//return position-vector
 	Vector3f velocity(){return velocity_;};				//return velocity-vector
 	Vector3f accelleration(){return accelleration_;}; 	//return accelleration-vector
-	unsigned int sector(){return sector_;};				//return sectorId
+	sector* getsector(){return sector_;};				//return current sector
 	void setPosition(Vector3f pos){position_ = pos;};	//sets position-vector
 	
 

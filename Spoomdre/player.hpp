@@ -9,7 +9,7 @@
 //should probably contain the user-input in some way.
 class Player : public Entity {
 	float angle_, anglesin_, anglecos_, yaw_, mouse_x, mouse_y;
-	unsigned int sector;
+	//sector * sector_; -> is in entity 
 	std::vector<bool> wasd_;
 
 public:

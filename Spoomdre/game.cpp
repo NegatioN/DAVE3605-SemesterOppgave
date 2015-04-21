@@ -56,9 +56,6 @@ void Game::render() {
 
     // render player & world
     //player.render(renderer);
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
-
-    //memset(pixels, 255, 640 * 480 * sizeof(Uint32));
     test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
 
     // render crosshair
@@ -66,7 +63,7 @@ void Game::render() {
     SDL_RenderDrawLine(renderer, width_/2-10, height_/2, width_/2+10, height_/2);
     SDL_RenderDrawLine(renderer, width_/2, height_/2-10, width_/2, height_/2+10);
 
-    //update window
+    //update window -texture
     // SDL_RenderClear(renderer);
     // SDL_RenderCopy(renderer, texture, NULL, NULL);
     // render screen

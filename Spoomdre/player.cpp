@@ -33,7 +33,6 @@ void Player::init(int x, int y, int z){
 
 //Take input accelleration-vector?
 void Player::update() {
-
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 	Vector3f vecAddition(0,0,0);
@@ -54,7 +53,7 @@ void Player::update() {
     //old position-vector += movement.
 	//setPosition(position() + vecAddition);
 
-        // set moving to true if movement-key is pressed
+    // set moving to true if movement-key is pressed
     bool pushing = false;
     if(wasd_.at(0) || wasd_.at(1) || wasd_.at(2) || wasd_.at(3))
     	pushing = true;
@@ -78,8 +77,11 @@ void Player::update() {
 	    float dy = vel(1);
 
 	    //sector-cross-check here
-	    //if()
 
+	    //Set new sector if outside the first one. Still buggy..
+		setSector(getSector()->getEnteredSector(px, py, dx, dy));
+
+	   	// std::cout << v.x() << " - " << v.y() << std::endl;
 	    move(dx, dy);
 
 	}
@@ -102,9 +104,6 @@ void Player::move(float dx, float dy) {
 }
 
 void Player::render(SDL_Renderer* renderer) {
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderDrawLine(renderer, 320, 240, 320, 225);
-
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
-	SDL_RenderFillRect(renderer, &sprite);
+	getSector()->render(renderer, x(), y(), z(), angle(), yaw());
+	getSector()->render_map(renderer, x(), y(), z(), angle());
 }

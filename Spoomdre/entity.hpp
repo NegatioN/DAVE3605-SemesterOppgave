@@ -30,16 +30,16 @@ public:
 	virtual void update()=0;
 	virtual void move(float dx, float dy)=0;
 
-	
+
 
 	Vector3f& position(){ return position_;};			//return position-vector
 	Vector3f velocity(){return velocity_;};				//return velocity-vector
 	Vector3f accelleration(){return acceleration_;}; 	//return accelleration-vector
-	sector* getsector(){return sector_;};				//return current sector
+	sector* getSector(){return sector_;};					//return current sector
 	void setPosition(Vector3f pos){position_ = pos;};	//sets position-vector
 	void setVelocity(Vector3f vel){velocity_ = vel;};
 	void setAcceleration(Vector3f acc){acceleration_ = acc;};	
-	void setSector(sector* sec){sector_ = sec;};
+	void setSector(sector* sec){ sector_ = sec; };
 };
 
 #endif

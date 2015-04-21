@@ -21,7 +21,7 @@ float gfx_util::vcp(float x0, float y0, float x1, float y1)
 //does the two boxes intersect?
 bool gfx_util::intersectBox(float x0, float y0, float x1, float y1,
 	float x2, float y2, float x3, float y3){
-	return overlap(x0,y0,x1,y1) && overlap(x2,y2,x3,y3);
+	return overlap(x0,x1,x2,y3) && overlap(y0,y1,y2,y3);
 }
 
 //find out if number-ranges overlap. Used to determine intersects

@@ -9,6 +9,10 @@ public:
 	vertex(float x, float y) : x_{x}, y_{y}{};
 	float x(){ return x_; };
 	float y(){ return y_; };
+
+	bool operator==(vertex other){
+		return x() == other.x() && y() == other.y();
+	}
 };
 
 #endif

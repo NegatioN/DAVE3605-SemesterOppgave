@@ -16,10 +16,28 @@ void sector::addVertex(vertex v){
 	vCount++;
 }
 
-//Calculate neighbouring sectors, based on this sector's vertices
+//Add neighbouring sectors
 void sector::addNeighbour(sector* s){
     neighbours.push_back(s);
 };
+
+
+sector* sector::getEnteredSector(float px, float py, float dx, float dy){
+
+    for(int i = 0; i < vCount-1; ++i)
+        if(neighbours.size() > 0
+            && gfx_util::intersectBox(px, py, px+dx,py+dy, vertices[i+0].x(), vertices[i+0].y(), vertices[i+1].x(), vertices[i+1].y())
+            && gfx_util::pointSide(px+dx, py+dy, vertices[i+0].x(), vertices[i+0].y(), vertices[i+1].x(), vertices[i+1].y()) < 0)
+        {
+            std::cout << px << " - " << py << getId() << std::endl;
+            return neighbours[i];
+            break;
+        }
+    return this;
+}
+
+
+
 
 void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw){
 
@@ -117,6 +135,7 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 	} 
 };
 
+//Temporary method for showing a top-down view on screen.
 void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle){
     
     for (int i = 0; i < vCount; i++) {

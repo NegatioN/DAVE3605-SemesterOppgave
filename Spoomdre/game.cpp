@@ -60,8 +60,7 @@ void Game::render() {
     // render player & world
     //player.render(renderer);
 
-    sectors[0]->render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
-	sectors[0]->render_map(renderer, player.x(), player.y(), player.z(), player.angle());
+    player.render(renderer);
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);
@@ -104,7 +103,9 @@ void Game::createWorld(){
 
 	//Need static to save the sectors. (New causes wierd bug)
 	static sector s1{id++, 10.f, 40.f}, 
-				  s2{id++, 10.f, 40.f};
+				  s2{id++, 10.f, 40.f},
+				  s3{id++, 10.f, 40.f};
+
 
 	// vertexes for test-map
 	vertex v1 = vertex{40, 40};
@@ -116,10 +117,11 @@ void Game::createWorld(){
 	vertex v6 = vertex{80, 0};
 	vertex v7 = vertex{40, 0};
 
+	vertex v8= vertex{120, 30};
+
 	vertex v9 = vertex{120, 140};
 	vertex v10= vertex{80, 140};
 	vertex v11= vertex{40, 120};
-	vertex v12= vertex{20, 80};
 
 	s1.addVertex(v1);
 	s1.addVertex(v2);
@@ -132,10 +134,21 @@ void Game::createWorld(){
 	s2.addVertex(v6);
 	s2.addVertex(v2);
 
+	s3.addVertex(v2);
+	s3.addVertex(v6);
+	s3.addVertex(v8);
+	s3.addVertex(v3);
+
+
 	s1.addNeighbour(&s2);
+	s1.addNeighbour(&s3);
 	s2.addNeighbour(&s1);
+	s2.addNeighbour(&s3);
+	s3.addNeighbour(&s1);
+	s3.addNeighbour(&s2);
 
 	sectors.push_back(&s1);
 	sectors.push_back(&s2);
+	sectors.push_back(&s3);
 
 }

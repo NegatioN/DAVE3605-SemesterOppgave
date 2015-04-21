@@ -4,8 +4,10 @@
 #include "vertex.hpp"
 
 Player player;
-sector test_sector{1, 10.f, 40.f};
+std::vector<sector*> sectors;
 SDL_Rect rect;
+// sector s1{1, 10.f, 40.f};
+
 
 //get window surface
 void Game::makeRenderer(){
@@ -59,7 +61,8 @@ void Game::render() {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
 
     //memset(pixels, 255, 640 * 480 * sizeof(Uint32));
-    test_sector.render(renderer, texture, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+   	sectors[0]->render(renderer, texture, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+	sectors[0]->render_map(renderer, player.x(), player.y(), player.z(), player.angle());
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);
@@ -98,46 +101,49 @@ void fpsCounter(){
 }
 
 void Game::createWorld(){
+	int id = 1;
 
-		/* // old hexagon
-	vertex v1 = vertex{200, 100};
-	vertex v2 = vertex{400, 100};
-	vertex v3 = vertex{500, 300};
-	vertex v4 = vertex{400, 500};
-	vertex v5 = vertex{200, 500};
-	vertex v6 = vertex{100, 300};
-
-	test_sector.addVertex(v1);
-	test_sector.addVertex(v2);
-	test_sector.addVertex(v3);
-	test_sector.addVertex(v4);
-	test_sector.addVertex(v5);
-	test_sector.addVertex(v6);*/
+	//Need static to save the sectors. (New causes wierd bug)
+	static sector s1{id++, 10.f, 40.f}, 
+				  s2{id++, 10.f, 40.f};
 
 	// vertexes for test-map
 	vertex v1 = vertex{40, 40};
 	vertex v2 = vertex{80, 20};
 	vertex v3 = vertex{100, 40};
 	vertex v4 = vertex{100, 60};
-	vertex v5 = vertex{80, 80};
-	vertex v6 = vertex{100, 100};
-	vertex v7 = vertex{120, 60};
-	vertex v8 = vertex{140, 100};
+	vertex v5 = vertex{60, 80};
+
+	vertex v6 = vertex{80, 0};
+	vertex v7 = vertex{40, 0};
+
 	vertex v9 = vertex{120, 140};
 	vertex v10= vertex{80, 140};
 	vertex v11= vertex{40, 120};
 	vertex v12= vertex{20, 80};
 
-	test_sector.addVertex(v1);
-	test_sector.addVertex(v2);
-	test_sector.addVertex(v3);
-	test_sector.addVertex(v4);
-	test_sector.addVertex(v5);
-	test_sector.addVertex(v6);
-	test_sector.addVertex(v7);
-	test_sector.addVertex(v8);
-	test_sector.addVertex(v9);
-	test_sector.addVertex(v10);
-	test_sector.addVertex(v11);
-	test_sector.addVertex(v12);
+	// s1->addVertex(v1);
+	// s1->addVertex(v2);
+	// s1->addVertex(v3);
+	// s1->addVertex(v4);
+	// s1->addVertex(v5);
+	// s1->addVertex(v6);
+
+	s1.addVertex(v1);
+	s1.addVertex(v2);
+	s1.addVertex(v3);
+	s1.addVertex(v4);
+	s1.addVertex(v5);
+
+	s2.addVertex(v1);
+	s2.addVertex(v7);
+	s2.addVertex(v6);
+	s2.addVertex(v2);
+
+	s1.addNeighbour(&s2);
+	s2.addNeighbour(&s1);
+
+	sectors.push_back(&s1);
+	sectors.push_back(&s2);
+
 }

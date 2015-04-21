@@ -11,8 +11,8 @@ SDL_Rect rect;
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	/*texture = SDL_CreateTexture(renderer,
-        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);*/
+	// texture = SDL_CreateTexture(renderer,
+ //        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
 }
 
 void Game::initialize(int height, int width) {
@@ -59,7 +59,7 @@ void Game::render() {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color
 
     //memset(pixels, 255, 640 * 480 * sizeof(Uint32));
-    test_sector.render(renderer, texture, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+    test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);

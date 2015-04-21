@@ -9,15 +9,16 @@
 //should probably contain the user-input in some way.
 class Player : public Entity {
 	float angle_, anglesin_, anglecos_, yaw_, mouse_x, mouse_y;
-	unsigned int sector;
 	std::vector<bool> wasd_;
 
 public:
 	Player(){};
 	Player(Vector3f &pos) : Entity(pos){};
 	void init(Vector3f pos);
+	void init(Vector3f pos, Vector3f vel, Vector3f acc);
 	void init(int x, int y, int z);
-	void move();
+	void update();
+	void move(float dx, float dy);
 	void render(SDL_Renderer* renderer);
 
 	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }

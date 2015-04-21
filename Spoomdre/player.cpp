@@ -9,10 +9,13 @@ using namespace std;
 SDL_Rect sprite;
 
 
-void Player::init(Vector3f pos){
+void Player::init(Vector3f pos, Vector3f vel, Vector3f acc){
 	setPosition(pos);
+	setVelocity(vel);
+	setAcceleration(acc);
 	yaw_ = 0;
 }
+
 void Player::init(int x, int y, int z){
 	yaw_ = 0;
 
@@ -28,11 +31,12 @@ void Player::init(int x, int y, int z){
 }
 
 //Take input accelleration-vector?
-void Player::move() {
+void Player::update() {
 
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 	Vector3f vecAddition(0,0,0);
+
     // keyboard-events
     if (wasd_.at(0)) { vecAddition(0) += anglecos_  * 2; vecAddition(1)  += anglesin_ * 2; } 	// W
     if (wasd_.at(1)) { vecAddition(0) += anglesin_ * 2; vecAddition(1) -= anglecos_  * 2; } 	// A
@@ -47,7 +51,53 @@ void Player::move() {
     yaw_ += -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
 
     //old position-vector += movement.
-    setPosition(position() + vecAddition);
+	//setPosition(position() + vecAddition);
+
+        // set moving to true if movement-key is pressed
+    bool pushing = false;
+    if(wasd_.at(0) || wasd_.at(1) || wasd_.at(2) || wasd_.at(3))
+    	pushing = true;
+
+	float accel = pushing ? 0.4 : 0.2;
+
+    Vector3f vel = velocity();
+    vel(0) = vel(0) * (1 - accel) + vecAddition(0) * accel;
+    vel(1) = vel(1) * (1 - accel) + vecAddition(1) * accel;
+
+    // set moving to true if movement-key is pressed
+    bool moving = false;
+    if(pushing)
+    	moving = true;
+
+	if(moving) {
+	    Vector3f pos = position();
+	    float px = pos(0);
+	    float py = pos(1);
+	    float dx = vel(0);
+	    float dy = vel(1);
+
+	    //sector-cross-check here
+	    //if()
+
+	    move(dx, dy);
+
+	}
+}
+
+void Player::move(float dx, float dy) {
+	Vector3f pos = position();
+	float px = pos(0);
+	float py = pos(1);
+
+	// collision-check??
+
+
+	// update positions and angles
+	pos(0) += dx;
+	pos(1) += dy;
+	anglesin_ = sin(angle_);
+	anglecos_ = cos(angle_);
+	setPosition(pos);
 }
 
 void Player::render(SDL_Renderer* renderer) {

@@ -11,8 +11,8 @@ SDL_Rect rect;
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	// texture = SDL_CreateTexture(renderer,
- //        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
+	/*texture = SDL_CreateTexture(renderer,
+        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);*/
 }
 
 void Game::initialize(int height, int width) {
@@ -39,15 +39,18 @@ void Game::initialize(int height, int width) {
 
 	createWorld();
 	Vector3f position(50, 50, 20);
+	Vector3f velocity(0, 0, 0);
+	Vector3f acceleration(0, 0, 0);
 	//player{position};
 	//player.init(width/2, height/2, 20); // x, y, z
-	player.init(position); // x, y, z
+	player.init(position, velocity, acceleration); // x, y, z
 }
 
 void Game::update(std::vector<bool> wasd, int mouse_x, int mouse_y){
 	player.setMoveVector(wasd);
 	player.setMouseValues(mouse_x, mouse_y);
-	player.move();
+	//player.move(0,0);
+	player.update();
 }
 
 void Game::render() {

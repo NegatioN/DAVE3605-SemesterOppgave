@@ -38,7 +38,7 @@ void Game::initialize(int height, int width) {
 	height_ = height;
 
 	createWorld();
-	Vector3f position(width/2, height/2, 20);
+	Vector3f position(50, 50, 20);
 	//player{position};
 	//player.init(width/2, height/2, 20); // x, y, z
 	player.init(position); // x, y, z
@@ -115,18 +115,18 @@ void Game::createWorld(){
 	test_sector.addVertex(v6);*/
 
 	// vertexes for test-map
-	vertex v1 = vertex{200, 200};
-	vertex v2 = vertex{400, 100};
-	vertex v3 = vertex{500, 200};
-	vertex v4 = vertex{500, 300};
-	vertex v5 = vertex{400, 400};
-	vertex v6 = vertex{500, 500};
-	vertex v7 = vertex{600, 300};
-	vertex v8 = vertex{700, 500};
-	vertex v9 = vertex{600, 700};
-	vertex v10= vertex{400, 700};
-	vertex v11= vertex{200, 600};
-	vertex v12= vertex{100, 400};
+	vertex v1 = vertex{40, 40};
+	vertex v2 = vertex{80, 20};
+	vertex v3 = vertex{100, 40};
+	vertex v4 = vertex{100, 60};
+	vertex v5 = vertex{80, 80};
+	vertex v6 = vertex{100, 100};
+	vertex v7 = vertex{120, 60};
+	vertex v8 = vertex{140, 100};
+	vertex v9 = vertex{120, 140};
+	vertex v10= vertex{80, 140};
+	vertex v11= vertex{40, 120};
+	vertex v12= vertex{20, 80};
 
 	test_sector.addVertex(v1);
 	test_sector.addVertex(v2);

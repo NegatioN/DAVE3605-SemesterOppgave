@@ -21,8 +21,11 @@ void sector::findNeighbours(){};
 
 void sector::render(SDL_Renderer* renderer, SDL_Texture * texture, float px, float py, float pz, float angle, float yaw){
 	//pixels on screen
-    /*Uint32 * pixels = new Uint32[640 * 480];
-    memset(pixels, 255, 640 * 480 * sizeof(Uint32));*/
+    // Uint32 * pixels = new Uint32[640 * 480];
+    // memset(pixels, 255, 640 * 480 * sizeof(Uint32));
+
+    int ytop[W], ybottom[W]; 
+    for(unsigned x=0; x<W; ++x) {ybottom[x] = H-1; ytop[x] = 0;}
 
     for (int i = 0; i < vCount; i++) {
 		vertex a = vertices[i];
@@ -30,33 +33,33 @@ void sector::render(SDL_Renderer* renderer, SDL_Texture * texture, float px, flo
 		if (i < vCount-1)
 			b = vertices[i+1];
 
-		// Calculate 
+		/* Calculate 
 		float txa = a.x()-px, tya = a.y()-py;
 		float txb = b.x()-px, tyb = b.y()-py;
 
 		float tza = txa*cos(angle) + tya*sin(angle);
 		float tzb = txb*cos(angle) + tyb*sin(angle);
 			  txa = txa*sin(angle) - tya*cos(angle);
-			  txb = txb*sin(angle) - tyb*cos(angle);
+			  txb = txb*sin(angle) - tyb*cos(angle);*/
 
 	    //SDL_SetRenderDrawColor(renderer, 0x00, 0x77, 0xFF, 0xFF); // map-color, Blue/green-ish
 		//SDL_RenderDrawLine(renderer, 320-txa, 240-tza, 320-txb , 240-tzb); // render map
 		//SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
-
-		/* different wall colors
-		if     (i == 0) SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		else if(i == 1) SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, 0xFF);
-		else if(i == 2) SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
-		else if(i == 3) SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
-		else if(i == 4) SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0xFF);
-		else if(i == 5) SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-		else if(i == 6) SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-		else if(i == 7) SDL_SetRenderDrawColor(renderer, 0x77, 0x77, 0xFF, 0xFF);
-		else if(i == 8) SDL_SetRenderDrawColor(renderer, 0x77, 0xFF, 0x77, 0xFF);
-		else if(i == 9) SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0xFF);
-		else if(i == 10)SDL_SetRenderDrawColor(renderer, 0x77, 0x00, 0xFF, 0xFF);
-		else 			SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x00, 0xFF);
-        */
+        int r_ = 0; int g_ = 0; int b_ = 0;
+		//different wall colors
+		if     (i == 0){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+		else if(i == 1){ r_ = 0x00; g_ = 0xFF; b_ = 0x00;}//green
+		else if(i == 2){ r_ = 0x00; g_ = 0x00; b_ = 0xFF;}//blue
+		else if(i == 3){ r_ = 0xFF; g_ = 0xFF; b_ = 0x00;}//yellow
+		else if(i == 4){ r_ = 0xFF; g_ = 0xA5; b_ = 0x00;}//orange
+		else if(i == 5){ r_ = 0xD3; g_ = 0xD3; b_ = 0xD3;}//grey
+		else if(i == 6){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+		else if(i == 7){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+		else if(i == 8){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+		else if(i == 9){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+		else if(i == 10){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+		else {			r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+        
 
 		// x & y of sector-edge endpoints
         float vx1 = a.x() - px;
@@ -124,10 +127,11 @@ void sector::render(SDL_Renderer* renderer, SDL_Texture * texture, float px, flo
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
             //int z = ((x - x1) * (tz2-tz1) / (x2-x1) + tz1) * 8;
             // Acquire the Y coordinates for our ceiling & floor for this X coordinate. Clamp them. 
-            int ya = H / 2 - (int) ((yceil + tz1 * yaw) * yscale1);//(x - x1) * (y2a-y1a) / (x2-x1) + y1a, cya = gfx_util::clamp(ya, ytop[x],ybottom[x]); // top
-            int yb = H / 2 - (int) ((yfloor + tz1 * yaw) * yscale1);//(x - x1) * (y2b-y1b) / (x2-x1) + y1b, cyb = gfx_util::clamp(yb, ytop[x],ybottom[x]); // bottom
+            int ya = (x - x1) * (y2a-y1a) / (x2-x1) + y1a;//, cya = gfx_util::clamp(ya, ytop[x],ybottom[x]); // top
+            int yb = (x - x1) * (y2b-y1b) / (x2-x1) + y1b;//, cyb = gfx_util::clamp(yb, ytop[x],ybottom[x]); // bottom
 
-            int yrest = 10;//= ( H / 2 ) - ( ( ya + yb) / 2 );
+            // int ya = H / 2 - (int) ((yceil + tz1 * yaw) * yscale1);
+            // int yb = H / 2 - (int) ((yfloor + tz1 * yaw) * yscale1);
             
             // Render ceiling: everything above this sector's ceiling height. 
             //drawline(renderer, pixels, x, x, ya, ya-H, 2,0x00,0xFFFFFF,0x0000FF);
@@ -155,8 +159,7 @@ void sector::render(SDL_Renderer* renderer, SDL_Texture * texture, float px, flo
             //drawline(renderer, texture, x, x, ya, yb, 0,0x0000FF,0xFFFFFF,0x0000FF);
             //copi pixels into window
             //SDL_UpdateTexture(texture, NULL, pixels, 640 * sizeof(Uint32));
-            
-            drawline(renderer, NULL, x, x, ya, yb, 0,0xFF,0xFFFFFF,0x0000FF);
+            drawline(renderer, NULL, x, x, ya, yb, 0,r_,g_,b_);
             
         }
 
@@ -164,7 +167,7 @@ void sector::render(SDL_Renderer* renderer, SDL_Texture * texture, float px, flo
     //delete[] pixels;
 };
 /* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
-void sector::drawline(SDL_Renderer* renderer, Uint32 * pixels, int x1, int x2, int y1,int y2, int type, int top, int mid, int bot)
+void sector::drawline(SDL_Renderer* renderer, Uint32 * pixels, int x1, int x2, int y1,int y2, int type, int red, int green, int blue)
 {
     /*if(type == 0)//vegg
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);
@@ -172,11 +175,14 @@ void sector::drawline(SDL_Renderer* renderer, Uint32 * pixels, int x1, int x2, i
         SDL_SetRenderDrawColor(renderer, 0x00, 0x22, 0x22, 0x22);
     else if(type == 2)//tak
         SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0x77);*/
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x22, 0x22, 0x22); //gulv
+    y1 = gfx_util::clamp(y1, 0, H-1);
+    y2 = gfx_util::clamp(y2, 0, H-1);
+
+    SDL_SetRenderDrawColor(renderer,0xF4, 0xA4, 0x60, 0xFF); //gulv
     SDL_RenderDrawLine(renderer, x1, 480, x2, y2);
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0x77);//tak
     SDL_RenderDrawLine(renderer, x1, y1, x2, 0);
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF);//vegg
+    SDL_SetRenderDrawColor(renderer, red, green, blue, 0xFF);//vegg
     SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
 
     /*for(int i = y1;  i < y2 ; i++){

@@ -34,7 +34,7 @@ int main(int argc, char* args[]){
     double delta = 0;                 // waiting-time before next update
     int frames = 0;                   // counter for fps
     int updates = 0;                  // counter for tps (ticks-per-sec)
-	Uint32 fps = 50;                  // wanted fps
+	Uint32 fps = 20;                  // wanted fps
 	double interval = 1000 / fps;     // time between each tick in msec
 
 	//START GAME-LOOP

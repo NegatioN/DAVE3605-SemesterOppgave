@@ -4,15 +4,15 @@
 #include "vertex.hpp"
 
 Player player;
-sector test_sector{1, 10.f, 40.f};
+std::vector<sector*> sectors;
 SDL_Rect rect;
 
 //get window surface
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	// texture = SDL_CreateTexture(renderer,
- //        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
+	/*texture = SDL_CreateTexture(renderer,
+        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);*/
 }
 
 void Game::initialize(int height, int width) {
@@ -39,15 +39,18 @@ void Game::initialize(int height, int width) {
 
 	createWorld();
 	Vector3f position(50, 50, 20);
+	Vector3f velocity(0, 0, 0);
+	Vector3f acceleration(0, 0, 0);
 	//player{position};
 	//player.init(width/2, height/2, 20); // x, y, z
-	player.init(position); // x, y, z
+	player.init(position, velocity, acceleration); // x, y, z
 }
 
 void Game::update(std::vector<bool> wasd, int mouse_x, int mouse_y){
 	player.setMoveVector(wasd);
 	player.setMouseValues(mouse_x, mouse_y);
-	player.move();
+	//player.move(0,0);
+	player.update();
 }
 
 void Game::render() {
@@ -56,7 +59,9 @@ void Game::render() {
 
     // render player & world
     //player.render(renderer);
-    test_sector.render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+
+    sectors[0]->render(renderer, player.x(), player.y(), player.z(), player.angle(), player.yaw());
+	sectors[0]->render_map(renderer, player.x(), player.y(), player.z(), player.angle());
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);
@@ -95,46 +100,42 @@ void fpsCounter(){
 }
 
 void Game::createWorld(){
+	int id = 1;
 
-		/* // old hexagon
-	vertex v1 = vertex{200, 100};
-	vertex v2 = vertex{400, 100};
-	vertex v3 = vertex{500, 300};
-	vertex v4 = vertex{400, 500};
-	vertex v5 = vertex{200, 500};
-	vertex v6 = vertex{100, 300};
-
-	test_sector.addVertex(v1);
-	test_sector.addVertex(v2);
-	test_sector.addVertex(v3);
-	test_sector.addVertex(v4);
-	test_sector.addVertex(v5);
-	test_sector.addVertex(v6);*/
+	//Need static to save the sectors. (New causes wierd bug)
+	static sector s1{id++, 10.f, 40.f}, 
+				  s2{id++, 10.f, 40.f};
 
 	// vertexes for test-map
 	vertex v1 = vertex{40, 40};
 	vertex v2 = vertex{80, 20};
 	vertex v3 = vertex{100, 40};
 	vertex v4 = vertex{100, 60};
-	vertex v5 = vertex{80, 80};
-	vertex v6 = vertex{100, 100};
-	vertex v7 = vertex{120, 60};
-	vertex v8 = vertex{140, 100};
+	vertex v5 = vertex{60, 80};
+
+	vertex v6 = vertex{80, 0};
+	vertex v7 = vertex{40, 0};
+
 	vertex v9 = vertex{120, 140};
 	vertex v10= vertex{80, 140};
 	vertex v11= vertex{40, 120};
 	vertex v12= vertex{20, 80};
 
-	test_sector.addVertex(v1);
-	test_sector.addVertex(v2);
-	test_sector.addVertex(v3);
-	test_sector.addVertex(v4);
-	test_sector.addVertex(v5);
-	test_sector.addVertex(v6);
-	test_sector.addVertex(v7);
-	test_sector.addVertex(v8);
-	test_sector.addVertex(v9);
-	test_sector.addVertex(v10);
-	test_sector.addVertex(v11);
-	test_sector.addVertex(v12);
+	s1.addVertex(v1);
+	s1.addVertex(v2);
+	s1.addVertex(v3);
+	s1.addVertex(v4);
+	s1.addVertex(v5);
+
+	s2.addVertex(v1);
+	s2.addVertex(v7);
+	s2.addVertex(v6);
+	s2.addVertex(v2);
+
+	s1.addNeighbour(&s2);
+	s2.addNeighbour(&s1);
+
+	sectors.push_back(&s1);
+	sectors.push_back(&s2);
+
 }

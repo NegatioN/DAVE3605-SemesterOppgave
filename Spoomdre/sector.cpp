@@ -17,7 +17,9 @@ void sector::addVertex(vertex v){
 }
 
 //Calculate neighbouring sectors, based on this sector's vertices
-void sector::findNeighbours(){};
+void sector::addNeighbour(sector* s){
+    neighbours.push_back(s);
+};
 
 void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw){
 
@@ -114,6 +116,30 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
         }
 	} 
 };
+
+void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle){
+    
+    for (int i = 0; i < vCount; i++) {
+        vertex a = vertices[i];
+        vertex b = vertices[0];
+        if (i < vCount-1)
+            b = vertices[i+1];
+
+        //Calculate 
+        float txa = a.x()-px, tya = a.y()-py;
+        float txb = b.x()-px, tyb = b.y()-py;
+
+        float tza = txa*cos(angle) + tya*sin(angle);
+        float tzb = txb*cos(angle) + tyb*sin(angle);
+              txa = txa*sin(angle) - tya*cos(angle);
+              txb = txb*sin(angle) - tyb*cos(angle);
+
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x77, 0xFF, 0xFF); // map-color, Blue/green-ish
+        SDL_RenderDrawLine(renderer, 320-txa, 240-tza, 320-txb , 240-tzb); // render map
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
+    }
+}
+
 
 /* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
 void sector::drawline(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int alpha)

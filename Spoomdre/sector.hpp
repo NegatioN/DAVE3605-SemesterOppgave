@@ -28,16 +28,16 @@ int vCount;
 std::vector<vertex> vertices;
 
 //Id of all neighbouring sectors
-std::vector<int> neighbours;
+std::vector<sector*> neighbours;
 
 public:
 	sector(int id_, float floor_height, float ceiling_height);
 
 	void addVertex(vertex v);
+	void addNeighbour(sector* s);
 
-	//Calculate neighbouring sectors, based on this sector's vertices
-	void findNeighbours();
 	void render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw);
+	void render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle);
 
 	void drawline(SDL_Renderer* renderer, int x,int y1, int y2, int red, int green, int blue, int alpha);
 

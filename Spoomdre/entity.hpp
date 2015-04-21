@@ -12,7 +12,7 @@ class sector;
 class Entity{
 
 //float x_, y_, z_; //coordinates for entity
-Vector3f position_, velocity_, accelleration_; //(math)vectors of floats of length = 3
+Vector3f position_, velocity_, acceleration_; //(math)vectors of floats of length = 3
 sector* sector_;				//sector of entity
 
 
@@ -25,9 +25,10 @@ public:
 	Entity(Vector3f pos, Vector3f vel, Vector3f acc){
 		position_ = pos;
 		velocity_ = vel;
-		accelleration_ = acc;
+		acceleration_ = acc;
 	};
-	virtual void move()=0;
+	virtual void update()=0;
+	virtual void move(float dx, float dy)=0;
 
 	void setsector(sector* sec)
 	{
@@ -36,10 +37,11 @@ public:
 
 	Vector3f& position(){ return position_;};			//return position-vector
 	Vector3f velocity(){return velocity_;};				//return velocity-vector
-	Vector3f accelleration(){return accelleration_;}; 	//return accelleration-vector
+	Vector3f accelleration(){return acceleration_;}; 	//return accelleration-vector
 	sector* getsector(){return sector_;};				//return current sector
 	void setPosition(Vector3f pos){position_ = pos;};	//sets position-vector
-	
+	void setVelocity(Vector3f vel){velocity_ = vel;};
+	void setAcceleration(Vector3f acc){acceleration_ = acc;};	
 
 };
 

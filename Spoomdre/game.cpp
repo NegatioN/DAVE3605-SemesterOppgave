@@ -38,7 +38,7 @@ void Game::initialize(int height, int width) {
 	height_ = height;
 
 	createWorld();
-	Vector3f position(50, 50, 20);
+	Vector3f position(75, 75, 20);
 	Vector3f velocity(0, 0, 0);
 	Vector3f acceleration(0, 0, 0);
 	//player{position};
@@ -61,26 +61,19 @@ void Game::render() {
     //player.render(renderer);
 
     player.render(renderer);
+	for(auto s: sectors)
+		s->render_map(renderer, player.x(), player.y(), player.z(), player.angle());
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);
     SDL_RenderDrawLine(renderer, width_/2-10, height_/2, width_/2+10, height_/2);
     SDL_RenderDrawLine(renderer, width_/2, height_/2-10, width_/2, height_/2+10);
 
-    //update window -texture
-    // SDL_RenderClear(renderer);
-    // SDL_RenderCopy(renderer, texture, NULL, NULL);
-    // render screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw
 }
 
 void Game::terminate(){
-	//delete[] pixels;
-
-	//Destry texture
-	//SDL_DestroyTexture(texture);
-
 	//Destroy renderer
 	SDL_DestroyRenderer(renderer);
 
@@ -108,16 +101,16 @@ void Game::createWorld(){
 
 
 	// vertexes for test-map
-	vertex v1 = vertex{40, 40};
-	vertex v2 = vertex{80, 20};
-	vertex v3 = vertex{100, 40};
-	vertex v4 = vertex{100, 60};
-	vertex v5 = vertex{60, 80};
+	vertex v1 = vertex{50, 50};
+	vertex v2 = vertex{90, 50};
+	vertex v3 = vertex{120, 75};
+	vertex v4 = vertex{120, 100};
+	vertex v5 = vertex{50, 100};
 
-	vertex v6 = vertex{80, 0};
-	vertex v7 = vertex{40, 0};
+	vertex v6 = vertex{90, 10};
+	vertex v7 = vertex{50, 10};
 
-	vertex v8= vertex{120, 30};
+	vertex v8= vertex{120, 10};
 
 	vertex v9 = vertex{120, 140};
 	vertex v10= vertex{80, 140};

@@ -4,6 +4,8 @@
 #include <vector>
 #include "entity.hpp"
 #include <Eigen/Core>
+#include <math.h>
+
 
 //represents the player and everything related
 //should probably contain the user-input in some way.

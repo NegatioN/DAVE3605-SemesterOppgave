@@ -44,6 +44,7 @@ public:
 
 	void drawline(SDL_Renderer* renderer, int x,int y1, int y2, int red, int green, int blue, int alpha);
 
+	bool containsVertices(vertex v1, vertex v2);
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };
 

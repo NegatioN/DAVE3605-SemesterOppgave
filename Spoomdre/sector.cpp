@@ -21,18 +21,34 @@ void sector::addNeighbour(sector* s){
     neighbours.push_back(s);
 };
 
+bool sector::containsVertices(vertex v1, vertex v2){
+    int found = 0;
+    for (vertex v: vertices)
+        if (v == v1 || v == v2)
+            found++;
+    return found == 2;
+}
 
 sector* sector::getEnteredSector(float px, float py, float dx, float dy){
+    for(int i = 0; i < vCount; ++i) {
+        //Two vertices is a wall
+        vertex a = vertices[i], b = vertices[i+1];
+        
+        //Loop around for last corner
+        if (i == vCount-1) b = vertices[0];
 
-    for(int i = 0; i < vCount-1; ++i)
-        if(neighbours.size() > 0
-            && gfx_util::intersectBox(px, py, px+dx,py+dy, vertices[i+0].x(), vertices[i+0].y(), vertices[i+1].x(), vertices[i+1].y())
-            && gfx_util::pointSide(px+dx, py+dy, vertices[i+0].x(), vertices[i+0].y(), vertices[i+1].x(), vertices[i+1].y()) < 0)
-        {
-            std::cout << px << " - " << py << getId() << std::endl;
-            return neighbours[i];
-            break;
+        //Prints for debugging. Will be removed.
+        // if (gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()))
+        //     std::cout << "intersectBox: "<< i << std::endl; 
+
+        if( gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()) && 
+            gfx_util::pointSide(px+dx, py+dy, a.x(), a.y(), b.x(), b.y()) < 0)
+        {            
+            for (sector* n: neighbours)
+                if (n->containsVertices(a, b))
+                    return n;
         }
+    }
     return this;
 }
 

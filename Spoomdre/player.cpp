@@ -78,12 +78,10 @@ void Player::update() {
 
 	    //sector-cross-check here
 
-	    //Set new sector if outside the first one. Still buggy..
+	    //Set new sector if outside the first one.
 		setSector(getSector()->getEnteredSector(px, py, dx, dy));
 
-	   	// std::cout << v.x() << " - " << v.y() << std::endl;
 	    move(dx, dy);
-
 	}
 }
 
@@ -104,6 +102,6 @@ void Player::move(float dx, float dy) {
 }
 
 void Player::render(SDL_Renderer* renderer) {
+	//std::cout << getSector()->getId() << std::endl;
 	getSector()->render(renderer, x(), y(), z(), angle(), yaw());
-	getSector()->render_map(renderer, x(), y(), z(), angle());
 }

@@ -49,7 +49,7 @@ void Player::update() {
     if (wasd_.at(7)) { yaw_ += 0.1; }											// down
 
 	angle_ = mouse_x * 0.015f;
-    yaw_ = -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
+ 	yaw_ = -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
 
     //old position-vector += movement.
 	//setPosition(position() + vecAddition);
@@ -77,43 +77,45 @@ void Player::update() {
 	    float dx = vel(0);
 	    float dy = vel(1);
 
-	    //Set new sector if outside the first one.
-		//setSector(getSector()->getEnteredSector(px, py, dx, dy));
+	    //Is the player hitting a wall?
+	    checkForWall(px, py, dx, dy);
 
-		std::vector<vertex> vertices = getSector()->getVertices();
-		std::vector<sector*> neighbours = getSector()->getNeighbours();
-		// Check if the player is about to cross one of the sector's edges 
-		int vCount = getSector()->getVertexCount();
-        for(int i = 0; i < vCount; ++i){
-
-        	vertex a = vertices[i]; 
-        	vertex b = vertices[i+1];
-	        //Loop around for last corner
-	        if (i == vCount-1) b = vertices[0];
-
-            if( gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()) && 
-            	gfx_util::pointSide(px+dx, py+dy, a.x(), a.y(), b.x(), b.y()) < 0){ 
-
-            	bool wall = true;
-            	for (sector* n: neighbours){
-                	if (n->containsVertices(a, b)){
-                    	wall = false;
-                    	setSector(n);
-                    }
-              	}
-
-              	if(wall)
-	            {	//Bumps into a wall! Slide along the wall. 
-	                // This formula is from Wikipedia article "vector projection". 
-	                float xd = b.x() - a.x(), yd = b.y() - a.y();
-	                dx = xd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
-	                dy = yd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
-	            }
-            }
-
-        }
 	    move(dx, dy);
 	}
+}
+
+bool Player::checkForWall(float px, float py, float& dx, float& dy){
+	std::vector<vertex> vertices = getSector()->getVertices();
+	std::vector<sector*> neighbours = getSector()->getNeighbours();
+
+	// Check if the player is about to cross one of the sector's edges 
+    for(int i = 0; i < vertices.size(); ++i){
+
+        vertex a = vertices[i]; 
+        vertex b = vertices[i+1];
+	    
+	    //Loop around for last corner
+	    if (i == vertices.size()-1) b = vertices[0];
+
+        if( gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()) && 
+            gfx_util::pointSide(px+dx, py+dy, a.x(), a.y(), b.x(), b.y()) < 0)
+        { 
+			bool wall = true;
+			for (sector* n: neighbours)
+				if (n->containsVertices(a, b)){ 
+				wall = false;
+				    setSector(n);
+				}
+
+			if(wall)
+			{	//Bumps into a wall! Slide along the wall. 
+				// This formula is from Wikipedia article "vector projection". 
+				float xd = b.x() - a.x(), yd = b.y() - a.y();
+				dx = xd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
+				dy = yd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
+			}
+		}
+    }
 }
 
 void Player::move(float dx, float dy) {
@@ -122,7 +124,6 @@ void Player::move(float dx, float dy) {
 	float py = pos(1);
 
 	// collision-check??
-
 
 	// update positions and angles
 	pos(0) += dx;

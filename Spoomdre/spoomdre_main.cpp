@@ -100,7 +100,7 @@ int main(int argc, char* args[]){
             int curx; int cury;
             SDL_GetMouseState(&curx, &cury);
 
-            std::cout << "mx=" << mx << " my=" << my << "curx=" << curx << " cury=" << cury << std::endl;
+            //std::cout << "mx=" << mx << " my=" << my << "curx=" << curx << " cury=" << cury << std::endl;
 
             // update game logic
             game.update(wasd, mx, my);

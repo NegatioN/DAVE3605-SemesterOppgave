@@ -23,6 +23,7 @@ public:
 	void update();
 	void move(float dx, float dy);
 	void render(SDL_Renderer* renderer);
+	bool checkForWall(float px, float py, float& dx, float& dy);
 
 	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }
 	void setMouseValues(float mx, float my) { if(mx != 0)

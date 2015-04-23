@@ -24,7 +24,7 @@ int main(int argc, char* args[]){
 	SDL_Event event;	// Holds the next event to be handled (user-input)
 
 	std::vector<bool> wasd;
-	for(int i = 0; i < 9; i++) // values for wasd (movement) & km (rotation)
+	for(int i = 0; i < 11; i++) // values for wasd (movement) & km (rotation)
 		wasd.push_back(false);
 
 	//init variables
@@ -65,11 +65,13 @@ int main(int argc, char* args[]){
                         if(event.key.keysym.sym == SDLK_a) wasd.at(1) = true;
                         if(event.key.keysym.sym == SDLK_s) wasd.at(2) = true;
                         if(event.key.keysym.sym == SDLK_d) wasd.at(3) = true;
-                        if(event.key.keysym.sym == SDLK_RIGHT) wasd.at(4) = true;
-                        if(event.key.keysym.sym == SDLK_LEFT) wasd.at(5) = true;
+                        if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_e || event.key.keysym.sym == SDLK_l) wasd.at(4) = true;
+                        if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_q || event.key.keysym.sym == SDLK_k) wasd.at(5) = true;
                         if(event.key.keysym.sym == SDLK_UP) wasd.at(6) = true;
                         if(event.key.keysym.sym == SDLK_DOWN) wasd.at(7) = true;
-                        if(event.key.keysym.sym == SDLK_LCTRL) wasd.at(8) = true;
+                        if(event.key.keysym.sym == SDLK_LCTRL || event.key.keysym.sym == SDLK_c) wasd.at(8) = true;
+                        if(event.key.keysym.sym == SDLK_SPACE) wasd.at(9) = true;
+                        if(event.key.keysym.sym == SDLK_RETURN) wasd.at(10) = true; // enter
                         keyboardHandler.handleKeyboardEvent(event.key);
                     break;
                     case SDL_KEYUP:
@@ -77,12 +79,20 @@ int main(int argc, char* args[]){
                         if(event.key.keysym.sym == SDLK_a) wasd.at(1) = false;
                         if(event.key.keysym.sym == SDLK_s) wasd.at(2) = false;
                         if(event.key.keysym.sym == SDLK_d) wasd.at(3) = false;
-                        if(event.key.keysym.sym == SDLK_RIGHT) wasd.at(4) = false;
-                        if(event.key.keysym.sym == SDLK_LEFT) wasd.at(5) = false;
+                        if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_e || event.key.keysym.sym == SDLK_l) wasd.at(4) = false;
+                        if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_q || event.key.keysym.sym == SDLK_k) wasd.at(5) = false;
                         if(event.key.keysym.sym == SDLK_UP) wasd.at(6) = false;
                         if(event.key.keysym.sym == SDLK_DOWN) wasd.at(7) = false;
-                        if(event.key.keysym.sym == SDLK_LCTRL) wasd.at(8) = false;
+                        if(event.key.keysym.sym == SDLK_LCTRL || event.key.keysym.sym == SDLK_c) wasd.at(8) = false;
+                        if(event.key.keysym.sym == SDLK_SPACE) wasd.at(9) = false;
+                        if(event.key.keysym.sym == SDLK_RETURN) wasd.at(10) = false; // enter
                         keyboardHandler.handleKeyboardEvent(event.key);
+                    break;
+                    case SDL_MOUSEBUTTONDOWN:
+                        if(event.button.button == SDL_BUTTON_LEFT) wasd.at(10) = true;
+                    break;
+                    case SDL_MOUSEBUTTONUP:
+                        if(event.button.button == SDL_BUTTON_LEFT) wasd.at(10) = false;
                     break;
                         
                     // User-requested exit

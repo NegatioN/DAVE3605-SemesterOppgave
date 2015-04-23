@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "entity.hpp"
+#include "projectile.hpp"
 #include <Eigen/Core>
 #include <math.h>
 
@@ -18,6 +19,11 @@ class Player : public Entity {
 	float const speed_ = 1.5f;
 
 	float BODYHEIGHT;
+	// list of projectiles (i.e bullets)
+	std::vector<Projectile*> projectiles;
+	// variables for cooldown between each projectile-shoot
+	int projectileCooldown = 50;
+	int projectileCountdown = 0;
 
 public:
 	Player(){};
@@ -29,6 +35,10 @@ public:
 	void render(SDL_Renderer* renderer);
 	bool checkForWall(Vector3f& velo);
 	void crouchMove(bool isCrouch);
+	void jump(Vector3f& velo);
+
+	void shootProjectile();
+	void removeDeadProjectiles();
 
 	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }

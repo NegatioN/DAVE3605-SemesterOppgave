@@ -16,6 +16,7 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setAcceleration(acc);
 	setSector(sec);
 	default_z = sec->floor() + 10;
+	BODYHEIGHT = 4; // can walk over everything <= 15 (20-4)
 	yaw_ = 0;
 }
 
@@ -96,15 +97,20 @@ bool Player::checkForWall(Vector3f& velo){
 			bool wall = true;
 			for (sector* n: neighbours)
 				if (n->containsVertices(a, b)){ 
+ 				    
+					float hole_low  = n < 0 ?  9e9 : n->floor();
+            		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());
 
- 				    //set default camera-height on sector-change
-				    velo(2) = n->floor() - getSector()->floor(); 
-				    default_z += velo(2);
-
-					wall = false;
-				    setSector(n);
-				}
-
+            		if(hole_high > z()   && hole_low  < (z()-BODYHEIGHT) )
+            		{
+		       			//set default camera-height on sector-change
+				    	velo(2) = n->floor() - getSector()->floor(); 
+				    	default_z += velo(2);
+            			wall = false;
+				    	setSector(n);
+            		}		
+            	}
+			
 			if(wall)
 			{	//Bumps into a wall! Slide along the wall. 
 				// This formula is from Wikipedia article "vector projection". 

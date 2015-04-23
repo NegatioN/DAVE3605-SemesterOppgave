@@ -17,6 +17,8 @@ class Player : public Entity {
 
 	float const speed_ = 1.5f;
 
+	float BODYHEIGHT;
+
 public:
 	Player(){};
 	Player(Vector3f &pos) : Entity(pos){};

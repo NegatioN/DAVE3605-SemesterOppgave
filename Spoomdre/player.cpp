@@ -41,7 +41,7 @@ void Player::update() {
     // keyboard-events
     if (wasd_.at(0)) { vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_; } 	// W
     if (wasd_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
-    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * speed_;  vecAddition(1) -= anglesin_ * speed_; } 	// S
+    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
     if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
     if (wasd_.at(4)) { angle_ += 0.1; }									// right
     if (wasd_.at(5)) { angle_ -= 0.1; }									// left
@@ -134,9 +134,7 @@ void Player::crouchMove(Vector3f crouchVelo){
 void Player::move(Vector3f velo) {
 	Vector3f pos = position();
 	pos += velo;
-
-	// collision-check??
-
+	
 	// update positions and angles
 
 	anglesin_ = sin(angle_);

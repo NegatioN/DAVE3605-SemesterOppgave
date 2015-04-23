@@ -30,26 +30,27 @@ bool sector::containsVertices(vertex v1, vertex v2){
 }
 
 sector* sector::getEnteredSector(float px, float py, float dx, float dy){
-    for(int i = 0; i < vCount; ++i) {
-        //Two vertices is a wall
-        vertex a = vertices[i], b = vertices[i+1];
+    // for(int i = 0; i < vCount; ++i) {
+    //     //Two vertices is a wall
+    //     vertex a = vertices[i], b = vertices[i+1];
         
-        //Loop around for last corner
-        if (i == vCount-1) b = vertices[0];
+    //     //Loop around for last corner
+    //     if (i == vCount-1) b = vertices[0];
 
-        //Prints for debugging. Will be removed.
-        // if (gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()))
-        //     std::cout << "intersectBox: "<< i << std::endl; 
+    //     //Prints for debugging. Will be removed.
+    //     // if (gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()))
+    //     //     std::cout << "intersectBox: "<< i << std::endl; 
 
-        if( gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()) && 
-            gfx_util::pointSide(px+dx, py+dy, a.x(), a.y(), b.x(), b.y()) < 0)
-        {            
-            for (sector* n: neighbours)
-                if (n->containsVertices(a, b))
-                    return n;
-        }
-    }
-    return this;
+    //     if( gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()) && 
+    //         gfx_util::pointSide(px+dx, py+dy, a.x(), a.y(), b.x(), b.y()) < 0)
+    //     {            
+    //         for (sector* n: neighbours)
+    //             if (n->containsVertices(a, b))
+    //                 return n;
+    //     }
+    // }
+    // return this;
+    return NULL;
 }
 
 

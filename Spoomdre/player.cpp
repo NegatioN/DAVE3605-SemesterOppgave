@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include "player.hpp"
 #include "gfx_util.hpp"
+#include "vertex.hpp"
 
 #include <iostream>
 
@@ -76,11 +77,41 @@ void Player::update() {
 	    float dx = vel(0);
 	    float dy = vel(1);
 
-	    //sector-cross-check here
-
 	    //Set new sector if outside the first one.
-		setSector(getSector()->getEnteredSector(px, py, dx, dy));
+		//setSector(getSector()->getEnteredSector(px, py, dx, dy));
 
+		std::vector<vertex> vertices = getSector()->getVertices();
+		std::vector<sector*> neighbours = getSector()->getNeighbours();
+		// Check if the player is about to cross one of the sector's edges 
+		int vCount = getSector()->getVertexCount();
+        for(int i = 0; i < vCount; ++i){
+
+        	vertex a = vertices[i]; 
+        	vertex b = vertices[i+1];
+	        //Loop around for last corner
+	        if (i == vCount-1) b = vertices[0];
+
+            if( gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()) && 
+            	gfx_util::pointSide(px+dx, py+dy, a.x(), a.y(), b.x(), b.y()) < 0){ 
+
+            	bool wall = true;
+            	for (sector* n: neighbours){
+                	if (n->containsVertices(a, b)){
+                    	wall = false;
+                    	setSector(n);
+                    }
+              	}
+
+              	if(wall)
+	            {	//Bumps into a wall! Slide along the wall. 
+	                // This formula is from Wikipedia article "vector projection". 
+	                float xd = b.x() - a.x(), yd = b.y() - a.y();
+	                dx = xd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
+	                dy = yd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
+	            }
+            }
+
+        }
 	    move(dx, dy);
 	}
 }

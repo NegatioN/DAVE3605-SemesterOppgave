@@ -39,6 +39,9 @@ public:
 
 	sector* getEnteredSector(float px, float py, float dx, float dy);
 
+	std::vector<vertex> getVertices(){return vertices;};
+	std::vector<sector*> getNeighbours(){return neighbours;};
+
 	void render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw);
 	void render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle);
 

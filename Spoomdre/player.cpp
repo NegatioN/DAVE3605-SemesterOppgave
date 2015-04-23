@@ -80,7 +80,7 @@ void Player::update() {
 	    move(vel);
 	}
 
-	//crouchMove(crouchVelocity);
+	crouchMove(crouchVelocity);
 }
 
 bool Player::checkForWall(Vector3f& velo){

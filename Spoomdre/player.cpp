@@ -21,13 +21,28 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 
 //Take input accelleration-vector?
 void Player::update() {
+	bool isFalling = false;
+	bool isJumping = false;
+	bool isCrouching = false;
 	
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
+
 	Vector3f vecAddition(0,0,0);
 
-	bool isJumping = false;
-	bool isCrouching = false;
+	if(z() > default_z)
+		isFalling = true;
+	else
+		setVelocity(vecAddition); //set velocity (0,0,0). No sliding movement
+
+	if(isFalling){
+		Vector3f fallingVelo = velocity();
+		move(fallingVelo);
+		fallingVelo += accelleration();	//gravity
+		setVelocity(fallingVelo);
+	}else{
+
+
     // keyboard-events
     if (wasd_.at(0)) { vecAddition(0) += anglecos_  * 2; vecAddition(1)  += anglesin_ * 2; } 	// W
     if (wasd_.at(1)) { vecAddition(0) += anglesin_ * 2; vecAddition(1) -= anglecos_  * 2; } 	// A
@@ -37,8 +52,9 @@ void Player::update() {
     if (wasd_.at(5)) { angle_ -= 0.1; }									// left
     if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
     if (wasd_.at(7)) { yaw_ += 0.1; }											// down
-    if (wasd_.at(8)) { isCrouching = true;}
-    //if (wasd_.at(8)) { vecAddition(2) -= 0.9;}else{vecAddition(2) += 0.9;}			//Crouch, Z-axis
+    if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
+    //if (wasd_.at(9)) { isJumping = true;} 
+    if (wasd_.at(9)) { shootProjectile(); }
 
     // change angle and yaw if the mouse have moved
 	if(mouse_x != 0) angle_ = mouse_x * 0.015f;
@@ -71,7 +87,18 @@ void Player::update() {
 	    move(vel);
 	}
 
+	if(isJumping)
+		jump(vel);
 	crouchMove(isCrouching);
+}
+	// update and remove (if appropriate) projectiles if any exists
+	if(projectiles.size() > 0) {
+		projectileCountdown--;
+		for(Projectile* p : projectiles) 
+			p->update();
+			
+		removeDeadProjectiles();
+	}
 }
 
 bool Player::checkForWall(Vector3f& velo){
@@ -119,18 +146,25 @@ bool Player::checkForWall(Vector3f& velo){
 void Player::crouchMove(bool isCrouch){
 	Vector3f crouch(0,0,0.9);
 	//we need to modify default_z when moving up/down on z-plane
-	//if lower than highlimit, and movement positive (move up)
+	//if lower than highlimit, and player not crouching
 	if(z() < default_z && !isCrouch)
 		move(crouch);
-	//if higher than lowlimit, and movement negative (move down)
+	//if higher than lowlimit, and player crouching
 	else if(z() > (default_z - 8) && isCrouch)
 		move(-crouch);
 }
-/*
+
 void Player::jump(Vector3f& velo){
 	velo(2) = 15;
+	setVelocity(velo);
+
+	Vector3f pos = position();
+	pos(2) = default_z + 1; //make Z one higher than default to trigger falling-check.
+
+	setPosition(pos);
+	
 }
-*/
+
 
 void Player::move(Vector3f velo) {
 	Vector3f pos = position();
@@ -139,13 +173,45 @@ void Player::move(Vector3f velo) {
 	setPosition(pos);
 }
 
+
+void Player::shootProjectile() {
+	if(projectiles.size() < 1) {
+		projectileCountdown = 0;
+	}
+	if(projectileCountdown < 1) {
+		Projectile* proj = new Projectile();
+		Vector3f pos = position();
+		proj->init(pos, angle_);
+		projectiles.push_back(proj);
+		
+		projectileCountdown = projectileCooldown;
+
+		std::cout << "projectile shot()" << std::endl;
+	}
+}
+
+void Player::removeDeadProjectiles() {
+	for(int i = 0; i < projectiles.size(); i++) {
+		if(projectiles.at(i)->isDead()) {
+			Projectile* p = projectiles.at(i);
+			projectiles.erase(projectiles.begin() + i);
+			delete p;
+			i--;
+			std::cout << "projectile removed()" << std::endl;
+		}
+	}
+}
+
 void Player::render(SDL_Renderer* renderer) {
 	//std::cout << "Player x=" << x() << " y=" << y() << " z=" << z() << std::endl;
 	//std::cout << getSector()->getId() << std::endl;
 
 	std::vector<sector*> visibleSectors = getSector()->getNeighbours();
 	visibleSectors.push_back(getSector());
-	
 	for (sector* s: visibleSectors)
 		s->render(renderer, x(), y(), z(), angle(), yaw());
+	
+	// Renders projectiles
+	for(Projectile* p : projectiles)
+		p->render(renderer);
 }

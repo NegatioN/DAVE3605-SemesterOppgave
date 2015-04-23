@@ -73,13 +73,14 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 
         int r_ = 0; int g_ = 0; int b_ = 0;
 		//different wall colors
+        //r_ = 0x73; g_ = 0x73; b_ = 0x73;//dark grey
+        // r_ = 0x00; g_ = 0x00; b_ = 0xFF;//blue
         r_ = 0xFF; g_ = 0xFF; b_ = 0x00;//yellow
 		//if     (i == 0){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
-		// else if(i == 1){ r_ = 0x00; g_ = 0xFF; b_ = 0x00;}//green
-		// else if(i == 2){ r_ = 0x00; g_ = 0x00; b_ = 0xFF;}//blue
+		// r_ = 0x00; g_ = 0xFF; b_ = 0x00;//green
 		// else if(i == 3)
 		// else if(i == 4){ r_ = 0xFF; g_ = 0xA5; b_ = 0x00;}//orange
-		// else if(i == 5){ r_ = 0xD3; g_ = 0xD3; b_ = 0xD3;}//grey
+		// r_ = 0xD3; g_ = 0xD3; b_ = 0xD3;//grey
         
 
 		// x & y of sector-edge endpoints

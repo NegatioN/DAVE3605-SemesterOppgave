@@ -14,6 +14,8 @@ class Player : public Entity {
 	//sector * sector_; -> is in entity 
 	std::vector<bool> wasd_;
 
+	float const speed_ = 1.5f;
+
 public:
 	Player(){};
 	Player(Vector3f &pos) : Entity(pos){};

@@ -39,10 +39,10 @@ void Player::update() {
 	Vector3f vecAddition(0,0,0);
 
     // keyboard-events
-    if (wasd_.at(0)) { vecAddition(0) += anglecos_  * 2; vecAddition(1)  += anglesin_ * 2; } 	// W
-    if (wasd_.at(1)) { vecAddition(0) += anglesin_ * 2; vecAddition(1) -= anglecos_  * 2; } 	// A
-    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * 2;  vecAddition(1) -= anglesin_ * 2; } 	// S
-    if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * 2; vecAddition(1) += anglecos_  * 2; } 	// D
+    if (wasd_.at(0)) { vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_; } 	// W
+    if (wasd_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
+    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * speed_;  vecAddition(1) -= anglesin_ * speed_; } 	// S
+    if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
     if (wasd_.at(4)) { angle_ += 0.1; }									// right
     if (wasd_.at(5)) { angle_ -= 0.1; }									// left
     if (wasd_.at(6)) { yaw_ -= 0.1; }											// up

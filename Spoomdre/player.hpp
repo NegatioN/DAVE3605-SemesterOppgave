@@ -16,6 +16,9 @@ class Player : public Entity {
 	//sector * sector_; -> is in entity 
 	std::vector<bool> wasd_;
 
+	float const speed_ = 1.5f;
+
+	float BODYHEIGHT;
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;
 	// variables for cooldown between each projectile-shoot
@@ -33,6 +36,7 @@ public:
 	bool checkForWall(Vector3f& velo);
 	void crouchMove(bool isCrouch);
 	void jump(Vector3f& velo);
+	void updatePOV();
 
 	void shootProjectile();
 	void removeDeadProjectiles();

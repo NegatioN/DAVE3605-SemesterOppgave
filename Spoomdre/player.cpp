@@ -35,8 +35,8 @@ void Player::update() {
     if (wasd_.at(5)) { angle_ -= 0.1; }									// left
     if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
     if (wasd_.at(7)) { yaw_ += 0.1; }											// down
-    if (wasd_.at(8)) { isCrouching = true;}
-    //if (wasd_.at(8)) { vecAddition(2) -= 0.9;}else{vecAddition(2) += 0.9;}			//Crouch, Z-axis
+    if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
+    if (wasd_.at(9)) { isJumping = true;} 
 
     // change angle and yaw if the mouse have moved
 	if(mouse_x != 0) angle_ = mouse_x * 0.015f;
@@ -116,18 +116,20 @@ bool Player::checkForWall(Vector3f& velo){
 void Player::crouchMove(bool isCrouch){
 	Vector3f crouch(0,0,0.9);
 	//we need to modify default_z when moving up/down on z-plane
-	//if lower than highlimit, and movement positive (move up)
+	//if lower than highlimit, and player not crouching
 	if(z() < default_z && !isCrouch)
 		move(crouch);
-	//if higher than lowlimit, and movement negative (move down)
+	//if higher than lowlimit, and player crouching
 	else if(z() > (default_z - 8) && isCrouch)
 		move(-crouch);
 }
-/*
+
 void Player::jump(Vector3f& velo){
 	velo(2) = 15;
+	setVelocity(velo);
+	
 }
-*/
+
 
 void Player::move(Vector3f velo) {
 	Vector3f pos = position();

@@ -24,7 +24,7 @@ int main(int argc, char* args[]){
 	SDL_Event event;	// Holds the next event to be handled (user-input)
 
 	std::vector<bool> wasd;
-	for(int i = 0; i < 9; i++) // values for wasd (movement) & km (rotation)
+	for(int i = 0; i < 10; i++) // values for wasd (movement) & km (rotation)
 		wasd.push_back(false);
 
 	//init variables
@@ -70,6 +70,7 @@ int main(int argc, char* args[]){
                         if(event.key.keysym.sym == SDLK_UP) wasd.at(6) = true;
                         if(event.key.keysym.sym == SDLK_DOWN) wasd.at(7) = true;
                         if(event.key.keysym.sym == SDLK_LCTRL) wasd.at(8) = true;
+                        if(event.key.keysym.sym == SDLK_SPACE) wasd.at(9) = true;
                         keyboardHandler.handleKeyboardEvent(event.key);
                     break;
                     case SDL_KEYUP:
@@ -82,6 +83,7 @@ int main(int argc, char* args[]){
                         if(event.key.keysym.sym == SDLK_UP) wasd.at(6) = false;
                         if(event.key.keysym.sym == SDLK_DOWN) wasd.at(7) = false;
                         if(event.key.keysym.sym == SDLK_LCTRL) wasd.at(8) = false;
+                        if(event.key.keysym.sym == SDLK_SPACE) wasd.at(9) = false;
                         keyboardHandler.handleKeyboardEvent(event.key);
                     break;
                         

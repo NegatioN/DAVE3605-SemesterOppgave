@@ -26,10 +26,7 @@ public:
 	bool checkForWall(float px, float py, float& dx, float& dy);
 
 	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }
-	void setMouseValues(float mx, float my) { if(mx != 0)
-												mouse_x = mx; 
-											if(my != 0)
-												mouse_y = my; }
+	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }
 
 	float angle(){ return angle_; };
 	float yaw() { return yaw_; }

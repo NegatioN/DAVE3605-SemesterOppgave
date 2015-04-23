@@ -91,8 +91,10 @@ bool Player::checkForWall(Vector3f& velo){
 			bool wall = true;
 			for (sector* n: neighbours)
 				if (n->containsVertices(a, b)){ 
-				wall = false;
+					wall = false;
 				    setSector(n);
+				    //set default camera-height on sector-change
+				    default_z = getSector()->getFloorHeight() + 20;
 				}
 
 			if(wall)
@@ -121,12 +123,6 @@ void Player::move(Vector3f velo) {
 	Vector3f pos = position();
 	pos += velo;
 
-	// collision-check??
-
-	// update positions and angles
-
-	anglesin_ = sin(angle_);
-	anglecos_ = cos(angle_);
 	setPosition(pos);
 }
 

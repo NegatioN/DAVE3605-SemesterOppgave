@@ -50,6 +50,7 @@ public:
 	bool containsVertices(vertex v1, vertex v2);
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };
+	int getFloorHeight(){ return floor_height_;};
 
 };
 

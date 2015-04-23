@@ -177,11 +177,11 @@ void Player::jump(Vector3f& velo){
 	velo(2) = 15;
 	//setVelocity(velo);
 
-	//Vector3f pos = position();
-	//pos(2) = default_z + 1; //make Z one higher than default to trigger falling-check.
+	Vector3f pos = position(); // fungerer likt med og uten denne - kan den fjernes?
+	pos(2) = default_z + 1; //make Z one higher than default to trigger falling-check.
 
 	checkForWall(velo);
-	//setPosition(pos);
+	//setPosition(pos); // no grunn til å gjøre det sånn her?
 	move(velo);
 
 	

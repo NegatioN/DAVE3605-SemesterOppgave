@@ -57,7 +57,6 @@ sector* sector::getEnteredSector(float px, float py, float dx, float dy){
 
 
 void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw){
-
     //top og bunn verdier for y. Brukes mer når vi skal ha høydeforskjeller på sektorer??
     int ytop[W], ybottom[W];
 
@@ -74,19 +73,13 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 
         int r_ = 0; int g_ = 0; int b_ = 0;
 		//different wall colors
+        r_ = 0xFF; g_ = 0xFF; b_ = 0x00;//yellow
 		//if     (i == 0){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
 		// else if(i == 1){ r_ = 0x00; g_ = 0xFF; b_ = 0x00;}//green
 		// else if(i == 2){ r_ = 0x00; g_ = 0x00; b_ = 0xFF;}//blue
 		// else if(i == 3)
-        { r_ = 0xFF; g_ = 0xFF; b_ = 0x00;}//yellow
 		// else if(i == 4){ r_ = 0xFF; g_ = 0xA5; b_ = 0x00;}//orange
 		// else if(i == 5){ r_ = 0xD3; g_ = 0xD3; b_ = 0xD3;}//grey
-		// else if(i == 6){ r_ = 0xAA; g_ = 0x00; b_ = 0x00;}//??
-		// else if(i == 7){ r_ = 0x33; g_ = 0x33; b_ = 0x33;}//??
-		// else if(i == 8){ r_ = 0xFF; g_ = 0x00; b_ = 0xFF;}//??
-		// else if(i == 9){ r_ = 0xF0; g_ = 0xA0; b_ = 0x0F;}//??
-		// else if(i == 10){ r_ = 0xFF; g_ = 0xFF; b_ = 0xFF;}//??
-		// else {			r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
         
 
 		// x & y of sector-edge endpoints
@@ -161,7 +154,6 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 
         // Render the wall. 
         int beginx = std::max(x1, 0), endx = std::min(x2, W-1);
-
         for(int x = beginx; x <= endx; ++x)
         {
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
@@ -177,9 +169,8 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
             /* Is there another sector behind this edge? */
             if(nyceil != 0)
             {
-                r_ = 0x00; g_ = 0x00; b_ = 0x00;
+                //r_ = 0x00; g_ = 0x00; b_ = 0x00;
                 //drawline(renderer, x, ya, yb, r_, g_, b_, shade);
-
 
                 /* Same for _their_ floor and ceiling */
                 int nya = (x - x1) * (ny2a-ny1a) / (x2-x1) + ny1a;
@@ -190,12 +181,12 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 
                 /* If our ceiling is higher than their ceiling, render upper wall */                
                 if (ya < cnya)
-                    drawline(renderer, x, ya, cnya-1, r_, g_, 0xFF, shade); // Between our and their ceiling
+                    drawline(renderer, x, ya, cnya-1, r_, g_, b_, shade); // Between our and their ceiling
                 ytop[x] = gfx_util::clamp(std::max(ya, cnya), ytop[x], H-1);   // Shrink the remaining window below these ceilings
 
                 /* If our floor is lower than their floor, render bottom wall */
                 if (yb > cnyb)
-                    drawline(renderer,x, cnyb+1, yb, 0xFF, g_, b_, shade); // Between their and our floor
+                    drawline(renderer,x, cnyb+1, yb, r_, g_, b_, shade); // Between their and our floor
                 ybottom[x] = gfx_util::clamp(std::min(yb, cnyb), 0, ybottom[x]); // Shrink the remaining window above these floors
                 
             }

@@ -142,5 +142,10 @@ void Player::move(Vector3f velo) {
 void Player::render(SDL_Renderer* renderer) {
 	//std::cout << "Player x=" << x() << " y=" << y() << " z=" << z() << std::endl;
 	//std::cout << getSector()->getId() << std::endl;
-	getSector()->render(renderer, x(), y(), z(), angle(), yaw());
+
+	std::vector<sector*> visibleSectors = getSector()->getNeighbours();
+	visibleSectors.push_back(getSector());
+	
+	for (sector* s: visibleSectors)
+		s->render(renderer, x(), y(), z(), angle(), yaw());
 }

@@ -40,7 +40,7 @@ void Game::initialize(int height, int width) {
 	createWorld();
 	Vector3f position(75, 75, 20);
 	Vector3f velocity(0, 0, 0);
-	Vector3f acceleration(0, 0, 0);
+	Vector3f acceleration(0, 0, -2);
 	//player{position};
 	//player.init(width/2, height/2, 20); // x, y, z
 	player.init(position, velocity, acceleration, sectors[0]); // x, y, z

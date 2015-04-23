@@ -24,7 +24,7 @@ public:
 	void move(Vector3f velo);
 	void render(SDL_Renderer* renderer);
 	bool checkForWall(Vector3f& velo);
-	void crouchMove(Vector3f crouchVelo);
+	void crouchMove(bool isCrouch);
 
 	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }

@@ -21,13 +21,28 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 
 //Take input accelleration-vector?
 void Player::update() {
+	bool isFalling = false;
+	bool isJumping = false;
+	bool isCrouching = false;
 	
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
+
 	Vector3f vecAddition(0,0,0);
 
-	bool isJumping = false;
-	bool isCrouching = false;
+	if(z() > default_z)
+		isFalling = true;
+	else
+		setVelocity(vecAddition); //set velocity (0,0,0). No sliding movement
+
+	if(isFalling){
+		Vector3f fallingVelo = velocity();
+		move(fallingVelo);
+		fallingVelo += accelleration();	//gravity
+		setVelocity(fallingVelo);
+	}else{
+
+
     // keyboard-events
     if (wasd_.at(0)) { vecAddition(0) += anglecos_  * 2; vecAddition(1)  += anglesin_ * 2; } 	// W
     if (wasd_.at(1)) { vecAddition(0) += anglesin_ * 2; vecAddition(1) -= anglecos_  * 2; } 	// A
@@ -71,7 +86,10 @@ void Player::update() {
 	    move(vel);
 	}
 
+	if(isJumping)
+		jump(vel);
 	crouchMove(isCrouching);
+}
 }
 
 bool Player::checkForWall(Vector3f& velo){
@@ -130,6 +148,11 @@ void Player::crouchMove(bool isCrouch){
 void Player::jump(Vector3f& velo){
 	velo(2) = 15;
 	setVelocity(velo);
+
+	Vector3f pos = position();
+	pos(2) = default_z + 1; //make Z one higher than default to trigger falling-check.
+
+	setPosition(pos);
 	
 }
 

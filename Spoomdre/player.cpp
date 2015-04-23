@@ -53,8 +53,8 @@ void Player::update() {
     if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
     if (wasd_.at(7)) { yaw_ += 0.1; }											// down
     if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
-    //if (wasd_.at(9)) { isJumping = true;} 
-    if (wasd_.at(9)) { shootProjectile(); }
+    if (wasd_.at(9)) { isJumping = true;} 
+    if (wasd_.at(10)) { shootProjectile(); }
 
     // change angle and yaw if the mouse have moved
 	if(mouse_x != 0) angle_ = mouse_x * 0.015f;

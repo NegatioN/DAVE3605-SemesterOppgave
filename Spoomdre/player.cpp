@@ -53,7 +53,8 @@ void Player::update() {
     if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
     if (wasd_.at(7)) { yaw_ += 0.1; }											// down
     if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
-    if (wasd_.at(9)) { isJumping = true;} 
+    //if (wasd_.at(9)) { isJumping = true;} 
+    if (wasd_.at(9)) { shootProjectile(); }
 
     // change angle and yaw if the mouse have moved
 	if(mouse_x != 0) angle_ = mouse_x * 0.015f;
@@ -90,6 +91,14 @@ void Player::update() {
 		jump(vel);
 	crouchMove(isCrouching);
 }
+	// update and remove (if appropriate) projectiles if any exists
+	if(projectiles.size() > 0) {
+		projectileCountdown--;
+		for(Projectile* p : projectiles) 
+			p->update();
+			
+		removeDeadProjectiles();
+	}
 }
 
 bool Player::checkForWall(Vector3f& velo){
@@ -164,8 +173,41 @@ void Player::move(Vector3f velo) {
 	setPosition(pos);
 }
 
+
+void Player::shootProjectile() {
+	if(projectiles.size() < 1) {
+		projectileCountdown = 0;
+	}
+	if(projectileCountdown < 1) {
+		Projectile* proj = new Projectile();
+		Vector3f pos = position();
+		proj->init(pos, angle_);
+		projectiles.push_back(proj);
+		
+		projectileCountdown = projectileCooldown;
+
+		std::cout << "projectile shot()" << std::endl;
+	}
+}
+
+void Player::removeDeadProjectiles() {
+	for(int i = 0; i < projectiles.size(); i++) {
+		if(projectiles.at(i)->isDead()) {
+			Projectile* p = projectiles.at(i);
+			projectiles.erase(projectiles.begin() + i);
+			delete p;
+			i--;
+			std::cout << "projectile removed()" << std::endl;
+		}
+	}
+}
+
 void Player::render(SDL_Renderer* renderer) {
 	//std::cout << "Player x=" << x() << " y=" << y() << " z=" << z() << std::endl;
 	//std::cout << getSector()->getId() << std::endl;
 	getSector()->render(renderer, x(), y(), z(), angle(), yaw());
+
+	// Renders projectiles
+	for(Projectile* p : projectiles)
+		p->render(renderer);
 }

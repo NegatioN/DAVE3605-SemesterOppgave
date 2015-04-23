@@ -15,7 +15,7 @@ OTEST= hello_world.o keyboard_handler.o
 
 
 
-all: $(SPOOMDRE_OUT) $(TEST_OUT)
+all: $(SPOOMDRE_OUT)
 
 
 %.o: %.cpp

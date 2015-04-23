@@ -16,6 +16,9 @@ class Player : public Entity {
 	//sector * sector_; -> is in entity 
 	std::vector<bool> wasd_;
 
+	float const speed_ = 1.5f;
+
+	float BODYHEIGHT;
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;
 	// variables for cooldown between each projectile-shoot

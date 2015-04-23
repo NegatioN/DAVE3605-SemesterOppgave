@@ -74,14 +74,8 @@ void Player::update() {
     	moving = true;
 
 	if(moving) {
-	    Vector3f pos = position();
-	    float px = pos(0);
-	    float py = pos(1);
-	    float dx = vel(0);
-	    float dy = vel(1);
-
 	    //Is the player hitting a wall?
-	    checkForWall(px, py, dx, dy);
+	    checkForWall(vel);
 
 	    move(vel);
 	}
@@ -89,8 +83,10 @@ void Player::update() {
 	//crouchMove(crouchVelocity);
 }
 
-bool Player::checkForWall(float px, float py, float& dx, float& dy){
+bool Player::checkForWall(Vector3f& velo){
 	//float px, float py, float& dx, float& dy
+	//Vector3f position = position();
+
 	std::vector<vertex> vertices = getSector()->getVertices();
 	std::vector<sector*> neighbours = getSector()->getNeighbours();
 
@@ -103,8 +99,8 @@ bool Player::checkForWall(float px, float py, float& dx, float& dy){
 	    //Loop around for last corner
 	    if (i == vertices.size()-1) b = vertices[0];
 
-        if( gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()) && 
-            gfx_util::pointSide(px+dx, py+dy, a.x(), a.y(), b.x(), b.y()) < 0)
+        if( gfx_util::intersectBox(x(), y(), x()+velo(0),y()+velo(1), a.x(), a.y(), b.x(), b.y()) && 
+            gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
         { 
 			bool wall = true;
 			for (sector* n: neighbours)
@@ -117,8 +113,9 @@ bool Player::checkForWall(float px, float py, float& dx, float& dy){
 			{	//Bumps into a wall! Slide along the wall. 
 				// This formula is from Wikipedia article "vector projection". 
 				float xd = b.x() - a.x(), yd = b.y() - a.y();
-				dx = xd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
-				dy = yd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
+				velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
+				velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
+
 			}
 		}
     }

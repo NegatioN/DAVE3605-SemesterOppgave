@@ -24,7 +24,7 @@ public:
 	void update();
 	void move(Vector3f velo);
 	void render(SDL_Renderer* renderer);
-	bool checkForWall(float px, float py, float& dx, float& dy);
+	bool checkForWall(Vector3f& velo);
 	void crouchMove(Vector3f crouchVelo);
 
 	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }

@@ -11,6 +11,7 @@
 //should probably contain the user-input in some way.
 class Player : public Entity {
 	float angle_, anglesin_, anglecos_, yaw_, mouse_x, mouse_y;
+	float default_z;
 	//sector * sector_; -> is in entity 
 	std::vector<bool> wasd_;
 
@@ -19,11 +20,11 @@ public:
 	Player(Vector3f &pos) : Entity(pos){};
 	void init(Vector3f pos);
 	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
-	void init(int x, int y, int z);
 	void update();
-	void move(float dx, float dy);
+	void move(Vector3f velo);
 	void render(SDL_Renderer* renderer);
-	bool checkForWall(float px, float py, float& dx, float& dy);
+	bool checkForWall(Vector3f& velo);
+	void crouchMove(Vector3f crouchVelo);
 
 	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }

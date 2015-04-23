@@ -35,6 +35,8 @@ void Player::update() {
 	else
 		setVelocity(vecAddition); //set velocity (0,0,0). No sliding movement
 
+	std::cout << "Player isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << std::endl;
+
 	if(isFalling){
 		Vector3f fallingVelo = velocity();
 		move(fallingVelo);
@@ -145,21 +147,31 @@ bool Player::checkForWall(Vector3f& velo){
 
 void Player::crouchMove(bool isCrouch){
 	Vector3f crouch(0,0,0.9);
+
 	//we need to modify default_z when moving up/down on z-plane
 	//if lower than highlimit, and player not crouching
-	if(z() < default_z && !isCrouch)
+
+	if(z() < default_z && !isCrouch){
+		//to avoid triggering isFalling by going over default_z
+		Vector3f pos = position();
+		pos += crouch;
+		float dz = pos(2) - default_z;
+		if(pos(2) >= default_z)
+			crouch(2) -= (pos(2) - default_z); //subtracts z-overflow. sets to default_z
+
 		move(crouch);
+	}
 	//if higher than lowlimit, and player crouching
-	else if(z() > (default_z - 8) && isCrouch)
+	else if(z() >= (default_z - 8) && isCrouch)
 		move(-crouch);
 }
 
 void Player::jump(Vector3f& velo){
-	velo(2) = 15;
+	velo(2) = 8;
 	setVelocity(velo);
 
 	Vector3f pos = position();
-	pos(2) = default_z + 1; //make Z one higher than default to trigger falling-check.
+	pos(2) = default_z + 0.02; //make Z one higher than default to trigger falling-check.
 
 	setPosition(pos);
 	

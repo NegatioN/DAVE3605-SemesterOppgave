@@ -47,6 +47,7 @@ void Player::update() {
     if (wasd_.at(5)) { angle_ -= 0.1; }									// left
     if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
     if (wasd_.at(7)) { yaw_ += 0.1; }											// down
+    if (wasd_.at(8)) { vecAddition(2) -= 0.9;}else{vecAddition(2) += 0.9;}			//Crouch, Z-axis
 
     // change angle and yaw if the mouse have moved
 	if(mouse_x != 0) angle_ = mouse_x * 0.015f;
@@ -60,8 +61,12 @@ void Player::update() {
 	float accel = pushing ? 0.4 : 0.2;
 
     Vector3f vel = velocity();
+    Vector3f crouchVelocity = velocity();
     vel(0) = vel(0) * (1 - accel) + vecAddition(0) * accel;
     vel(1) = vel(1) * (1 - accel) + vecAddition(1) * accel;
+    crouchVelocity(2) += vecAddition(2);
+
+    //std::cout << "Velocity x=" << vel(0) << " y=" << vel(1) << " z=" << crouchVelocity(2) << std::endl;
 
     // set moving to true if movement-key is pressed
     bool moving = false;
@@ -78,11 +83,14 @@ void Player::update() {
 	    //Is the player hitting a wall?
 	    checkForWall(px, py, dx, dy);
 
-	    move(dx, dy);
+	    move(vel);
 	}
+
+	//crouchMove(crouchVelocity);
 }
 
 bool Player::checkForWall(float px, float py, float& dx, float& dy){
+	//float px, float py, float& dx, float& dy
 	std::vector<vertex> vertices = getSector()->getVertices();
 	std::vector<sector*> neighbours = getSector()->getNeighbours();
 
@@ -116,22 +124,31 @@ bool Player::checkForWall(float px, float py, float& dx, float& dy){
     }
 }
 
-void Player::move(float dx, float dy) {
+void Player::crouchMove(Vector3f crouchVelo){
+	//we need to modify default_z when moving up/down on z-plane
+	//if lower than highlimit, and movement positive (move up)
+	if(z() < default_z && crouchVelo(2) > 0)
+		move(crouchVelo);
+	//if higher than lowlimit, and movement negative (move down)
+	else if(z() > (default_z - 8) && crouchVelo(2) <= 0)
+		move(crouchVelo);
+}
+
+void Player::move(Vector3f velo) {
 	Vector3f pos = position();
-	float px = pos(0);
-	float py = pos(1);
+	pos += velo;
 
 	// collision-check??
 
 	// update positions and angles
-	pos(0) += dx;
-	pos(1) += dy;
+
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 	setPosition(pos);
 }
 
 void Player::render(SDL_Renderer* renderer) {
+	//std::cout << "Player x=" << x() << " y=" << y() << " z=" << z() << std::endl;
 	//std::cout << getSector()->getId() << std::endl;
 	getSector()->render(renderer, x(), y(), z(), angle(), yaw());
 }

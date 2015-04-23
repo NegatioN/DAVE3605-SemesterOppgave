@@ -18,20 +18,6 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	yaw_ = 0;
 }
 
-void Player::init(int x, int y, int z){
-	yaw_ = 0;
-
-	Vector3f vec(x,y,z);
-	setPosition(vec);
-	yaw_ = 0;
-
-	sprite.w = 5;
-	sprite.h = 5;
-	sprite.x = x - sprite.w/2;
-	sprite.y = y - sprite.h/2;
-	
-}
-
 //Take input accelleration-vector?
 void Player::update() {
 	anglesin_ = sin(angle_);

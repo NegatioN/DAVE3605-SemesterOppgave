@@ -15,11 +15,13 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setVelocity(vel);
 	setAcceleration(acc);
 	setSector(sec);
+	default_z = sec->floor() + 10;
 	yaw_ = 0;
 }
 
 //Take input accelleration-vector?
 void Player::update() {
+	
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 	Vector3f vecAddition(0,0,0);
@@ -94,11 +96,13 @@ bool Player::checkForWall(Vector3f& velo){
 			bool wall = true;
 			for (sector* n: neighbours)
 				if (n->containsVertices(a, b)){ 
+
+ 				    //set default camera-height on sector-change
+				    velo(2) = n->floor() - getSector()->floor(); 
+				    default_z += velo(2);
+
 					wall = false;
 				    setSector(n);
-				    //set default camera-height on sector-change
-				    //std::cout << "sector floorheight=" << getSector()->getFloorHeight() << std::endl; 
-				    default_z = getSector()->getFloorHeight() + 10;
 				}
 
 			if(wall)
@@ -107,7 +111,6 @@ bool Player::checkForWall(Vector3f& velo){
 				float xd = b.x() - a.x(), yd = b.y() - a.y();
 				velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
 				velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
-
 			}
 		}
     }

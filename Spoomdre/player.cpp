@@ -48,11 +48,9 @@ void Player::update() {
     if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
     if (wasd_.at(7)) { yaw_ += 0.1; }											// down
 
-	angle_ = mouse_x * 0.015f;
- 	yaw_ = -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
-
-    //old position-vector += movement.
-	//setPosition(position() + vecAddition);
+    // change angle and yaw if the mouse have moved
+	if(mouse_x != 0) angle_ = mouse_x * 0.015f;
+	if(mouse_y != 0) yaw_ = -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
 
     // set moving to true if movement-key is pressed
     bool pushing = false;

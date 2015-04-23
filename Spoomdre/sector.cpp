@@ -59,8 +59,12 @@ sector* sector::getEnteredSector(float px, float py, float dx, float dy){
 void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw){
 
     //top og bunn verdier for y. Brukes mer når vi skal ha høydeforskjeller på sektorer??
-    int ytop[W], ybottom[W]; 
-    for(unsigned x=0; x<W; ++x) {ybottom[x] = H-1; ytop[x] = 0;}
+    int ytop[W], ybottom[W];
+
+    for(unsigned x=0; x<W; ++x) {
+        ybottom[x] = H-1;
+        ytop[x] = 0;
+    }
 
     for (int i = 0; i < vCount; i++) {
 		vertex a = vertices[i];
@@ -127,7 +131,7 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 
 		// Only render if it's visible (doesn't render the backside of walls)
     	if(x1 >= x2) continue; 
-        
+
         // Ceiling&floor-height relative to player
         float yceil  = ceiling_height_  - pz;
         float yfloor = floor_height_ - pz;
@@ -143,8 +147,6 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
             }
         }
 
-
-
         // Project ceiling and floor heights to screen coordinates
         int y1a = H / 2 - (int) ((yceil + tz1 * yaw) * yscale1);
         int y1b = H / 2 - (int) ((yfloor + tz1 * yaw) * yscale1);
@@ -158,41 +160,52 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
         int ny2b = H/2 - (int)((nyfloor + tz2 * yaw) * yscale2);
 
         // Render the wall. 
-         int beginx = x1, endx = x2;
+        int beginx = std::max(x1, 0), endx = std::min(x2, W-1);
+
         for(int x = beginx; x <= endx; ++x)
         {
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
             int z_ = ((x - x1) * (tz2-tz1) / (x2-x1) + tz1) * 8;
+
+            int shade = (z_ - 16) / 4; // calculated from the Z-distance
+
             // Acquire the Y coordinates for our ceiling & floor for this X coordinate. 
             int ya = (x - x1) * (y2a-y1a) / (x2-x1) + y1a;// top
             int yb = (x - x1) * (y2b-y1b) / (x2-x1) + y1b;// bottom
 
-                        /* Is there another sector behind this edge? */
+            
+            /* Is there another sector behind this edge? */
             if(nyceil != 0)
             {
-                r_ = 0xFF; g_ = 0x00; b_ = 0x00;
-                drawline(renderer, x, ya, yb, r_, g_, b_, z_);
+                r_ = 0x00; g_ = 0x00; b_ = 0x00;
+                //drawline(renderer, x, ya, yb, r_, g_, b_, shade);
 
-                // /* Same for _their_ floor and ceiling */
-                // int nya = (x - x1) * (ny2a-ny1a) / (x2-x1) + ny1a;
-                // int cnya = gfx_util::clamp(nya, ytop[x],ybottom[x]);
-                // int nyb = (x - x1) * (ny2b-ny1b) / (x2-x1) + ny1b;
-                // int cnyb = gfx_util::clamp(nyb, ytop[x],ybottom[x]);
-                
-                // /* If our ceiling is higher than their ceiling, render upper wall */
-                // unsigned r1 = 0x010101 * (255-z_);
-                // unsigned r2 = 0x040007 * (31-z_/8);
-                // /*drawline(renderer, x, ya, cnya-1, 0, (x==x1||x==x2 ? 0 : r1), 0, 1); // Between our and their ceiling
-                // ytop[x] = gfx_util::clamp(std::max(ya, cnya), ytop[x], H-1);   // Shrink the remaining window below these ceilings
-                
-                // /* If our floor is lower than their floor, render bottom wall */
-                // drawline(renderer,x, cnyb+1, yb, 0, (x==x1||x==x2 ? 0 : r2), 0, 1); // Between their and our floor
-                // ybottom[x] = gfx_util::clamp(std::min(yb, cnyb), 0, ybottom[x]); // Shrink the remaining window above these floors
+
+                /* Same for _their_ floor and ceiling */
+                int nya = (x - x1) * (ny2a-ny1a) / (x2-x1) + ny1a;
+                int nyb = (x - x1) * (ny2b-ny1b) / (x2-x1) + ny1b;
+                int cnya = gfx_util::clamp(nya, ytop[x],ybottom[x]);
+                int cnyb = gfx_util::clamp(nyb, ytop[x],ybottom[x]);
+
+
+                /* If our ceiling is higher than their ceiling, render upper wall */                
+                if (ya < cnya)
+                    drawline(renderer, x, ya, cnya-1, r_, g_, 0xFF, shade); // Between our and their ceiling
+                ytop[x] = gfx_util::clamp(std::max(ya, cnya), ytop[x], H-1);   // Shrink the remaining window below these ceilings
+
+                /* If our floor is lower than their floor, render bottom wall */
+                if (yb > cnyb)
+                    drawline(renderer,x, cnyb+1, yb, 0xFF, g_, b_, shade); // Between their and our floor
+                ybottom[x] = gfx_util::clamp(std::min(yb, cnyb), 0, ybottom[x]); // Shrink the remaining window above these floors
                 
             }
             else{
-                drawline(renderer, x, ya, yb, r_, g_, b_, z_);
+                drawline(renderer, x, ya, yb, r_, g_, b_, shade);
             }
+
+            // //Draw floor and ceiling
+            drawline(renderer, x, 480, yb, 0xF4, 0xA4, 0x60, 1);
+            drawline(renderer, x, ya, 0, 0xFF, 0x77, 0x77, 1);
         }
     }
 }
@@ -223,15 +236,17 @@ void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, fl
 
 
 /* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
-void sector::drawline(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int alpha)
+void sector::drawline(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade)
 {
     y1 = gfx_util::clamp(y1, 0, H-1);
     y2 = gfx_util::clamp(y2, 0, H-1);
 
-    SDL_SetRenderDrawColor(renderer,0xF4, 0xA4, 0x60, 0xFF); //gulv
-    SDL_RenderDrawLine(renderer, x1, 480, x1, y2);
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0x77);//tak
-    SDL_RenderDrawLine(renderer, x1, y1, x1, 0);
-    SDL_SetRenderDrawColor(renderer, red, green, blue, alpha);//vegg
+    // if calculated shade (color - shade) is under the threshold, set the color as the threshold
+    SDL_SetRenderDrawColor(renderer, (red - shade < red / 4) ? red / 4 : red - shade, (green - shade < green / 4) ? green / 4 : green - shade, (blue - shade < blue / 4) ? blue / 4 : blue - shade, 0xFF);//vegg
     SDL_RenderDrawLine(renderer, x1, y1, x1, y2);
+
+    //Borders?
+    SDL_SetRenderDrawColor(renderer, 5, 5, 5, 0.5f);
+    SDL_RenderDrawPoint(renderer, x1, y1);
+    SDL_RenderDrawPoint(renderer, x1, y2);
 }

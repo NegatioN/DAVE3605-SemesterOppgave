@@ -96,8 +96,8 @@ void Game::createWorld(){
 
 	//Need static to save the sectors. (New causes wierd bug)
 	static sector s1{id++, 10.f, 40.f}, 
-				  s2{id++, 10.f, 50.f},
-				  s3{id++, 10.f, 50.f};
+				  s2{id++, 15.f, 450.f},
+				  s3{id++, 5.f, 35.f};
 
 
 	// vertexes for test-map

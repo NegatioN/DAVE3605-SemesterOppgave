@@ -28,7 +28,7 @@ public:
 		acceleration_ = acc;
 	};
 	virtual void update()=0;
-	virtual void move(float dx, float dy)=0;
+	virtual void move(Vector3f velo)=0;
 
 
 

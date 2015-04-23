@@ -11,18 +11,20 @@
 //screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-SDL_bool hint = SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
 
 KeyboardHandler keyboardHandler;
 
 int main(int argc, char* args[]){
+    //HINTS for SDL - Do not remove without proper testing
+    SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE); 
+
 	//Functionality-providing variables
 	
 	Game game;			//SDL_WINDOW + SDL_SURFACE
 	SDL_Event event;	// Holds the next event to be handled (user-input)
 
 	std::vector<bool> wasd;
-	for(int i = 0; i < 8; i++) // values for wasd (movement) & km (rotation)
+	for(int i = 0; i < 9; i++) // values for wasd (movement) & km (rotation)
 		wasd.push_back(false);
 
 	//init variables
@@ -40,8 +42,6 @@ int main(int argc, char* args[]){
 	double interval = 1000 / fps;     // time between each tick in msec
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
-    //SDL_MOUSE_RELATIVE_MODE_WARP=1;
-    std::cout << "Hint=" << hint << std::endl;
 
 	//START GAME-LOOP
 	while(running) {
@@ -69,6 +69,7 @@ int main(int argc, char* args[]){
                         if(event.key.keysym.sym == SDLK_LEFT) wasd.at(5) = true;
                         if(event.key.keysym.sym == SDLK_UP) wasd.at(6) = true;
                         if(event.key.keysym.sym == SDLK_DOWN) wasd.at(7) = true;
+                        if(event.key.keysym.sym == SDLK_LCTRL) wasd.at(8) = true;
                         keyboardHandler.handleKeyboardEvent(event.key);
                     break;
                     case SDL_KEYUP:
@@ -80,6 +81,7 @@ int main(int argc, char* args[]){
                         if(event.key.keysym.sym == SDLK_LEFT) wasd.at(5) = false;
                         if(event.key.keysym.sym == SDLK_UP) wasd.at(6) = false;
                         if(event.key.keysym.sym == SDLK_DOWN) wasd.at(7) = false;
+                        if(event.key.keysym.sym == SDLK_LCTRL) wasd.at(8) = false;
                         keyboardHandler.handleKeyboardEvent(event.key);
                     break;
                         
@@ -97,10 +99,8 @@ int main(int argc, char* args[]){
             // get any mouse-changes since last frame
             int mx; int my;
             SDL_GetRelativeMouseState(&mx, &my);
-            int curx; int cury;
-            SDL_GetMouseState(&curx, &cury);
 
-            //std::cout << "mx=" << mx << " my=" << my << "curx=" << curx << " cury=" << cury << std::endl;
+            //std::cout << "mx=" << mx << " my=" << my << std::endl;
 
             // update game logic
             game.update(wasd, mx, my);
@@ -121,10 +121,6 @@ int main(int argc, char* args[]){
             frames = 0;
             updates = 0;
         }
-
-		// game-loop timer check - old
-		//if (SDL_GetTicks() - frametime < interval)
-      	//	game.wait(interval-(SDL_GetTicks()-frametime));
 
 	} // end of game-loop
 

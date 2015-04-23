@@ -31,6 +31,8 @@ void Player::update() {
 
 	Vector3f vecAddition(0,0,0);
 
+	updatePOV();
+
 	if(z() > default_z)
 		isFalling = true;
 	else
@@ -51,17 +53,9 @@ void Player::update() {
 	    if (wasd_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
 	    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
 	    if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
-	    if (wasd_.at(4)) { angle_ += 0.1; }									// right
-	    if (wasd_.at(5)) { angle_ -= 0.1; }									// left
-	    if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
-	    if (wasd_.at(7)) { yaw_ += 0.1; }											// down
 	    if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
 	    if (wasd_.at(9)) { isJumping = true;} 
 	    if (wasd_.at(10)) { shootProjectile(); }
-
-	    // change angle and yaw if the mouse have moved
-		if(mouse_x != 0) angle_ = mouse_x * 0.015f;
-		if(mouse_y != 0) yaw_ = -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
 
 	    // set moving to true if movement-key is pressed
 	    bool pushing = false;
@@ -173,7 +167,7 @@ void Player::crouchMove(bool isCrouch){
 }
 
 void Player::jump(Vector3f& velo){
-	velo(2) = 8;
+	velo(2) = 5.5;
 	setVelocity(velo);
 
 	Vector3f pos = position();
@@ -188,6 +182,18 @@ void Player::move(Vector3f velo) {
 	Vector3f pos = position();
 	pos += velo;
 	setPosition(pos);
+}
+
+void Player::updatePOV(){
+	//Keyboard-events for POV (Yaw+angle)
+    if (wasd_.at(4)) { angle_ += 0.1; }									// right
+    if (wasd_.at(5)) { angle_ -= 0.1; }									// left
+    if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
+    if (wasd_.at(7)) { yaw_ += 0.1; }											// down
+
+    //Mouse-events for POV (Yaw+Angle)
+	if(mouse_x != 0) angle_ = mouse_x * 0.015f;
+	if(mouse_y != 0) yaw_ = -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
 }
 
 

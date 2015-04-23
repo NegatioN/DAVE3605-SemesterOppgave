@@ -70,18 +70,19 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 
         int r_ = 0; int g_ = 0; int b_ = 0;
 		//different wall colors
-		if     (i == 0){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
-		else if(i == 1){ r_ = 0x00; g_ = 0xFF; b_ = 0x00;}//green
-		else if(i == 2){ r_ = 0x00; g_ = 0x00; b_ = 0xFF;}//blue
-		else if(i == 3){ r_ = 0xFF; g_ = 0xFF; b_ = 0x00;}//yellow
-		else if(i == 4){ r_ = 0xFF; g_ = 0xA5; b_ = 0x00;}//orange
-		else if(i == 5){ r_ = 0xD3; g_ = 0xD3; b_ = 0xD3;}//grey
-		else if(i == 6){ r_ = 0xAA; g_ = 0x00; b_ = 0x00;}//??
-		else if(i == 7){ r_ = 0x33; g_ = 0x33; b_ = 0x33;}//??
-		else if(i == 8){ r_ = 0xFF; g_ = 0x00; b_ = 0xFF;}//??
-		else if(i == 9){ r_ = 0xF0; g_ = 0xA0; b_ = 0x0F;}//??
-		else if(i == 10){ r_ = 0xFF; g_ = 0xFF; b_ = 0xFF;}//??
-		else {			r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+		//if     (i == 0){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
+		// else if(i == 1){ r_ = 0x00; g_ = 0xFF; b_ = 0x00;}//green
+		// else if(i == 2){ r_ = 0x00; g_ = 0x00; b_ = 0xFF;}//blue
+		// else if(i == 3)
+        { r_ = 0xFF; g_ = 0xFF; b_ = 0x00;}//yellow
+		// else if(i == 4){ r_ = 0xFF; g_ = 0xA5; b_ = 0x00;}//orange
+		// else if(i == 5){ r_ = 0xD3; g_ = 0xD3; b_ = 0xD3;}//grey
+		// else if(i == 6){ r_ = 0xAA; g_ = 0x00; b_ = 0x00;}//??
+		// else if(i == 7){ r_ = 0x33; g_ = 0x33; b_ = 0x33;}//??
+		// else if(i == 8){ r_ = 0xFF; g_ = 0x00; b_ = 0xFF;}//??
+		// else if(i == 9){ r_ = 0xF0; g_ = 0xA0; b_ = 0x0F;}//??
+		// else if(i == 10){ r_ = 0xFF; g_ = 0xFF; b_ = 0xFF;}//??
+		// else {			r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
         
 
 		// x & y of sector-edge endpoints
@@ -131,14 +132,33 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
         float yceil  = ceiling_height_  - pz;
         float yfloor = floor_height_ - pz;
 
+        float nyceil=0;
+        float nyfloor=0;
+        for (sector* n : neighbours){
+            // Is another sector showing through this portal?
+            if(n->containsVertices(a,b)) 
+            {
+                nyceil  = n->ceiling()  - pz;
+                nyfloor = n->floor() - pz;
+            }
+        }
+
+
+
         // Project ceiling and floor heights to screen coordinates
         int y1a = H / 2 - (int) ((yceil + tz1 * yaw) * yscale1);
         int y1b = H / 2 - (int) ((yfloor + tz1 * yaw) * yscale1);
         int y2a = H / 2 - (int) ((yceil + tz2 * yaw) * yscale2);
         int y2b = H / 2 - (int) ((yfloor + tz2 * yaw) * yscale2);
         
+        /* The same for the neighboring sector */
+        int ny1a = H/2 - (int)((nyceil+ tz1 * yaw) * yscale1);
+        int ny1b = H/2 - (int)((nyfloor + tz1 * yaw) * yscale1);
+        int ny2a = H/2 - (int)((nyceil + tz2 * yaw) * yscale2);
+        int ny2b = H/2 - (int)((nyfloor + tz2 * yaw) * yscale2);
+
         // Render the wall. 
-        int beginx = x1, endx = x2;
+         int beginx = x1, endx = x2;
         for(int x = beginx; x <= endx; ++x)
         {
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
@@ -147,10 +167,35 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
             int ya = (x - x1) * (y2a-y1a) / (x2-x1) + y1a;// top
             int yb = (x - x1) * (y2b-y1b) / (x2-x1) + y1b;// bottom
 
-            drawline(renderer, x, ya, yb, r_, g_, b_, z_);
+                        /* Is there another sector behind this edge? */
+            if(nyceil != 0)
+            {
+                r_ = 0xFF; g_ = 0x00; b_ = 0x00;
+                drawline(renderer, x, ya, yb, r_, g_, b_, z_);
+
+                // /* Same for _their_ floor and ceiling */
+                // int nya = (x - x1) * (ny2a-ny1a) / (x2-x1) + ny1a;
+                // int cnya = gfx_util::clamp(nya, ytop[x],ybottom[x]);
+                // int nyb = (x - x1) * (ny2b-ny1b) / (x2-x1) + ny1b;
+                // int cnyb = gfx_util::clamp(nyb, ytop[x],ybottom[x]);
+                
+                // /* If our ceiling is higher than their ceiling, render upper wall */
+                // unsigned r1 = 0x010101 * (255-z_);
+                // unsigned r2 = 0x040007 * (31-z_/8);
+                // /*drawline(renderer, x, ya, cnya-1, 0, (x==x1||x==x2 ? 0 : r1), 0, 1); // Between our and their ceiling
+                // ytop[x] = gfx_util::clamp(std::max(ya, cnya), ytop[x], H-1);   // Shrink the remaining window below these ceilings
+                
+                // /* If our floor is lower than their floor, render bottom wall */
+                // drawline(renderer,x, cnyb+1, yb, 0, (x==x1||x==x2 ? 0 : r2), 0, 1); // Between their and our floor
+                // ybottom[x] = gfx_util::clamp(std::min(yb, cnyb), 0, ybottom[x]); // Shrink the remaining window above these floors
+                
+            }
+            else{
+                drawline(renderer, x, ya, yb, r_, g_, b_, z_);
+            }
         }
-	} 
-};
+    }
+}
 
 //Temporary method for showing a top-down view on screen.
 void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle){

@@ -84,6 +84,21 @@ void Player::update() {
 	}
 }
 
+void Player::move(float dx, float dy) {
+	Vector3f pos = position();
+	float px = pos(0);
+	float py = pos(1);
+
+	// collision-check??
+
+	// update positions and angles
+	pos(0) += dx;
+	pos(1) += dy;
+	anglesin_ = sin(angle_);
+	anglecos_ = cos(angle_);
+	setPosition(pos);
+}
+
 bool Player::checkForWall(float px, float py, float& dx, float& dy){
 	std::vector<vertex> vertices = getSector()->getVertices();
 	std::vector<sector*> neighbours = getSector()->getNeighbours();
@@ -116,21 +131,6 @@ bool Player::checkForWall(float px, float py, float& dx, float& dy){
 			}
 		}
     }
-}
-
-void Player::move(float dx, float dy) {
-	Vector3f pos = position();
-	float px = pos(0);
-	float py = pos(1);
-
-	// collision-check??
-
-	// update positions and angles
-	pos(0) += dx;
-	pos(1) += dy;
-	anglesin_ = sin(angle_);
-	anglecos_ = cos(angle_);
-	setPosition(pos);
 }
 
 void Player::render(SDL_Renderer* renderer) {

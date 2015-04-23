@@ -54,7 +54,7 @@ void Player::update() {
 	    if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
 	    if (wasd_.at(7)) { yaw_ += 0.1; }											// down
 	    if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
-	    if (wasd_.at(9)) { isJumping = true;} 
+	    if (wasd_.at(9)) { isJumping = true;  vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_;} 
 	    if (wasd_.at(10)) { shootProjectile(); }
 
 	    // change angle and yaw if the mouse have moved
@@ -88,9 +88,11 @@ void Player::update() {
 		    move(vel);
 		}
 
-		if(isJumping)
+		if(isJumping){
 			jump(vel);
-		crouchMove(isCrouching);
+		}
+		else
+			crouchMove(isCrouching);
 	}
 	// update and remove (if appropriate) projectiles if any exists
 	if(projectiles.size() > 0) {
@@ -101,17 +103,15 @@ void Player::update() {
 		removeDeadProjectiles();
 	}
 }
-
+//true, hits wall or goto next sector
 bool Player::checkForWall(Vector3f& velo){
 	//float px, float py, float& dx, float& dy
 	//Vector3f position = position();
-
 	std::vector<vertex> vertices = getSector()->getVertices();
 	std::vector<sector*> neighbours = getSector()->getNeighbours();
 
 	// Check if the player is about to cross one of the sector's edges 
     for(int i = 0; i < vertices.size(); ++i){
-
         vertex a = vertices[i]; 
         vertex b = vertices[i+1];
 	    
@@ -121,32 +121,45 @@ bool Player::checkForWall(Vector3f& velo){
         if( gfx_util::intersectBox(x(), y(), x()+velo(0),y()+velo(1), a.x(), a.y(), b.x(), b.y()) && 
             gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
         { 
-			bool wall = true;
 			for (sector* n: neighbours)
 				if (n->containsVertices(a, b)){ 
+					//Hvis man hopper er alle tak/gulv-tester fjernet - for nå
+					//ellers fungerer det som det skal
+					if(velo(2) > 0){
+						velo(2) = n->floor() - getSector()->floor(); 
+				    	default_z += velo(2);
+						setSector(n);
+						std::cout << "BYTTER SECTOR" << std::endl;
+						return true;
+					}
  				    
 					float hole_low  = n < 0 ?  9e9 : n->floor();
             		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());
 
-            		if(hole_high > z()   && hole_low  < (z()-BODYHEIGHT) )
+            		if((hole_high > z()   && hole_low  < (z()-BODYHEIGHT) ))
             		{
 		       			//set default camera-height on sector-change
 				    	velo(2) = n->floor() - getSector()->floor(); 
 				    	default_z += velo(2);
-            			wall = false;
 				    	setSector(n);
-            		}		
+				    	std::cout << "Hopper, og bytter sector" << std::endl;
+				    	return true;
+            		}	
+            		std::cout << "Hopper, men treffer tak/gulv" << std::endl;
+
             	}
 			
-			if(wall)
-			{	//Bumps into a wall! Slide along the wall. 
-				// This formula is from Wikipedia article "vector projection". 
-				float xd = b.x() - a.x(), yd = b.y() - a.y();
-				velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
-				velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
-			}
+			//Bumps into a wall! Slide along the wall. 
+			// This formula is from Wikipedia article "vector projection". 
+			float xd = b.x() - a.x(), yd = b.y() - a.y();
+			velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
+			velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);	
+			//std::cout << "Hopper, men treffer vegg" << std::endl;
+			return true;
+
 		}
     }
+    return false;
 }
 
 void Player::crouchMove(bool isCrouch){
@@ -162,12 +175,15 @@ void Player::crouchMove(bool isCrouch){
 
 void Player::jump(Vector3f& velo){
 	velo(2) = 15;
-	setVelocity(velo);
+	//setVelocity(velo);
 
-	Vector3f pos = position();
-	pos(2) = default_z + 1; //make Z one higher than default to trigger falling-check.
+	//Vector3f pos = position();
+	//pos(2) = default_z + 1; //make Z one higher than default to trigger falling-check.
 
-	setPosition(pos);
+	checkForWall(velo);
+	//setPosition(pos);
+	move(velo);
+
 	
 }
 

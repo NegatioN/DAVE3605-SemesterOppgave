@@ -31,12 +31,12 @@ public:
 	void init(Vector3f pos);
 	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
 	void update();
-	void move(Vector3f velo);
+	void move(Vector3f velo);			//add velocity to position of player
 	void render(SDL_Renderer* renderer);
-	bool checkForWall(Vector3f& velo);
-	void crouchMove(bool isCrouch);
-	void jump(Vector3f& velo);
-	void updatePOV();
+	bool checkForWall(Vector3f& velo);	//collision-detection
+	void crouchMove(bool isCrouch);		//crouch
+	void jump(Vector3f& velo);			//jumps. Updates Z-axis etc
+	void updatePOV();					//updates player POV (angle+yaw)
 
 	void shootProjectile();
 	void removeDeadProjectiles();

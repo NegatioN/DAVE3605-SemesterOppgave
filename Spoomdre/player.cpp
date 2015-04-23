@@ -38,10 +38,19 @@ void Player::update() {
 	else
 		setVelocity(vecAddition); //set velocity (0,0,0). No sliding movement
 
-	std::cout << "Player isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << std::endl;
+	//std::cout << "Player isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << std::endl;
 
 	if(isFalling){
 		Vector3f fallingVelo = velocity();
+		Vector3f pos = position();
+
+		float maxHeight = getSector()->ceiling();
+		//if player bumps against roof of sector, set z-velo to zero and z to maxHeight
+		if(pos(2) + fallingVelo(2) >= maxHeight){
+			fallingVelo(2) = 0; //player no longer acends if he hits roof
+			pos(2) = maxHeight; // 
+			setPosition(pos);
+		}
 		move(fallingVelo);
 		fallingVelo += accelleration();	//gravity
 		checkForWall(fallingVelo);
@@ -55,7 +64,7 @@ void Player::update() {
 	    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
 	    if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
 	    if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
-	    if (wasd_.at(9)) { isJumping = true;  vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_;} 
+	    if (wasd_.at(9)) { isJumping = true; } 
 	    if (wasd_.at(10)) { shootProjectile(); }
 
 	    // set moving to true if movement-key is pressed
@@ -69,7 +78,6 @@ void Player::update() {
 	    //Vector3f crouchVelocity = velocity();
 	    vel(0) = vel(0) * (1 - accel) + vecAddition(0) * accel;
 	    vel(1) = vel(1) * (1 - accel) + vecAddition(1) * accel;
-	    //crouchVelocity(2) += vecAddition(2);
 
 	    //std::cout << "Velocity x=" << vel(0) << " y=" << vel(1) << " z=" << crouchVelocity(2) << std::endl;
 
@@ -122,6 +130,7 @@ bool Player::checkForWall(Vector3f& velo){
 				if (n->containsVertices(a, b)){ 
 					//Hvis man hopper er alle tak/gulv-tester fjernet - for nå
 					//ellers fungerer det som det skal
+					/*
 					if(velo(2) > 0){
 						velo(2) = n->floor() - getSector()->floor(); 
 				    	default_z += velo(2);
@@ -129,6 +138,7 @@ bool Player::checkForWall(Vector3f& velo){
 						std::cout << "BYTTER SECTOR" << std::endl;
 						return true;
 					}
+					*/
  				    
 					float hole_low  = n < 0 ?  9e9 : n->floor();
             		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());
@@ -176,15 +186,15 @@ void Player::crouchMove(bool isCrouch){
 }
 
 void Player::jump(Vector3f& velo){
-	velo(2) = 35;
-	//setVelocity(velo);
+	velo(2) = 4;
+	setVelocity(velo);
 
 	Vector3f pos = position(); // fungerer likt med og uten denne - kan den fjernes?
-	pos(2) = default_z + 1; //make Z one higher than default to trigger falling-check.
+	pos(2) = default_z + 0.1; //make Z one higher than default to trigger falling-check.
 
 	checkForWall(velo);
-	//setPosition(pos); // no grunn til å gjøre det sånn her?
-	move(velo);
+	setPosition(pos); // no grunn til å gjøre det sånn her?
+	//move(velo);
 
 	
 }

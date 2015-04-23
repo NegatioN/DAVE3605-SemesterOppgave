@@ -21,6 +21,13 @@ void sector::addNeighbour(sector* s){
     neighbours.push_back(s);
 };
 
+sector* sector::getWallNeighbour(vertex v1, vertex v2){
+    for (sector* n : neighbours)
+        if(n->containsVertices(v1,v2))
+            return n;
+    return NULL;           
+}
+
 bool sector::containsVertices(vertex v1, vertex v2){
     int found = 0;
     for (vertex v: vertices)
@@ -28,32 +35,6 @@ bool sector::containsVertices(vertex v1, vertex v2){
             found++;
     return found == 2;
 }
-
-sector* sector::getEnteredSector(float px, float py, float dx, float dy){
-    // for(int i = 0; i < vCount; ++i) {
-    //     //Two vertices is a wall
-    //     vertex a = vertices[i], b = vertices[i+1];
-        
-    //     //Loop around for last corner
-    //     if (i == vCount-1) b = vertices[0];
-
-    //     //Prints for debugging. Will be removed.
-    //     // if (gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()))
-    //     //     std::cout << "intersectBox: "<< i << std::endl; 
-
-    //     if( gfx_util::intersectBox(px, py, px+dx,py+dy, a.x(), a.y(), b.x(), b.y()) && 
-    //         gfx_util::pointSide(px+dx, py+dy, a.x(), a.y(), b.x(), b.y()) < 0)
-    //     {            
-    //         for (sector* n: neighbours)
-    //             if (n->containsVertices(a, b))
-    //                 return n;
-    //     }
-    // }
-    // return this;
-    return NULL;
-}
-
-
 
 
 void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw){
@@ -73,9 +54,10 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 
         int r_ = 0; int g_ = 0; int b_ = 0;
 		//different wall colors
+        r_ = 0xEE; g_ = 0xBB; b_ = 0x77;//Wall brown
         //r_ = 0x73; g_ = 0x73; b_ = 0x73;//dark grey
-        // r_ = 0x00; g_ = 0x00; b_ = 0xFF;//blue
-        r_ = 0xFF; g_ = 0xFF; b_ = 0x00;//yellow
+        //r_ = 0x00; g_ = 0x00; b_ = 0xFF;//blue
+        //r_ = 0xFF; g_ = 0xFF; b_ = 0x00;//yellow
 		//if     (i == 0){ r_ = 0xFF; g_ = 0x00; b_ = 0x00;}//red
 		// r_ = 0x00; g_ = 0xFF; b_ = 0x00;//green
 		// else if(i == 3)
@@ -132,13 +114,11 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 
         float nyceil=0;
         float nyfloor=0;
-        for (sector* n : neighbours){
-            // Is another sector showing through this portal?
-            if(n->containsVertices(a,b)) 
-            {
-                nyceil  = n->ceiling()  - pz;
-                nyfloor = n->floor() - pz;
-            }
+        sector* neighbour = getWallNeighbour(a, b);
+        if (neighbour != NULL)
+        {
+            nyceil  = neighbour->ceiling()  - pz;
+            nyfloor = neighbour->floor() - pz;
         }
 
         // Project ceiling and floor heights to screen coordinates
@@ -159,48 +139,45 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
         {
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
             int z_ = ((x - x1) * (tz2-tz1) / (x2-x1) + tz1) * 8;
-
             int shade = (z_ - 16) / 4; // calculated from the Z-distance
 
             // Acquire the Y coordinates for our ceiling & floor for this X coordinate. 
             int ya = (x - x1) * (y2a-y1a) / (x2-x1) + y1a;// top
             int yb = (x - x1) * (y2b-y1b) / (x2-x1) + y1b;// bottom
-
             
             /* Is there another sector behind this edge? */
-            if(nyceil != 0)
+            if(neighbour != NULL)
             {
-                //r_ = 0x00; g_ = 0x00; b_ = 0x00;
-                //drawline(renderer, x, ya, yb, r_, g_, b_, shade);
-
-                /* Same for _their_ floor and ceiling */
+                //Find their floor and ceiling
                 int nya = (x - x1) * (ny2a-ny1a) / (x2-x1) + ny1a;
                 int nyb = (x - x1) * (ny2b-ny1b) / (x2-x1) + ny1b;
                 int cnya = gfx_util::clamp(nya, ytop[x],ybottom[x]);
                 int cnyb = gfx_util::clamp(nyb, ytop[x],ybottom[x]);
 
-
                 /* If our ceiling is higher than their ceiling, render upper wall */                
                 if (ya < cnya)
-                    drawline(renderer, x, ya, cnya-1, r_, g_, b_, shade); // Between our and their ceiling
-                ytop[x] = gfx_util::clamp(std::max(ya, cnya), ytop[x], H-1);   // Shrink the remaining window below these ceilings
+                    drawline(renderer, x, ya, cnya-1, r_, g_, b_, shade);       // Between our and their ceiling
 
                 /* If our floor is lower than their floor, render bottom wall */
                 if (yb > cnyb)
-                    drawline(renderer,x, cnyb+1, yb, r_, g_, b_, shade); // Between their and our floor
+                    drawline(renderer,x, cnyb+1, yb, r_, g_, b_, shade);         // Between their and our floor
+
+                //USE THESE HOW?
+                ytop[x] = gfx_util::clamp(std::max(ya, cnya), ytop[x], H-1);    // Shrink the remaining window below these ceilings
                 ybottom[x] = gfx_util::clamp(std::min(yb, cnyb), 0, ybottom[x]); // Shrink the remaining window above these floors
                 
             }
-            else{
+            else
                 drawline(renderer, x, ya, yb, r_, g_, b_, shade);
-            }
 
             // //Draw floor and ceiling
-            drawline(renderer, x, 480, yb, 0xF4, 0xA4, 0x60, 1);
-            drawline(renderer, x, ya, 0, 0xFF, 0x77, 0x77, 1);
+            drawline(renderer, x, ya, 0, 0x99, 0x99, 0x99, 1);
+            drawline(renderer, x, 480, yb, 0x66, 0x33, 0x00, 1);
         }
     }
 }
+
+
 
 //Temporary method for showing a top-down view on screen.
 void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle){

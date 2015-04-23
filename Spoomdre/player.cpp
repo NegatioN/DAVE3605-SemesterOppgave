@@ -121,18 +121,16 @@ bool Player::checkForWall(Vector3f& velo){
             gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
         { 
 			bool wall = true;
-			for (sector* n: neighbours)
-				if (n->containsVertices(a, b)){ 
+			sector* n = getSector()->getWallNeighbour(a, b);
+			if (n != NULL)
+			{
+				//set default camera-height on sector-change
+				velo(2) = n->floor() - getSector()->floor(); 
+				default_z += velo(2);
 
- 				    //set default camera-height on sector-change
-				    velo(2) = n->floor() - getSector()->floor(); 
-				    default_z += velo(2);
-
-					wall = false;
-				    setSector(n);
-				}
-
-			if(wall)
+				setSector(n);
+			}
+			else
 			{	//Bumps into a wall! Slide along the wall. 
 				// This formula is from Wikipedia article "vector projection". 
 				float xd = b.x() - a.x(), yd = b.y() - a.y();

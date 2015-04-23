@@ -36,6 +36,7 @@ public:
 	bool checkForWall(Vector3f& velo);
 	void crouchMove(bool isCrouch);
 	void jump(Vector3f& velo);
+	void updatePOV();
 
 	void shootProjectile();
 	void removeDeadProjectiles();

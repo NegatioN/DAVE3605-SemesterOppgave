@@ -31,15 +31,20 @@ void Player::update() {
 
 	Vector3f vecAddition(0,0,0);
 
+	updatePOV();
+
 	if(z() > default_z)
 		isFalling = true;
 	else
 		setVelocity(vecAddition); //set velocity (0,0,0). No sliding movement
 
+	std::cout << "Player isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << std::endl;
+
 	if(isFalling){
 		Vector3f fallingVelo = velocity();
 		move(fallingVelo);
 		fallingVelo += accelleration();	//gravity
+		checkForWall(fallingVelo);
 		setVelocity(fallingVelo);
 	}else{
 
@@ -49,17 +54,9 @@ void Player::update() {
 	    if (wasd_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
 	    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
 	    if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
-	    if (wasd_.at(4)) { angle_ += 0.1; }									// right
-	    if (wasd_.at(5)) { angle_ -= 0.1; }									// left
-	    if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
-	    if (wasd_.at(7)) { yaw_ += 0.1; }											// down
 	    if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
 	    if (wasd_.at(9)) { isJumping = true;  vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_;} 
 	    if (wasd_.at(10)) { shootProjectile(); }
-
-	    // change angle and yaw if the mouse have moved
-		if(mouse_x != 0) angle_ = mouse_x * 0.015f;
-		if(mouse_y != 0) yaw_ = -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
 
 	    // set moving to true if movement-key is pressed
 	    bool pushing = false;
@@ -142,13 +139,9 @@ bool Player::checkForWall(Vector3f& velo){
 				    	velo(2) = n->floor() - getSector()->floor(); 
 				    	default_z += velo(2);
 				    	setSector(n);
-				    	std::cout << "Hopper, og bytter sector" << std::endl;
 				    	return true;
             		}	
-            		std::cout << "Hopper, men treffer tak/gulv" << std::endl;
-
             	}
-			
 			//Bumps into a wall! Slide along the wall. 
 			// This formula is from Wikipedia article "vector projection". 
 			float xd = b.x() - a.x(), yd = b.y() - a.y();
@@ -156,7 +149,6 @@ bool Player::checkForWall(Vector3f& velo){
 			velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);	
 			//std::cout << "Hopper, men treffer vegg" << std::endl;
 			return true;
-
 		}
     }
     return false;
@@ -164,17 +156,27 @@ bool Player::checkForWall(Vector3f& velo){
 
 void Player::crouchMove(bool isCrouch){
 	Vector3f crouch(0,0,0.9);
+
 	//we need to modify default_z when moving up/down on z-plane
 	//if lower than highlimit, and player not crouching
-	if(z() < default_z && !isCrouch)
+
+	if(z() < default_z && !isCrouch){
+		//to avoid triggering isFalling by going over default_z
+		Vector3f pos = position();
+		pos += crouch;
+		float dz = pos(2) - default_z;
+		if(pos(2) >= default_z)
+			crouch(2) -= (pos(2) - default_z); //subtracts z-overflow. sets to default_z
+
 		move(crouch);
+	}
 	//if higher than lowlimit, and player crouching
-	else if(z() > (default_z - 8) && isCrouch)
+	else if(z() >= (default_z - 8) && isCrouch)
 		move(-crouch);
 }
 
 void Player::jump(Vector3f& velo){
-	velo(2) = 15;
+	velo(2) = 35;
 	//setVelocity(velo);
 
 	Vector3f pos = position(); // fungerer likt med og uten denne - kan den fjernes?
@@ -192,6 +194,18 @@ void Player::move(Vector3f velo) {
 	Vector3f pos = position();
 	pos += velo;
 	setPosition(pos);
+}
+
+void Player::updatePOV(){
+	//Keyboard-events for POV (Yaw+angle)
+    if (wasd_.at(4)) { angle_ += 0.1; }									// right
+    if (wasd_.at(5)) { angle_ -= 0.1; }									// left
+    if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
+    if (wasd_.at(7)) { yaw_ += 0.1; }											// down
+
+    //Mouse-events for POV (Yaw+Angle)
+	if(mouse_x != 0) angle_ = mouse_x * 0.015f;
+	if(mouse_y != 0) yaw_ = -gfx_util::clamp(-mouse_y * 0.023f, -5, 5);
 }
 
 

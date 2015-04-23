@@ -37,7 +37,6 @@ public:
 	void addVertex(vertex v);
 	void addNeighbour(sector* s);
 
-	sector* getEnteredSector(float px, float py, float dx, float dy);
 
 	std::vector<vertex> getVertices(){return vertices;};
 	std::vector<sector*> getNeighbours(){return neighbours;};
@@ -47,10 +46,11 @@ public:
 
 	void drawline(SDL_Renderer* renderer, int x,int y1, int y2, int red, int green, int blue, int alpha);
 
+	sector* getWallNeighbour(vertex v1, vertex v2);
 	bool containsVertices(vertex v1, vertex v2);
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };
-	
+
 	float floor(){ return floor_height_; };
 	float ceiling(){ return ceiling_height_; };
 };

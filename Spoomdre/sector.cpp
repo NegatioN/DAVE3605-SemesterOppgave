@@ -143,11 +143,12 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
         {
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
             int z_ = ((x - x1) * (tz2-tz1) / (x2-x1) + tz1) * 8;
+            int shade = (z_ - 16) / 4; // calculated from the Z-distance
             // Acquire the Y coordinates for our ceiling & floor for this X coordinate. 
             int ya = (x - x1) * (y2a-y1a) / (x2-x1) + y1a;// top
             int yb = (x - x1) * (y2b-y1b) / (x2-x1) + y1b;// bottom
 
-            drawline(renderer, x, ya, yb, r_, g_, b_, z_);
+            drawline(renderer, x, ya, yb, r_, g_, b_, shade);
         }
 	} 
 };
@@ -178,7 +179,7 @@ void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, fl
 
 
 /* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
-void sector::drawline(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int alpha)
+void sector::drawline(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade)
 {
     y1 = gfx_util::clamp(y1, 0, H-1);
     y2 = gfx_util::clamp(y2, 0, H-1);
@@ -187,6 +188,7 @@ void sector::drawline(SDL_Renderer* renderer, int x1, int y1,int y2, int red, in
     SDL_RenderDrawLine(renderer, x1, 480, x1, y2);
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x77, 0x77, 0x77);//tak
     SDL_RenderDrawLine(renderer, x1, y1, x1, 0);
-    SDL_SetRenderDrawColor(renderer, red, green, blue, alpha);//vegg
+    // if calculated shade (color - shade) is under the threshold, set the color as the threshold
+    SDL_SetRenderDrawColor(renderer, (red - shade < red / 4) ? red / 4 : red - shade, (green - shade < green / 4) ? green / 4 : green - shade, (blue - shade < blue / 4) ? blue / 4 : blue - shade, 0xFF);//vegg
     SDL_RenderDrawLine(renderer, x1, y1, x1, y2);
 }

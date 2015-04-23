@@ -11,6 +11,7 @@
 //screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
+SDL_bool hint = SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
 
 KeyboardHandler keyboardHandler;
 
@@ -28,6 +29,7 @@ int main(int argc, char* args[]){
 	game.initialize(SCREEN_HEIGHT, SCREEN_WIDTH);
 	bool running = true;
 
+
 	// time for current frame
 	Uint32 lastTime = SDL_GetTicks(); // time of last iteration
     Uint32 timer = SDL_GetTicks();    // timer for updating info each sec
@@ -36,6 +38,10 @@ int main(int argc, char* args[]){
     int updates = 0;                  // counter for tps (ticks-per-sec)
 	Uint32 fps = 50;                  // wanted fps
 	double interval = 1000 / fps;     // time between each tick in msec
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+    //SDL_MOUSE_RELATIVE_MODE_WARP=1;
+    std::cout << "Hint=" << hint << std::endl;
 
 	//START GAME-LOOP
 	while(running) {
@@ -91,6 +97,10 @@ int main(int argc, char* args[]){
             // get any mouse-changes since last frame
             int mx; int my;
             SDL_GetRelativeMouseState(&mx, &my);
+            int curx; int cury;
+            SDL_GetMouseState(&curx, &cury);
+
+            std::cout << "mx=" << mx << " my=" << my << "curx=" << curx << " cury=" << cury << std::endl;
 
             // update game logic
             game.update(wasd, mx, my);

@@ -44,6 +44,7 @@ void Player::update() {
 		Vector3f fallingVelo = velocity();
 		move(fallingVelo);
 		fallingVelo += accelleration();	//gravity
+		checkForWall(fallingVelo);
 		setVelocity(fallingVelo);
 	}else{
 
@@ -167,7 +168,7 @@ void Player::crouchMove(bool isCrouch){
 }
 
 void Player::jump(Vector3f& velo){
-	velo(2) = 5.5;
+	velo(2) = 7;
 	setVelocity(velo);
 
 	Vector3f pos = position();

@@ -118,25 +118,26 @@ bool Player::checkForWall(Vector3f& velo){
         if( gfx_util::intersectBox(x(), y(), x()+velo(0),y()+velo(1), a.x(), a.y(), b.x(), b.y()) && 
             gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
         { 
-			bool wall = true;
-			for (sector* n: neighbours)
-				if (n->containsVertices(a, b)){ 
- 				    
-					float hole_low  = n < 0 ?  9e9 : n->floor();
-            		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());
+        	bool canPass = true;
+			sector* n = getSector()->getWallNeighbour(a, b);
+			if (n != NULL)
+			{
+				float hole_low  = n < 0 ?  9e9 : n->floor();
+            	float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());
 
-            		if(hole_high > z()   && hole_low  < (z()-BODYHEIGHT) )
-            		{
-		       			//set default camera-height on sector-change
-				    	velo(2) = n->floor() - getSector()->floor(); 
-				    	default_z += velo(2);
-            			wall = false;
-				    	setSector(n);
-            		}		
+ 				if(hole_high > z()   && hole_low  < (z()-BODYHEIGHT) )
+            	{
+		       		//set default camera-height on sector-change
+				    velo(2) = n->floor() - getSector()->floor(); 
+				    default_z += velo(2);
+				    setSector(n);
+				    canPass = false;
             	}
+			}
 			
-			if(wall)
-			{	//Bumps into a wall! Slide along the wall. 
+			if (canPass)
+			{		
+				//Bumps into a wall! Slide along the wall. 
 				// This formula is from Wikipedia article "vector projection". 
 				float xd = b.x() - a.x(), yd = b.y() - a.y();
 				velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);

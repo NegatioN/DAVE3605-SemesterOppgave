@@ -18,7 +18,8 @@ class Player : public Entity {
 
 	float const speed_ = 1.5f;
 
-	float BODYHEIGHT;
+	float const BODYHEIGHT = 20; //size of player
+	float TORSO; // from head -> knees
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;
 	// variables for cooldown between each projectile-shoot

@@ -15,8 +15,8 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setVelocity(vel);
 	setAcceleration(acc);
 	setSector(sec);
-	default_z = sec->floor() + 10;
-	BODYHEIGHT = 4; // can walk over everything <= 15 (20-4)
+	default_z = sec->floor() + 10; 
+	TORSO = BODYHEIGHT - 5;
 	yaw_ = 0;
 }
 
@@ -122,28 +122,17 @@ bool Player::checkForWall(Vector3f& velo){
 	    
 	    //Loop around for last corner
 	    if (i == vertices.size()-1) b = vertices[0];
-
         if( gfx_util::intersectBox(x(), y(), x()+velo(0),y()+velo(1), a.x(), a.y(), b.x(), b.y()) && 
             gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
         { 
 			for (sector* n: neighbours)
 				if (n->containsVertices(a, b)){ 
-					//Hvis man hopper er alle tak/gulv-tester fjernet - for nå
-					//ellers fungerer det som det skal
-					/*
-					if(velo(2) > 0){
-						velo(2) = n->floor() - getSector()->floor(); 
-				    	default_z += velo(2);
-						setSector(n);
-						std::cout << "BYTTER SECTOR" << std::endl;
-						return true;
-					}
-					*/
- 				    
-					float hole_low  = n < 0 ?  9e9 : n->floor();
-            		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());
-
-            		if((hole_high > z()   && hole_low  < (z()-BODYHEIGHT) ))
+					float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
+            		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
+            		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
+            		float KNEEHEIGHT = (z()<=15)? 5 : (z() - TORSO); // what you can "step" over. if floor is <= 15, set normal kneeheight
+            		// can player walk/jump through opening?
+            		if(((hole_high - hole_low) >= BODYHEIGHT) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high)) 
             		{
 		       			//set default camera-height on sector-change
 				    	velo(2) = n->floor() - getSector()->floor(); 
@@ -156,7 +145,7 @@ bool Player::checkForWall(Vector3f& velo){
 			// This formula is from Wikipedia article "vector projection". 
 			float xd = b.x() - a.x(), yd = b.y() - a.y();
 			velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
-			velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);	
+			velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
 			//std::cout << "Hopper, men treffer vegg" << std::endl;
 			return true;
 		}
@@ -189,14 +178,11 @@ void Player::jump(Vector3f& velo){
 	velo(2) = 4;
 	setVelocity(velo);
 
-	Vector3f pos = position(); // fungerer likt med og uten denne - kan den fjernes?
+	Vector3f pos = position();
 	pos(2) = default_z + 0.1; //make Z one higher than default to trigger falling-check.
 
 	checkForWall(velo);
-	setPosition(pos); // no grunn til å gjøre det sånn her?
-	//move(velo);
-
-	
+	setPosition(pos);	
 }
 
 

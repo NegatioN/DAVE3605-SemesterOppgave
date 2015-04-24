@@ -15,7 +15,7 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setVelocity(vel);
 	setAcceleration(acc);
 	setSector(sec);
-	default_z = sec->floor() + 10; 
+	default_z = sec->floor() + BODYHEIGHT; 
 	TORSO = BODYHEIGHT - 5;
 	yaw_ = 0;
 }
@@ -38,7 +38,7 @@ void Player::update() {
 	else
 		setVelocity(vecAddition); //set velocity (0,0,0). No sliding movement
 
-	//std::cout << "Player isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << std::endl;
+	std::cout << "Player isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << " default_z=" << default_z << std::endl;
 
 	if(isFalling){
 		Vector3f fallingVelo = velocity();
@@ -134,15 +134,20 @@ bool Player::checkForWall(Vector3f& velo){
             		// can player walk/jump through opening?
             		if(((hole_high - hole_low) >= BODYHEIGHT) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high)) 
 					{
+						/*
 						if(floor_diff <= (-30)) { // if fall-distance if over 30 //
 							isFalling = true;
 							//set default camera-height on sector-change
 					    	velo(2) = n->floor() + 10.0f; // default_z = floor + 10.0f, for some reason
 					    	}
 						else
-			       			velo(2) = n->floor() - getSector()->floor(); //set default camera-height on sector-change				    	
+			       			velo(2) = n->floor() - getSector()->floor(); //set default camera-height on sector-change	
+
 				    	default_z += velo(2);
+				    	*/
+
 				    	setSector(n);
+				    	default_z = getSector()->floor() + BODYHEIGHT;
 				    	return true;
             		}	
             	}

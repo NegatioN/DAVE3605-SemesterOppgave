@@ -259,8 +259,6 @@ void Player::removeDeadProjectiles() {
 }
 
 void Player::render(SDL_Renderer* renderer) {
-	//std::cout << "Player x=" << x() << " y=" << y() << " z=" << z() << std::endl;
-	//std::cout << getSector()->getId() << std::endl;
 	int W = 640;
 	int H = 480;
 	sector::window windows[W];
@@ -269,12 +267,20 @@ void Player::render(SDL_Renderer* renderer) {
         windows[i].top = 0;
     }
 
-	std::vector<sector*> visibleSectors = getSector()->getNeighbours();
+    getSector()->render(renderer, position(), angle(), yaw(), windows);
 
-	//visibleSectors.push_back(getSector());
-	getSector()->render(renderer, position(), angle(), yaw(), windows);
-	for (sector* s: visibleSectors)
-    	s->render(renderer, position(), angle(), yaw(), windows);
+	std::vector<sector*> visibleSectors = getSector()->getNeighbours();
+	for (int i = 0; i < visibleSectors.size() ; i++){
+		sector* s = visibleSectors[i];
+
+		//Add neighbour's neighbours
+		for(sector* n : s->getNeighbours())
+			if (find(visibleSectors.begin(), visibleSectors.end(), n) == visibleSectors.end() && n != getSector())
+				visibleSectors.push_back(n);
+
+		//Render sector
+		s->render(renderer, position(), angle(), yaw(), windows);
+	}
     
 	// Renders projectiles
 	for(Projectile* p : projectiles)

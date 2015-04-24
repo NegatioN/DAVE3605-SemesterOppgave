@@ -107,7 +107,8 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
         // setRight(x2);
 
 		// Only render if it's visible (doesn't render the backside of walls)
-    	if(x1 >= x2) continue;// || x2 < now->left() || x1 > now->right()) continue; 
+        if(x1 >= x2) continue; // Only render if it's visible
+
 
         // Ceiling&floor-height relative to player
         float yceil  = ceiling_height_  - pz;
@@ -115,6 +116,7 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
 
         float nyceil=0;
         float nyfloor=0;
+
         sector* neighbour = getWallNeighbour(a, b);
         if (neighbour != NULL)
         {
@@ -167,25 +169,25 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
                 int cnyb = gfx_util::clamp(nyb, top,bottom);
 
                 /* If our ceiling is higher than their ceiling, render upper wall */                
-                // if (ya < cnya)
-                    drawline(renderer, x, top, cnya-1, r_, g_, b_, shade);       // Between our and their ceiling
+                drawline(renderer, x, top, cnya-1, r_, g_, b_, shade);       // Between our and their ceiling
 
                 /* If our floor is lower than their floor, render bottom wall */
-                // if (yb > cnyb)
-                    drawline(renderer,x, cnyb+1, bottom, r_, g_, b_, shade);         // Between their and our floor
+                drawline(renderer,x, cnyb+1, bottom, r_, g_, b_, shade);         // Between their and our floor
 
-                //USE THESE HOW?
                 win[x].top = gfx_util::clamp(std::max(ya, cnya), top, H-1);    // Shrink the remaining window below these ceilings
                 win[x].bottom = gfx_util::clamp(std::min(yb, cnyb), 0, bottom); // Shrink the remaining window above these floors
-                
+            
             }
-            else
-                drawline(renderer, x, ya, yb, r_, g_, b_, shade);
+            else{
+                drawline(renderer, x, top, bottom, r_, g_, b_, shade);
+            }
 
-            // //Draw floor and ceiling
+            //Draw floor and ceiling
             unsigned roofColor = 0x99/getId();
-            drawline(renderer, x, top, ya, roofColor, roofColor, roofColor, 1);
-            drawline(renderer, x, yb, bottom, 0x66, 0x33, 0x00, 1);
+            if(ya > top )
+                drawline(renderer, x, top, ya, roofColor, roofColor, roofColor, 1);
+            if(yb < bottom )
+                drawline(renderer, x, yb, bottom, 0x66, 0x33, 0x00, 1);
 
         }
     }

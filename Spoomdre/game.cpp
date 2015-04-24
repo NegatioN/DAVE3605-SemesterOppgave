@@ -10,6 +10,8 @@ Player player;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
+int MAP = 0;
+
 //get window surface
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
@@ -40,14 +42,19 @@ void Game::initialize(int height, int width) {
 	width_ = width;
 	height_ = height;
 
-	createWorld();
-	Vector3f position(80, 75, 20);
-	// Vector3f position(5, 5, 20);
+	createWorld();	
 	Vector3f velocity(0, 0, 0);
 	Vector3f acceleration(0, 0, -0.5);
 	//player{position};
 	//player.init(width/2, height/2, 20); // x, y, z
-	player.init(position, velocity, acceleration, sectors[0]); // x, y, z
+	if (MAP == 1){
+		Vector3f position(5, 5, 20);
+		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
+	}
+	else{
+		Vector3f position(80, 75, 20);
+		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
+	}
 }
 
 void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
@@ -127,11 +134,12 @@ void Game::loadMap(string mapname) {
 void Game::createWorld(){
 	int id = 1;
 	loadMap("map.txt");
-/*
+
 
 //_______ NEW-MAP END ________//
 
-
+if (MAP == 1)
+{
 	vertex v1 = vertex{0, 0};
 	vertex v2 = vertex{10, 0};
 	vertex v3 = vertex{50, 0};
@@ -443,15 +451,8 @@ void Game::createWorld(){
 	sectors.push_back(&s20);
 
 	//_______ NEW-MAP END ________//
-
-*/
-
-
-
-
-
-
-
+}
+else{
 
 	//_______ OLD-MAP START ________//
 
@@ -513,9 +514,8 @@ void Game::createWorld(){
 	sectors.push_back(&s2);
 	sectors.push_back(&s3);
 	sectors.push_back(&s4);
-
-
 //_______ OLD-MAP END ________//
+}
 
 
 }

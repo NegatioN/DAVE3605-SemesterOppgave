@@ -16,8 +16,6 @@ float ceiling_height_;
 
 int H = 480; // window-height
 int W = 640; // window-width
-int left_ = 0;
-int right_ = W-1;
 
 float hfov = 0.73f*H;  		// Horizontal fov (Field of Vision)
 float vfov = 0.2f*H;    	// Vertical fov (Field of Vision)
@@ -38,6 +36,7 @@ public:
 	void addNeighbour(sector* s);
 
 	struct window {int top, bottom;};
+
 	void render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, float yaw, window win[]);
 	void render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle);
 
@@ -53,11 +52,6 @@ public:
 
 	float floor(){ return floor_height_; };
 	float ceiling(){ return ceiling_height_; };
-	
-	int left(){return left_; };
-	int right(){return right_; };
-	void setLeft(int l){left_ = l; };
-	void setRight(int r){right_ = r; };
 };
 
 #endif

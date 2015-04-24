@@ -3,6 +3,9 @@
 #include "sector.hpp"
 #include "vertex.hpp"
 
+#include <sstream>
+#include <fstream>
+
 Player player;
 std::vector<sector*> sectors;
 SDL_Rect rect;
@@ -39,6 +42,7 @@ void Game::initialize(int height, int width) {
 
 	createWorld();
 	Vector3f position(80, 75, 20);
+	// Vector3f position(5, 5, 20);
 	Vector3f velocity(0, 0, 0);
 	Vector3f acceleration(0, 0, -0.5);
 	//player{position};
@@ -46,8 +50,8 @@ void Game::initialize(int height, int width) {
 	player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 }
 
-void Game::update(std::vector<bool> wasd, int mouse_x, int mouse_y){
-	player.setMoveVector(wasd);
+void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
+	player.setMoveVector(keys);
 	player.setMouseValues(mouse_x, mouse_y);
 	//player.move(0,0);
 	player.update();
@@ -89,6 +93,35 @@ void Game::wait(int milliseconds){
 
 void fpsCounter(){
 	
+}
+
+using namespace std;
+
+void Game::loadMap(string mapname) {
+	cout << "reading " << mapname << endl;
+	
+	ifstream infile(mapname);
+	string line;
+
+	while(std::getline(infile, line)) {
+		switch(line.at(0)) { // read first letter in line
+			case 'v': // vector
+
+				cout << "vector-line - " << line << endl;
+			break;
+			case 's': // sector
+
+				cout << "sector-line - " << line << endl;
+			break;
+			case 'p': // player
+
+				cout << "player-line - " << line << endl;
+			break;
+		}
+
+	}
+
+	cout << "finished reading " << mapname << endl;
 }
 
 void Game::createWorld(){
@@ -420,6 +453,7 @@ void Game::createWorld(){
 
 
 
+
 	//_______ OLD-MAP START ________//
 
 	//Need static to save the sectors. (New causes wierd bug)
@@ -461,8 +495,8 @@ void Game::createWorld(){
 	s3.addVertex(v3);
 
 
-	s1.addNeighbour(&s3);
 	s1.addNeighbour(&s2);
+	s1.addNeighbour(&s3);
 	s2.addNeighbour(&s1);
 	s2.addNeighbour(&s3);
 	s3.addNeighbour(&s1);
@@ -474,5 +508,6 @@ void Game::createWorld(){
 
 
 //_______ OLD-MAP END ________//
+
 
 }

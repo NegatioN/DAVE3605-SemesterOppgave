@@ -3,6 +3,9 @@
 #include "sector.hpp"
 #include "vertex.hpp"
 
+#include <sstream>
+#include <fstream>
+
 Player player;
 std::vector<sector*> sectors;
 SDL_Rect rect;
@@ -91,10 +94,39 @@ void fpsCounter(){
 	
 }
 
+using namespace std;
+
+void Game::loadMap(string mapname) {
+	cout << "reading " << mapname << endl;
+	
+	ifstream infile(mapname);
+	string line;
+
+	while(std::getline(infile, line)) {
+		switch(line.at(0)) { // read first letter in line
+			case 'v': // vector
+
+				cout << "vector-line - " << line << endl;
+			break;
+			case 's': // sector
+
+				cout << "sector-line - " << line << endl;
+			break;
+			case 'p': // player
+
+				cout << "player-line - " << line << endl;
+			break;
+		}
+
+	}
+
+	cout << "finished reading " << mapname << endl;
+}
+
 void Game::createWorld(){
 	int id = 1;
 
-
+	//loadMap("map.txt");
 
 
 //_______ NEW-MAP END ________//
@@ -475,5 +507,5 @@ void Game::createWorld(){
 
 //_______ OLD-MAP END ________//
 */
-	
+
 }

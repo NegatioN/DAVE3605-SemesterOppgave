@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <string>
 //internal dependencies
 //#include "game_util.hpp"
 
@@ -34,6 +35,7 @@ public:
 	void wait(int seconds);			//pause render for x seconds
 	void createWorld(); 			//creates vertexes and sectors (for now)
 	
+	void loadMap(std::string mapname);	// Loads map from a txt-file
 
 };
 

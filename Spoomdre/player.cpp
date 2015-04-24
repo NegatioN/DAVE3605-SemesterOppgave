@@ -59,17 +59,17 @@ void Player::update() {
 
 
 	    // keyboard-events
-	    if (wasd_.at(0)) { vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_; } 	// W
-	    if (wasd_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
-	    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
-	    if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
-	    if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
-	    if (wasd_.at(9)) { isJumping = true; } 
-	    if (wasd_.at(10)) { shootProjectile(); }
+	    if (keys_.at(0)) { vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_; } 	// W
+	    if (keys_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
+	    if (keys_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
+	    if (keys_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
+	    if (keys_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
+	    if (keys_.at(9)) { isJumping = true; } 
+	    if (keys_.at(10)) { shootProjectile(); }
 
 	    // set moving to true if movement-key is pressed
 	    bool pushing = false;
-	    if(wasd_.at(0) || wasd_.at(1) || wasd_.at(2) || wasd_.at(3))
+	    if(keys_.at(0) || keys_.at(1) || keys_.at(2) || keys_.at(3))
 	    	pushing = true;
 
 		float accel = pushing ? 0.4 : 0.2;
@@ -208,10 +208,10 @@ void Player::move(Vector3f velo) {
 
 void Player::updatePOV(){
 	//Keyboard-events for POV (Yaw+angle)
-    if (wasd_.at(4)) { angle_ += 0.1; }									// right
-    if (wasd_.at(5)) { angle_ -= 0.1; }									// left
-    if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
-    if (wasd_.at(7)) { yaw_ += 0.1; }											// down
+    if (keys_.at(4)) { angle_ += 0.1; }		// right
+    if (keys_.at(5)) { angle_ -= 0.1; }		// left
+    if (keys_.at(6)) { yaw_ -= 0.1; }		// up
+    if (keys_.at(7)) { yaw_ += 0.1; }		// down
 
     //Mouse-events for POV (Yaw+Angle)
 	if(mouse_x != 0) angle_ = mouse_x * 0.015f;

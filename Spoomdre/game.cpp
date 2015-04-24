@@ -46,8 +46,8 @@ void Game::initialize(int height, int width) {
 	player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 }
 
-void Game::update(std::vector<bool> wasd, int mouse_x, int mouse_y){
-	player.setMoveVector(wasd);
+void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
+	player.setMoveVector(keys);
 	player.setMouseValues(mouse_x, mouse_y);
 	//player.move(0,0);
 	player.update();

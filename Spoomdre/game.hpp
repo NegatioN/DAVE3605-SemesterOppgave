@@ -28,7 +28,7 @@ public:
 
 	//Game(int height, int width);
 	void initialize(int height, int width);//, KeyboardHandler* keyboard); //initialize the screen and surface
-	void update(std::vector<bool> wasd, int mouse_x, int mouse_y);					//updates the surface
+	void update(std::vector<bool> keys, int mouse_x, int mouse_y);					//updates the surface
 	void render();
 	void terminate();				//terminate screen
 	void wait(int seconds);			//pause render for x seconds

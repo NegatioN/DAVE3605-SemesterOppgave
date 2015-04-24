@@ -147,6 +147,7 @@ bool Player::checkForWall(Vector3f& velo){
 				    	*/
 
 				    	setSector(n);
+				    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
 				    	default_z = getSector()->floor() + BODYHEIGHT;
 				    	return true;
             		}	

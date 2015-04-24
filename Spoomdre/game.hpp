@@ -33,7 +33,6 @@ public:
 	void render();
 	void terminate();				//terminate screen
 	void wait(int seconds);			//pause render for x seconds
-	void createWorld(); 			//creates vertexes and sectors (for now)
 	
 	void loadMap(std::string mapname);	// Loads map from a txt-file
 

@@ -126,8 +126,7 @@ void Game::loadMap(string mapname) {
 
 void Game::createWorld(){
 	int id = 1;
-
-
+	loadMap("map.txt");
 /*
 
 //_______ NEW-MAP END ________//
@@ -459,7 +458,8 @@ void Game::createWorld(){
 	//Need static to save the sectors. (New causes wierd bug)
 	static sector s1{id++, 10.f, 40.f}, 
 				  s2{id++, 15.f, 45.f},
-				  s3{id++, 5.f, 35.f};
+				  s3{id++, 5.f, 35.f},
+				  s4{id++, 10.f, 30.f};
 
 
 	// vertexes for test-map
@@ -474,8 +474,9 @@ void Game::createWorld(){
 
 	vertex v8= vertex{120, 10};
 
-	vertex v9 = vertex{120, 140};
-	vertex v10= vertex{80, 140};
+	vertex v9 = vertex{150, 10};
+	vertex v10= vertex{150, 75};
+
 	vertex v11= vertex{40, 120};
 
 	s1.addVertex(v1);
@@ -494,6 +495,10 @@ void Game::createWorld(){
 	s3.addVertex(v8);
 	s3.addVertex(v3);
 
+	s4.addVertex(v8);
+	s4.addVertex(v9);
+	s4.addVertex(v10);
+	s4.addVertex(v3);
 
 	s1.addNeighbour(&s2);
 	s1.addNeighbour(&s3);
@@ -501,10 +506,13 @@ void Game::createWorld(){
 	s2.addNeighbour(&s3);
 	s3.addNeighbour(&s1);
 	s3.addNeighbour(&s2);
+	s3.addNeighbour(&s4);
+	s4.addNeighbour(&s3);
 
 	sectors.push_back(&s1);
 	sectors.push_back(&s2);
 	sectors.push_back(&s3);
+	sectors.push_back(&s4);
 
 
 //_______ OLD-MAP END ________//

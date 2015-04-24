@@ -182,6 +182,20 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
 //Temporary method for showing a top-down view on screen.
 void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle){
     
+    int yOffset = -100; // displaces map by a given y
+    int xOffset = 150;  // displaces map by a give x
+
+    // Render player on map
+    SDL_Rect prect;
+    prect.w = 5; prect.h = 5;
+    prect.x = (320+xOffset) - prect.w / 2; prect.y = (240+yOffset) - prect.h / 2;
+
+    SDL_SetRenderDrawColor(renderer, 0x55, 0xFF, 0x55, 0xFF); // map-color, Blue/green-ish
+    SDL_RenderDrawLine(renderer, 320 + xOffset, 240 + yOffset, 320 + xOffset, 232 + yOffset); // render map 
+    SDL_SetRenderDrawColor(renderer, 0xBB, 0xBB, 0xBB, 0xFF); // map-color, Blue/green-ish
+    SDL_RenderFillRect(renderer, &prect); // render map 
+
+    // Render map
     for (int i = 0; i < vCount; i++) {
         vertex a = vertices[i];
         vertex b = vertices[0];
@@ -198,7 +212,7 @@ void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, fl
               txb = txb*sin(angle) - tyb*cos(angle);
 
         SDL_SetRenderDrawColor(renderer, 0x00, 0x77, 0xFF, 0xFF); // map-color, Blue/green-ish
-        SDL_RenderDrawLine(renderer, 320-txa, 240-tza, 320-txb , 240-tzb); // render map
+        SDL_RenderDrawLine(renderer, 320-txa + xOffset, 240-tza + yOffset, 320-txb + xOffset, 240-tzb + yOffset); // render map
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
     }
 }

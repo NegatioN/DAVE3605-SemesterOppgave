@@ -38,7 +38,7 @@ void Game::initialize(int height, int width) {
 	height_ = height;
 
 	createWorld();
-	Vector3f position(30, 5, 20);
+	Vector3f position(5, 5, 20);
 	Vector3f velocity(0, 0, 0);
 	Vector3f acceleration(0, 0, -0.5);
 	//player{position};
@@ -95,7 +95,7 @@ void Game::createWorld(){
 	int id = 1;
 
 
-/*
+
 
 //_______ NEW-MAP END ________//
 
@@ -412,13 +412,13 @@ void Game::createWorld(){
 
 	//_______ NEW-MAP END ________//
 
-*/
 
 
 
 
 
 
+/*
 
 	//_______ OLD-MAP START ________//
 
@@ -474,5 +474,6 @@ void Game::createWorld(){
 
 
 //_______ OLD-MAP END ________//
-
+*/
+	
 }

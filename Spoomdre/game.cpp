@@ -38,7 +38,7 @@ void Game::initialize(int height, int width) {
 	height_ = height;
 
 	createWorld();
-	Vector3f position(30, 5, 20);
+	Vector3f position(80, 75, 20);
 	Vector3f velocity(0, 0, 0);
 	Vector3f acceleration(0, 0, -0.5);
 	//player{position};
@@ -461,8 +461,8 @@ void Game::createWorld(){
 	s3.addVertex(v3);
 
 
-	s1.addNeighbour(&s2);
 	s1.addNeighbour(&s3);
+	s1.addNeighbour(&s2);
 	s2.addNeighbour(&s1);
 	s2.addNeighbour(&s3);
 	s3.addNeighbour(&s1);

@@ -250,12 +250,21 @@ void Player::removeDeadProjectiles() {
 void Player::render(SDL_Renderer* renderer) {
 	//std::cout << "Player x=" << x() << " y=" << y() << " z=" << z() << std::endl;
 	//std::cout << getSector()->getId() << std::endl;
+	int W = 640;
+	int H = 480;
+	sector::window windows[W];
+	for(unsigned i = 0; i < W; ++i) {
+        windows[i].bottom = H-1;
+        windows[i].top = 0;
+    }
 
 	std::vector<sector*> visibleSectors = getSector()->getNeighbours();
-	visibleSectors.push_back(getSector());
+
+	//visibleSectors.push_back(getSector());
+	getSector()->render(renderer, position(), angle(), yaw(), windows);
 	for (sector* s: visibleSectors)
-		s->render(renderer, x(), y(), z(), angle(), yaw());
-	
+    	s->render(renderer, position(), angle(), yaw(), windows);
+    
 	// Renders projectiles
 	for(Projectile* p : projectiles)
 		p->render(renderer);

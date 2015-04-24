@@ -37,14 +37,12 @@ bool sector::containsVertices(vertex v1, vertex v2){
 }
 
 
-void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw){
+void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, float yaw, window win[]){
     //top og bunn verdier for y. Brukes mer når vi skal ha høydeforskjeller på sektorer??
-    int ytop[W], ybottom[W];
 
-    for(unsigned x=0; x<W; ++x) {
-        ybottom[x] = H-1;
-        ytop[x] = 0;
-    }
+    float px = pos(0);
+    float py = pos(1);
+    float pz = pos(2);
 
     for (int i = 0; i < vCount; i++) {
 		vertex a = vertices[i];
@@ -105,8 +103,11 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
         float yscale2 = vfov / tz2;    
         int x2 = W/2 - (int)(tx2 * xscale2);
 
+        // setLeft(x1);
+        // setRight(x2);
+
 		// Only render if it's visible (doesn't render the backside of walls)
-    	if(x1 >= x2) continue; 
+    	if(x1 >= x2) continue;// || x2 < now->left() || x1 > now->right()) continue; 
 
         // Ceiling&floor-height relative to player
         float yceil  = ceiling_height_  - pz;
@@ -137,6 +138,17 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
         int beginx = std::max(x1, 0), endx = std::min(x2, W-1);
         for(int x = beginx; x <= endx; ++x)
         {
+            int top = win[x].top;
+            int bottom = win[x].bottom;
+
+            //Paint corners black
+            if (x == beginx || x == endx){
+                r_ = 5; g_ = 5; b_ = 5;
+            }
+            else {
+                r_ = 0xEE/getId(); g_ = 0xBB; b_ = 0x77;//Wall brown
+            }
+
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
             int z_ = ((x - x1) * (tz2-tz1) / (x2-x1) + tz1) * 8;
             int shade = (z_ - 16) / 4; // calculated from the Z-distance
@@ -151,28 +163,30 @@ void sector::render(SDL_Renderer* renderer, float px, float py, float pz, float 
                 //Find their floor and ceiling
                 int nya = (x - x1) * (ny2a-ny1a) / (x2-x1) + ny1a;
                 int nyb = (x - x1) * (ny2b-ny1b) / (x2-x1) + ny1b;
-                int cnya = gfx_util::clamp(nya, ytop[x],ybottom[x]);
-                int cnyb = gfx_util::clamp(nyb, ytop[x],ybottom[x]);
+                int cnya = gfx_util::clamp(nya, top,bottom);
+                int cnyb = gfx_util::clamp(nyb, top,bottom);
 
                 /* If our ceiling is higher than their ceiling, render upper wall */                
-                if (ya < cnya)
-                    drawline(renderer, x, ya, cnya-1, r_, g_, b_, shade);       // Between our and their ceiling
+                // if (ya < cnya)
+                    drawline(renderer, x, top, cnya-1, r_, g_, b_, shade);       // Between our and their ceiling
 
                 /* If our floor is lower than their floor, render bottom wall */
-                if (yb > cnyb)
-                    drawline(renderer,x, cnyb+1, yb, r_, g_, b_, shade);         // Between their and our floor
+                // if (yb > cnyb)
+                    drawline(renderer,x, cnyb+1, bottom, r_, g_, b_, shade);         // Between their and our floor
 
                 //USE THESE HOW?
-                ytop[x] = gfx_util::clamp(std::max(ya, cnya), ytop[x], H-1);    // Shrink the remaining window below these ceilings
-                ybottom[x] = gfx_util::clamp(std::min(yb, cnyb), 0, ybottom[x]); // Shrink the remaining window above these floors
+                win[x].top = gfx_util::clamp(std::max(ya, cnya), top, H-1);    // Shrink the remaining window below these ceilings
+                win[x].bottom = gfx_util::clamp(std::min(yb, cnyb), 0, bottom); // Shrink the remaining window above these floors
                 
             }
             else
                 drawline(renderer, x, ya, yb, r_, g_, b_, shade);
 
             // //Draw floor and ceiling
-            drawline(renderer, x, ya, 0, 0x99, 0x99, 0x99, 1);
-            drawline(renderer, x, 480, yb, 0x66, 0x33, 0x00, 1);
+            unsigned roofColor = 0x99/getId();
+            drawline(renderer, x, top, ya, roofColor, roofColor, roofColor, 1);
+            drawline(renderer, x, yb, bottom, 0x66, 0x33, 0x00, 1);
+
         }
     }
 }

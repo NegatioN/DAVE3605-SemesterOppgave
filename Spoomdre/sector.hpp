@@ -4,6 +4,7 @@
 #include "vertex.hpp"
 #include <SDL2/SDL.h>
 #include <vector>
+#include <Eigen/Core>
 
 class sector{
 
@@ -12,11 +13,11 @@ int id_;
 
 float floor_height_;
 float ceiling_height_;
-//Floor + ceiling texturesz
-
 
 int H = 480; // window-height
 int W = 640; // window-width
+int left_ = 0;
+int right_ = W-1;
 
 float hfov = 0.73f*H;  		// Horizontal fov (Field of Vision)
 float vfov = 0.2f*H;    	// Vertical fov (Field of Vision)
@@ -30,18 +31,14 @@ std::vector<vertex> vertices;
 //Id of all neighbouring sectors
 std::vector<sector*> neighbours;
 
-
 public:
 	sector(int id_, float floor_height, float ceiling_height);
 
 	void addVertex(vertex v);
 	void addNeighbour(sector* s);
 
-
-	std::vector<vertex> getVertices(){return vertices;};
-	std::vector<sector*> getNeighbours(){return neighbours;};
-
-	void render(SDL_Renderer* renderer, float px, float py, float pz, float angle, float yaw);
+	struct window {int top, bottom;};
+	void render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, float yaw, window win[]);
 	void render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle);
 
 	void drawline(SDL_Renderer* renderer, int x,int y1, int y2, int red, int green, int blue, int alpha);
@@ -51,8 +48,16 @@ public:
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };
 
+	std::vector<vertex> getVertices(){return vertices;};
+	std::vector<sector*> getNeighbours(){return neighbours;};
+
 	float floor(){ return floor_height_; };
 	float ceiling(){ return ceiling_height_; };
+	
+	int left(){return left_; };
+	int right(){return right_; };
+	void setLeft(int l){left_ = l; };
+	void setRight(int r){right_ = r; };
 };
 
 #endif

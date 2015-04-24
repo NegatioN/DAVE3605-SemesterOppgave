@@ -16,6 +16,8 @@ class Player : public Entity {
 	//sector * sector_; -> is in entity 
 	std::vector<bool> keys_;
 
+	bool isFalling = false;
+
 	float const speed_ = 1.5f;
 
 	float BODYHEIGHT;

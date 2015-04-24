@@ -138,9 +138,9 @@ bool Player::checkForWall(Vector3f& velo){
 							isFalling = true;
 							//set default camera-height on sector-change
 					    	velo(2) = n->floor() + 10.0f; // default_z = floor + 10.0f, for some reason
-						}
+					    	}
 						else
-			       			velo(2) = n->floor() - getSector()->floor(); //set default camera-height on sector-change
+			       			velo(2) = n->floor() - getSector()->floor(); //set default camera-height on sector-change				    	
 				    	default_z += velo(2);
 				    	setSector(n);
 				    	return true;

@@ -22,7 +22,7 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 
 //Take input accelleration-vector?
 void Player::update() {
-	bool isFalling = false;
+	isFalling = false;
 	bool isJumping = false;
 	bool isCrouching = false;
 	
@@ -59,17 +59,17 @@ void Player::update() {
 
 
 	    // keyboard-events
-	    if (wasd_.at(0)) { vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_; } 	// W
-	    if (wasd_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
-	    if (wasd_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
-	    if (wasd_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
-	    if (wasd_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
-	    if (wasd_.at(9)) { isJumping = true; } 
-	    if (wasd_.at(10)) { shootProjectile(); }
+	    if (keys_.at(0)) { vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_; } 	// W
+	    if (keys_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
+	    if (keys_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
+	    if (keys_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
+	    if (keys_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
+	    if (keys_.at(9)) { isJumping = true; } 
+	    if (keys_.at(10)) { shootProjectile(); }
 
 	    // set moving to true if movement-key is pressed
 	    bool pushing = false;
-	    if(wasd_.at(0) || wasd_.at(1) || wasd_.at(2) || wasd_.at(3))
+	    if(keys_.at(0) || keys_.at(1) || keys_.at(2) || keys_.at(3))
 	    	pushing = true;
 
 		float accel = pushing ? 0.4 : 0.2;
@@ -133,9 +133,14 @@ bool Player::checkForWall(Vector3f& velo){
             		float KNEEHEIGHT = (z()<=15)? 5 : (z() - TORSO); // what you can "step" over. if floor is <= 15, set normal kneeheight
             		// can player walk/jump through opening?
             		if(((hole_high - hole_low) >= BODYHEIGHT) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high)) 
-            		{
-		       			//set default camera-height on sector-change
-				    	velo(2) = n->floor() - getSector()->floor(); 
+					{
+						if(floor_diff <= (-30)) { // if fall-distance if over 30 //
+							isFalling = true;
+							//set default camera-height on sector-change
+					    	velo(2) = n->floor() + 10.0f; // default_z = floor + 10.0f, for some reason
+						}
+						else
+			       			velo(2) = n->floor() - getSector()->floor(); //set default camera-height on sector-change
 				    	default_z += velo(2);
 				    	setSector(n);
 				    	return true;
@@ -194,10 +199,10 @@ void Player::move(Vector3f velo) {
 
 void Player::updatePOV(){
 	//Keyboard-events for POV (Yaw+angle)
-    if (wasd_.at(4)) { angle_ += 0.1; }									// right
-    if (wasd_.at(5)) { angle_ -= 0.1; }									// left
-    if (wasd_.at(6)) { yaw_ -= 0.1; }											// up
-    if (wasd_.at(7)) { yaw_ += 0.1; }											// down
+    if (keys_.at(4)) { angle_ += 0.1; }		// right
+    if (keys_.at(5)) { angle_ -= 0.1; }		// left
+    if (keys_.at(6)) { yaw_ -= 0.1; }		// up
+    if (keys_.at(7)) { yaw_ += 0.1; }		// down
 
     //Mouse-events for POV (Yaw+Angle)
 	if(mouse_x != 0) angle_ = mouse_x * 0.015f;
@@ -234,14 +239,29 @@ void Player::removeDeadProjectiles() {
 }
 
 void Player::render(SDL_Renderer* renderer) {
-	//std::cout << "Player x=" << x() << " y=" << y() << " z=" << z() << std::endl;
-	//std::cout << getSector()->getId() << std::endl;
+	int W = 640;
+	int H = 480;
+	sector::window windows[W];
+	for(unsigned i = 0; i < W; ++i) {
+        windows[i].bottom = H-1;
+        windows[i].top = 0;
+    }
+
+    getSector()->render(renderer, position(), angle(), yaw(), windows);
 
 	std::vector<sector*> visibleSectors = getSector()->getNeighbours();
-	visibleSectors.push_back(getSector());
-	for (sector* s: visibleSectors)
-		s->render(renderer, x(), y(), z(), angle(), yaw());
-	
+	for (int i = 0; i < visibleSectors.size() ; i++){
+		sector* s = visibleSectors[i];
+
+		//Add neighbour's neighbours
+		for(sector* n : s->getNeighbours())
+			if (find(visibleSectors.begin(), visibleSectors.end(), n) == visibleSectors.end() && n != getSector())
+				visibleSectors.push_back(n);
+
+		//Render sector
+		s->render(renderer, position(), angle(), yaw(), windows);
+	}
+    
 	// Renders projectiles
 	for(Projectile* p : projectiles)
 		p->render(renderer);

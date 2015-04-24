@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "game.hpp"
-#include "keyboard_handler.hpp"
+//#include "keyboard_handler.hpp"
 #include <Eigen/Dense>
 
 #include <vector>
@@ -12,7 +12,7 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-KeyboardHandler keyboardHandler;
+//KeyboardHandler keyboardHandler;
 
 int main(int argc, char* args[]){
     //HINTS for SDL - Do not remove without proper testing
@@ -23,9 +23,9 @@ int main(int argc, char* args[]){
 	Game game;			//SDL_WINDOW + SDL_SURFACE
 	SDL_Event event;	// Holds the next event to be handled (user-input)
 
-	std::vector<bool> wasd;
-	for(int i = 0; i < 11; i++) // values for wasd (movement) & km (rotation)
-		wasd.push_back(false);
+	std::vector<bool> keys;
+	for(int i = 0; i < 11; i++) // values for keyboard-keys (movement) & km (rotation)
+		keys.push_back(false);
 
 	//init variables
 	game.initialize(SCREEN_HEIGHT, SCREEN_WIDTH);
@@ -57,42 +57,41 @@ int main(int argc, char* args[]){
             // Polls/gets any pending events
             while (SDL_PollEvent (&event) != 0) {
                 // what type of event
+                bool state = false;
+                int code = -1;
                 switch (event.type)
                 {
-                    // Keyboard-press
+                    // Keyboard-Event
                     case SDL_KEYDOWN:
-                        if(event.key.keysym.sym == SDLK_w) wasd.at(0) = true;
-                        if(event.key.keysym.sym == SDLK_a) wasd.at(1) = true;
-                        if(event.key.keysym.sym == SDLK_s) wasd.at(2) = true;
-                        if(event.key.keysym.sym == SDLK_d) wasd.at(3) = true;
-                        if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_e || event.key.keysym.sym == SDLK_l) wasd.at(4) = true;
-                        if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_q || event.key.keysym.sym == SDLK_k) wasd.at(5) = true;
-                        if(event.key.keysym.sym == SDLK_UP) wasd.at(6) = true;
-                        if(event.key.keysym.sym == SDLK_DOWN) wasd.at(7) = true;
-                        if(event.key.keysym.sym == SDLK_LCTRL || event.key.keysym.sym == SDLK_c) wasd.at(8) = true;
-                        if(event.key.keysym.sym == SDLK_SPACE) wasd.at(9) = true;
-                        if(event.key.keysym.sym == SDLK_RETURN) wasd.at(10) = true; // enter
-                        keyboardHandler.handleKeyboardEvent(event.key);
-                    break;
+                        state = true;
                     case SDL_KEYUP:
-                        if(event.key.keysym.sym == SDLK_w) wasd.at(0) = false;
-                        if(event.key.keysym.sym == SDLK_a) wasd.at(1) = false;
-                        if(event.key.keysym.sym == SDLK_s) wasd.at(2) = false;
-                        if(event.key.keysym.sym == SDLK_d) wasd.at(3) = false;
-                        if(event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_e || event.key.keysym.sym == SDLK_l) wasd.at(4) = false;
-                        if(event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_q || event.key.keysym.sym == SDLK_k) wasd.at(5) = false;
-                        if(event.key.keysym.sym == SDLK_UP) wasd.at(6) = false;
-                        if(event.key.keysym.sym == SDLK_DOWN) wasd.at(7) = false;
-                        if(event.key.keysym.sym == SDLK_LCTRL || event.key.keysym.sym == SDLK_c) wasd.at(8) = false;
-                        if(event.key.keysym.sym == SDLK_SPACE) wasd.at(9) = false;
-                        if(event.key.keysym.sym == SDLK_RETURN) wasd.at(10) = false; // enter
-                        keyboardHandler.handleKeyboardEvent(event.key);
+                        code = event.key.keysym.sym;
+                        if      (code == SDLK_w)        keys.at(0) = state;     // up
+                        else if (code == SDLK_a)        keys.at(1) = state;     // left
+                        else if (code == SDLK_s)        keys.at(2) = state;     // down
+                        else if (code == SDLK_d)        keys.at(3) = state;     // right
+                        else if (code == SDLK_RIGHT)    keys.at(4) = state;     // turn right
+                        else if (code == SDLK_e)        keys.at(4) = state;     // -----||-----
+                        else if (code == SDLK_l)        keys.at(4) = state;     // -----||-----
+                        else if (code == SDLK_LEFT)     keys.at(5) = state;     // turn left
+                        else if (code == SDLK_q)        keys.at(5) = state;     // -----||-----
+                        else if (code == SDLK_k)        keys.at(5) = state;     // -----||-----
+                        else if (code == SDLK_UP)       keys.at(6) = state;     // look up
+                        else if (code == SDLK_DOWN)     keys.at(7) = state;     // look down
+                        else if (code == SDLK_LCTRL)    keys.at(8) = state;     // crouch
+                        else if (code == SDLK_c)        keys.at(8) = state;     // -----||-----
+                        else if (code == SDLK_SPACE)    keys.at(9) = state;     // jump
+                        else if (code == SDLK_RETURN)   keys.at(10) = state;    // shoot
+
+                        // Pressed ESC-key, close program
+                        else if (code == SDLK_ESCAPE && state) running = false;
                     break;
+                    // Mouse-Event
                     case SDL_MOUSEBUTTONDOWN:
-                        if(event.button.button == SDL_BUTTON_LEFT) wasd.at(10) = true;
-                    break;
+                        state = true;
                     case SDL_MOUSEBUTTONUP:
-                        if(event.button.button == SDL_BUTTON_LEFT) wasd.at(10) = false;
+                        code = event.button.button;
+                        if      (code == SDL_BUTTON_LEFT) keys.at(10) = state;  // shoot
                     break;
                         
                     // User-requested exit
@@ -102,10 +101,6 @@ int main(int argc, char* args[]){
                 } // end of switch-case
             } // end of event-loop
 
-            // Exit program if esc-key is pressed
-            if (keyboardHandler.isPressed(SDLK_ESCAPE))
-                running = false;
-
             // get any mouse-changes since last frame
             int mx; int my;
             SDL_GetRelativeMouseState(&mx, &my);
@@ -113,7 +108,7 @@ int main(int argc, char* args[]){
             //std::cout << "mx=" << mx << " my=" << my << std::endl;
 
             // update game logic
-            game.update(wasd, mx, my);
+            game.update(keys, mx, my);
 
             // update time-stuff
             updates++;

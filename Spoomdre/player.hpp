@@ -14,7 +14,9 @@ class Player : public Entity {
 	float angle_, anglesin_, anglecos_, yaw_, mouse_x, mouse_y;
 	float default_z;
 	//sector * sector_; -> is in entity 
-	std::vector<bool> wasd_;
+	std::vector<bool> keys_;
+
+	bool isFalling = false;
 
 	float const speed_ = 1.5f;
 
@@ -42,7 +44,7 @@ public:
 	void shootProjectile();
 	void removeDeadProjectiles();
 
-	void setMoveVector(std::vector<bool> &wasd){ wasd_ = wasd; }
+	void setMoveVector(std::vector<bool> &keys){ keys_ = keys; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }
 
 	float angle(){ return angle_; };

@@ -22,7 +22,7 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 
 //Take input accelleration-vector?
 void Player::update() {
-	bool isFalling = false;
+	isFalling = false;
 	bool isJumping = false;
 	bool isCrouching = false;
 	
@@ -140,6 +140,17 @@ bool Player::checkForWall(Vector3f& velo){
 					}
 					*/
  				    
+					if(z() > n->floor() + 30.0f) { // if fall-distance if over 30
+						std::cout << "falling " << z() << " - " << n->floor() << std::endl;
+						isFalling = true;
+
+						//set default camera-height on sector-change
+				    	velo(2) = n->floor() + 10.0f; // default_z = floor + 10.0f, for some reason
+				    	default_z = velo(2);
+						setSector(n);
+				    	return true;
+					}
+
 					float hole_low  = n < 0 ?  9e9 : n->floor();
             		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());
 

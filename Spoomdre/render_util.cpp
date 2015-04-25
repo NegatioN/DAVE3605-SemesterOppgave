@@ -38,3 +38,45 @@ void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int r
     SDL_RenderDrawPoint(renderer, x1, y1);
     SDL_RenderDrawPoint(renderer, x1, y2);
 }
+
+
+//Temporary method for showing a top-down view on screen.
+void render_util::render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle, std::vector<vertex> vertices){
+
+	int vCount = vertices.size();
+    
+    int yOffset = -100; // displaces map by a given y
+    int xOffset = 150;  // displaces map by a give x
+
+    // Render player on map
+    SDL_Rect prect;
+    prect.w = 5; prect.h = 5;
+    prect.x = (320+xOffset) - prect.w / 2; prect.y = (240+yOffset) - prect.h / 2;
+
+    SDL_SetRenderDrawColor(renderer, 0x55, 0xFF, 0x55, 0xFF); // map-color, Blue/green-ish
+    SDL_RenderDrawLine(renderer, 320 + xOffset, 240 + yOffset, 320 + xOffset, 232 + yOffset); // render map 
+    SDL_SetRenderDrawColor(renderer, 0xBB, 0xBB, 0xBB, 0xFF); // map-color, Blue/green-ish
+    SDL_RenderFillRect(renderer, &prect); // render map 
+
+    // Render map
+    for (int i = 0; i < vCount; i++) {
+        vertex a = vertices[i];
+        vertex b = vertices[0];
+        if (i < vCount-1)
+            b = vertices[i+1];
+
+        //Calculate 
+        float txa = a.x()-px, tya = a.y()-py;
+        float txb = b.x()-px, tyb = b.y()-py;
+
+        float tza = txa*cos(angle) + tya*sin(angle);
+        float tzb = txb*cos(angle) + tyb*sin(angle);
+              txa = txa*sin(angle) - tya*cos(angle);
+              txb = txb*sin(angle) - tyb*cos(angle);
+
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x77, 0xFF, 0xFF); // map-color, Blue/green-ish
+        SDL_RenderDrawLine(renderer, 320-txa + xOffset, 240-tza + yOffset, 320-txb + xOffset, 240-tzb + yOffset); // render map
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
+    }
+}
+

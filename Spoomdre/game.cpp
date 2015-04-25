@@ -3,6 +3,7 @@
 #include "sector.hpp"
 #include "vertex.hpp"
 #include "mapmaker.hpp"
+#include "render_util.hpp"
 
 #include <sstream>
 #include <fstream>
@@ -78,7 +79,7 @@ void Game::render() {
 
     player.render(renderer);
 	for(auto s: sectors)
-		s->render_map(renderer, player.x(), player.y(), player.z(), player.angle());
+		render_util::render_map(renderer, player.x(), player.y(), player.z(), player.angle(), s->getVertices());
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);

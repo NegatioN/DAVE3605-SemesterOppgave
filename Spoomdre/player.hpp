@@ -23,7 +23,7 @@ class Player : public Entity {
 
 	float const speed_ = 1.5f;
 
-	float const BODYHEIGHT = 15; //size of player
+	float const BODYHEIGHT = 10; //size of player
 	float const KNEEHEIGHT = (BODYHEIGHT/2.5);
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;

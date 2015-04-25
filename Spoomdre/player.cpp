@@ -131,14 +131,12 @@ bool Player::checkForWall(Vector3f& velo){
 					float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
             		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
             		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
-            		//float KNEEHEIGHT = (z()-default_z) - (BODYHEIGHT/3); //height minus floor-height in current sector - 1/3 of body = knees
-            		//float KNEEHEIGHT = (z()<=15)? 5 : (z() - TORSO); // what you can "step" over. if floor is <= 15, set normal kneeheight
+            	
             		// can player walk/jump through opening?
             		std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << std::endl;
-            		//is sector changed if falling? easier to get into portals while falling
+            		//is sector changed if falling? easier to get into portals while falling(jumping)
             		if(isFalling){
-            			//trenger flere checks her, men for nå kan man hoppe inn i alle portaler uansett høyde.
-						if(((hole_high - hole_low) >= BODYHEIGHT)) 
+						if(((hole_high - hole_low) >= BODYHEIGHT) && z() >= hole_low && z() <= hole_high) 
 						{
 							std::cout << "entered sector=" << n->getId() << std::endl;
 

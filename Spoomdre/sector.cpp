@@ -21,10 +21,21 @@ void sector::addNeighbour(sector* s){
     neighbours.push_back(s);
 };
 
+void sector::addDoor(door* d){
+    doors.push_back(d);
+};
+
 sector* sector::getWallNeighbour(vertex v1, vertex v2){
     for (sector* n : neighbours)
         if(n->containsVertices(v1,v2))
             return n;
+    return NULL;           
+}
+
+door* sector::getWallDoor(vertex v1, vertex v2){
+    for (door* d : doors)
+        if(d->checkPoints(v1,v2))
+            return d;
     return NULL;           
 }
 
@@ -118,6 +129,7 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
         float nyfloor=0;
 
         sector* neighbour = getWallNeighbour(a, b);
+        door* door_ = getWallDoor(a,b);
         if (neighbour != NULL)
         {
             nyceil  = neighbour->ceiling()  - pz;

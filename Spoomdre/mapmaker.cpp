@@ -8,7 +8,8 @@ std::vector<sector*> mapmaker::createMap(){
 	static sector s1{id++, 10.f, 40.f}, 
 				  s2{id++, 25.f, 45.f},
 				  s3{id++, 7.f, 35.f},
-				  s4{id++, 10.f, 30.f};
+				  s4{id++, 10.f, 30.f},
+				  s5{id++, 25.f, 45.f}; // same as s2 (used to test door)
 
 
 	// vertexes for test-map
@@ -27,6 +28,11 @@ std::vector<sector*> mapmaker::createMap(){
 	vertex v10= vertex{150, 75};
 
 	vertex v11= vertex{40, 120};
+
+	vertex v12 = vertex{10, 10};
+	vertex v13 = vertex{10, 50};
+
+	static door d1{v1, v7, true};
 
 	s1.addVertex(v1);
 	s1.addVertex(v2);
@@ -49,19 +55,31 @@ std::vector<sector*> mapmaker::createMap(){
 	s4.addVertex(v10);
 	s4.addVertex(v3);
 
+	s5.addVertex(v1);
+	s5.addVertex(v13);
+	s5.addVertex(v12);
+	s5.addVertex(v7);
+
 	s1.addNeighbour(&s2);
 	s1.addNeighbour(&s3);
 	s2.addNeighbour(&s1);
 	s2.addNeighbour(&s3);
+	s2.addNeighbour(&s5);
 	s3.addNeighbour(&s1);
 	s3.addNeighbour(&s2);
 	s3.addNeighbour(&s4);
 	s4.addNeighbour(&s3);
+	s5.addNeighbour(&s2);
+
+	s2.addDoor(&d1);
+
+	s5.addDoor(&d1);
 
 	sectors.push_back(&s1);
 	sectors.push_back(&s2);
 	sectors.push_back(&s3);
 	sectors.push_back(&s4);
+	sectors.push_back(&s5);
 
 	return sectors;
 }

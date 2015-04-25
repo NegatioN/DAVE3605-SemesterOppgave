@@ -2,6 +2,7 @@
 #define CLASS_SECTOR_H
 
 #include "vertex.hpp"
+#include "door.hpp"
 #include <SDL2/SDL.h>
 #include <vector>
 #include <Eigen/Core>
@@ -29,11 +30,15 @@ std::vector<vertex> vertices;
 //Id of all neighbouring sectors
 std::vector<sector*> neighbours;
 
+//all doors in this sector
+std::vector<door*> doors;
+
 public:
 	sector(int id_, float floor_height, float ceiling_height);
 
 	void addVertex(vertex v);
 	void addNeighbour(sector* s);
+	void addDoor(door* d);
 
 	struct window {int top, bottom;};
 
@@ -43,6 +48,7 @@ public:
 	void drawline(SDL_Renderer* renderer, int x,int y1, int y2, int red, int green, int blue, int alpha);
 
 	sector* getWallNeighbour(vertex v1, vertex v2);
+	door* getWallDoor(vertex v1, vertex v2);
 	bool containsVertices(vertex v1, vertex v2);
 	int getVertexCount() { return vCount; };
 	int getId() { return id_; };

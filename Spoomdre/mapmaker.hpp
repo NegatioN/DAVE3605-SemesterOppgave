@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "sector.hpp"
 #include "vertex.hpp"
+#include "door.hpp"
 
 class mapmaker{
 public:

@@ -1,8 +1,5 @@
 #include <SDL2/SDL.h>
 #include "player.hpp"
-#include "gfx_util.hpp"
-#include "vertex.hpp"
-
 #include <iostream>
 
 using namespace std;
@@ -133,12 +130,12 @@ bool Player::checkForWall(Vector3f& velo){
             		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
             	
             		// can player walk/jump through opening?
-            		std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << std::endl;
+            		std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << "Hole height" << (hole_high - hole_low) << std::endl;
             		//is sector changed if falling? easier to get into portals while falling(jumping)
             		if(isFalling){
 						if(((hole_high - hole_low) >= BODYHEIGHT) && z() >= hole_low && z() <= hole_high) 
 						{
-							std::cout << "entered sector=" << n->getId() << std::endl;
+							std::cout << "entered sector(FALLING)=" << n->getId() << std::endl;
 
 					    	setSector(n);
 					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame

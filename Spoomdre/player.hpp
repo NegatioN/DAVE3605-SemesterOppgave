@@ -4,6 +4,9 @@
 #include <vector>
 #include "entity.hpp"
 #include "projectile.hpp"
+#include "gfx_util.hpp"
+#include "vertex.hpp"
+#include "door.hpp"
 #include <Eigen/Core>
 #include <math.h>
 

@@ -140,9 +140,9 @@ bool Player::checkForWall(Vector3f& velo){
 					    	setSector(n);
 					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
 					    	default_z = getSector()->floor() + BODYHEIGHT;
-					    	velo(2) = 0;	//remove extra velocity up when jumping into sector
-					    	velo /= 2;
-					    	setVelocity(velo);		//if we fall after sector-change we fall forward.
+					    	//velo(2) = 0;	//remove extra velocity up when jumping into sector
+					    	//velo /= 2;
+					    	//setVelocity(velo);		//if we fall after sector-change we fall forward.
 					    	return true;
 	            		}	
             		}
@@ -155,8 +155,8 @@ bool Player::checkForWall(Vector3f& velo){
 					    	setSector(n);
 					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
 					    	default_z = getSector()->floor() + BODYHEIGHT;
-					    	velo /= 2;
-					    	setVelocity(velo);		//if we fall after sector-change we fall forward.
+					    	//velo /= 2;
+					    	//setVelocity(velo);		//if we fall after sector-change we fall forward.
 					    	return true;
 	            		}	
             	}

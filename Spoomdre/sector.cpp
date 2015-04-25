@@ -1,5 +1,6 @@
 #include "sector.hpp"
 #include "gfx_util.hpp"
+#include "render_util.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -181,25 +182,25 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
                 int cnyb = gfx_util::clamp(nyb, top,bottom);
 
                 /* If our ceiling is higher than their ceiling, render upper wall */                
-                drawline(renderer, x, top, cnya-1, r_, g_, b_, shade);       // Between our and their ceiling
+                render_util::drawVLine(renderer, x, top, cnya-1, r_, g_, b_, shade);       // Between our and their ceiling
 
                 /* If our floor is lower than their floor, render bottom wall */
-                drawline(renderer,x, cnyb+1, bottom, r_, g_, b_, shade);         // Between their and our floor
+                render_util::drawVLine(renderer,x, cnyb+1, bottom, r_, g_, b_, shade);         // Between their and our floor
 
                 win[x].top = gfx_util::clamp(std::max(ya, cnya), top, H-1);    // Shrink the remaining window below these ceilings
                 win[x].bottom = gfx_util::clamp(std::min(yb, cnyb), 0, bottom); // Shrink the remaining window above these floors
             
             }
             else{
-                drawline(renderer, x, top, bottom, r_, g_, b_, shade);
+                render_util::drawVLine(renderer, x, top, bottom, r_, g_, b_, shade);
             }
 
             //Draw floor and ceiling
             unsigned roofColor = 0x99/getId();
             if(ya > top )
-                drawline(renderer, x, top, ya, roofColor, roofColor, roofColor, 1);
+                render_util::drawVLine(renderer, x, top, ya, roofColor, roofColor, roofColor, 1);
             if(yb < bottom )
-                drawline(renderer, x, yb, bottom, 0x66, 0x33, 0x00, 1);
+                render_util::drawVLine(renderer, x, yb, bottom, 0x66, 0x33, 0x00, 1);
 
         }
     }
@@ -245,19 +246,3 @@ void sector::render_map(SDL_Renderer* renderer, float px, float py, float pz, fl
     }
 }
 
-
-/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
-void sector::drawline(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade)
-{
-    y1 = gfx_util::clamp(y1, 0, H-1);
-    y2 = gfx_util::clamp(y2, 0, H-1);
-
-    // if calculated shade (color - shade) is under the threshold, set the color as the threshold
-    SDL_SetRenderDrawColor(renderer, (red - shade < red / 4) ? red / 4 : red - shade, (green - shade < green / 4) ? green / 4 : green - shade, (blue - shade < blue / 4) ? blue / 4 : blue - shade, 0xFF);//vegg
-    SDL_RenderDrawLine(renderer, x1, y1, x1, y2);
-
-    //Borders?
-    SDL_SetRenderDrawColor(renderer, 5, 5, 5, 0.5f);
-    SDL_RenderDrawPoint(renderer, x1, y1);
-    SDL_RenderDrawPoint(renderer, x1, y2);
-}

@@ -13,7 +13,6 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setAcceleration(acc);
 	setSector(sec);
 	default_z = sec->floor() + BODYHEIGHT; 
-	TORSO = BODYHEIGHT - 5;
 	yaw_ = 0;
 }
 
@@ -130,16 +129,20 @@ bool Player::checkForWall(Vector3f& velo){
             		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
             	
             		// can player walk/jump through opening?
-            		std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << "Hole height" << (hole_high - hole_low) << std::endl;
+            		std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
             		//is sector changed if falling? easier to get into portals while falling(jumping)
             		if(isFalling){
-						if(((hole_high - hole_low) >= BODYHEIGHT) && z() >= hole_low && z() <= hole_high) 
+            														//z-kneeheight 
+						if(((hole_high - hole_low) >= BODYHEIGHT) && (z()-KNEEHEIGHT) >= hole_low && z() <= hole_high) 
 						{
 							std::cout << "entered sector(FALLING)=" << n->getId() << std::endl;
 
 					    	setSector(n);
 					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
 					    	default_z = getSector()->floor() + BODYHEIGHT;
+					    	velo(2) = 0;	//remove extra velocity up when jumping into sector
+					    	velo /= 2;
+					    	setVelocity(velo);		//if we fall after sector-change we fall forward.
 					    	return true;
 	            		}	
             		}
@@ -152,6 +155,8 @@ bool Player::checkForWall(Vector3f& velo){
 					    	setSector(n);
 					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
 					    	default_z = getSector()->floor() + BODYHEIGHT;
+					    	velo /= 2;
+					    	setVelocity(velo);		//if we fall after sector-change we fall forward.
 					    	return true;
 	            		}	
             	}

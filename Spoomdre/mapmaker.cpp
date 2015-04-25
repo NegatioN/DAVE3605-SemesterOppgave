@@ -6,8 +6,8 @@ std::vector<sector*> mapmaker::createMap(){
 	std::vector<sector*> sectors;
 	//Need static to save the sectors. (New causes wierd bug)
 	static sector s1{id++, 10.f, 40.f}, 
-				  s2{id++, 15.f, 45.f},
-				  s3{id++, 5.f, 35.f},
+				  s2{id++, 25.f, 45.f},
+				  s3{id++, 7.f, 35.f},
 				  s4{id++, 10.f, 30.f};
 
 

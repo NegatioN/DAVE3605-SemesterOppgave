@@ -20,7 +20,8 @@ class Player : public Entity {
 
 	float const speed_ = 1.5f;
 
-	float const BODYHEIGHT = 20; //size of player
+	float const BODYHEIGHT = 10; //size of player
+	float const KNEEHEIGHT = BODYHEIGHT/3;
 	float TORSO; // from head -> knees
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;
@@ -33,7 +34,7 @@ public:
 	Player(Vector3f &pos) : Entity(pos){};
 	void init(Vector3f pos);
 	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
-	void update();
+	void update();						//updates all vectors and values for player
 	void move(Vector3f velo);			//add velocity to position of player
 	void render(SDL_Renderer* renderer);
 	bool checkForWall(Vector3f& velo);	//collision-detection

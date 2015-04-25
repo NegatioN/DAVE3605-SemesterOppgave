@@ -49,7 +49,7 @@ void Game::initialize(int height, int width) {
 		sectors = mapmaker::createTestMap();
 
 	Vector3f velocity(0, 0, 0);
-	Vector3f acceleration(0, 0, -0.5);
+	Vector3f acceleration(0, 0, -0.2);
 	//player{position};
 	//player.init(width/2, height/2, 20); // x, y, z
 	if (MAP == 1){

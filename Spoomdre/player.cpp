@@ -38,7 +38,8 @@ void Player::update() {
 	else
 		setVelocity(vecAddition); //set velocity (0,0,0). No sliding movement
 
-	std::cout << "Player isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << " default_z=" << default_z << std::endl;
+	//handy debug-line
+	//std::cout << "Player Sector=" << getSector()->getId() << " isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << " default_z=" << default_z << std::endl;
 
 	if(isFalling){
 		Vector3f fallingVelo = velocity();
@@ -47,7 +48,7 @@ void Player::update() {
 		float maxHeight = getSector()->ceiling();
 		//if player bumps against roof of sector, set z-velo to zero and z to maxHeight
 		if(pos(2) + fallingVelo(2) >= maxHeight){
-			fallingVelo(2) = 0; //player no longer acends if he hits roof
+			//fallingVelo(2) = 0; //player no longer acends if he hits roof
 			pos(2) = maxHeight; // 
 			setPosition(pos);
 		}
@@ -130,27 +131,35 @@ bool Player::checkForWall(Vector3f& velo){
 					float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
             		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
             		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
-            		float KNEEHEIGHT = (z()<=15)? 5 : (z() - TORSO); // what you can "step" over. if floor is <= 15, set normal kneeheight
+            		//float KNEEHEIGHT = (z()-default_z) - (BODYHEIGHT/3); //height minus floor-height in current sector - 1/3 of body = knees
+            		//float KNEEHEIGHT = (z()<=15)? 5 : (z() - TORSO); // what you can "step" over. if floor is <= 15, set normal kneeheight
             		// can player walk/jump through opening?
-            		if(((hole_high - hole_low) >= BODYHEIGHT) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high)) 
-					{
-						/*
-						if(floor_diff <= (-30)) { // if fall-distance if over 30 //
-							isFalling = true;
-							//set default camera-height on sector-change
-					    	velo(2) = n->floor() + 10.0f; // default_z = floor + 10.0f, for some reason
-					    	}
-						else
-			       			velo(2) = n->floor() - getSector()->floor(); //set default camera-height on sector-change	
+            		std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << std::endl;
+            		//is sector changed if falling? easier to get into portals while falling
+            		if(isFalling){
+            			//trenger flere checks her, men for nå kan man hoppe inn i alle portaler uansett høyde.
+						if(((hole_high - hole_low) >= BODYHEIGHT)) 
+						{
+							std::cout << "entered sector=" << n->getId() << std::endl;
 
-				    	default_z += velo(2);
-				    	*/
+					    	setSector(n);
+					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
+					    	default_z = getSector()->floor() + BODYHEIGHT;
+					    	return true;
+	            		}	
+            		}
+            		//is sector changed? if not falling
+            		else{
+	            		if(((hole_high - hole_low) >= BODYHEIGHT) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high)) 
+						{
+							std::cout << "entered sector=" << n->getId() << std::endl;
 
-				    	setSector(n);
-				    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
-				    	default_z = getSector()->floor() + BODYHEIGHT;
-				    	return true;
-            		}	
+					    	setSector(n);
+					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
+					    	default_z = getSector()->floor() + BODYHEIGHT;
+					    	return true;
+	            		}	
+            	}
             	}
 			//Bumps into a wall! Slide along the wall. 
 			// This formula is from Wikipedia article "vector projection". 
@@ -186,7 +195,7 @@ void Player::crouchMove(bool isCrouch){
 }
 
 void Player::jump(Vector3f& velo){
-	velo(2) = 4;
+	velo(2) = 2.5;
 	setVelocity(velo);
 
 	Vector3f pos = position();

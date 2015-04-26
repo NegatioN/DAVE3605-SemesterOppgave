@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <vector>
 #include <queue>
+#include <Eigen/Core>
 
 struct sectorView{ sector* thisSector; int leftCropX, rightCropX;};
 
@@ -20,7 +21,7 @@ class render_util{
 public:
 	static void renderView(SDL_Renderer* renderer, Player* player, int screenHeight, int screenWidth);
 	//static void drawVLine(SDL_Renderer* renderer, Linedef line, float height, float width, int red, int green, int blue, int shade);
-	static void render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle, std::vector<vertex> vertices);
+	static void render_map(SDL_Renderer* renderer, Player* player, std::vector<vertex> vertices);
 	static void drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade);
 };
 

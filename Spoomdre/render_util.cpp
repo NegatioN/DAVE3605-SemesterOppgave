@@ -190,7 +190,7 @@ void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int r
 
 
 //Temporary method for showing a top-down view on screen.
-void render_util::render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle, std::vector<vertex> vertices){
+void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector<vertex> vertices){
 
 	int vCount = vertices.size();
     
@@ -207,6 +207,12 @@ void render_util::render_map(SDL_Renderer* renderer, float px, float py, float p
     SDL_SetRenderDrawColor(renderer, 0xBB, 0xBB, 0xBB, 0xFF); // map-color, Blue/green-ish
     SDL_RenderFillRect(renderer, &prect); // render map 
 
+
+    //get player-variables
+    Vector3f posVector = player->position();
+    float playerX = posVector(0); float playerY = posVector(1); float playerZ = posVector(2);
+    float anglecos = player->anglecos(); float anglesin = player->anglesin();
+
     // Render map
     for (int i = 0; i < vCount; i++) {
         vertex a = vertices[i];
@@ -215,13 +221,13 @@ void render_util::render_map(SDL_Renderer* renderer, float px, float py, float p
             b = vertices[i+1];
 
         //Calculate 
-        float txa = a.x()-px, tya = a.y()-py;
-        float txb = b.x()-px, tyb = b.y()-py;
+        float txa = a.x()-playerX, tya = a.y()-playerY;
+        float txb = b.x()-playerX, tyb = b.y()-playerY;
 
-        float tza = txa*cos(angle) + tya*sin(angle);
-        float tzb = txb*cos(angle) + tyb*sin(angle);
-              txa = txa*sin(angle) - tya*cos(angle);
-              txb = txb*sin(angle) - tyb*cos(angle);
+        float tza = txa*anglecos + tya*anglesin;
+        float tzb = txb*anglecos + tyb*anglesin;
+              txa = txa*anglesin - tya*anglecos;
+              txb = txb*anglesin - tyb*anglecos;
 
         SDL_SetRenderDrawColor(renderer, 0x00, 0x77, 0xFF, 0xFF); // map-color, Blue/green-ish
         SDL_RenderDrawLine(renderer, 320-txa + xOffset, 240-tza + yOffset, 320-txb + xOffset, 240-tzb + yOffset); // render map

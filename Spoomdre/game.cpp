@@ -51,8 +51,7 @@ void Game::initialize(int height, int width) {
 
 	Vector3f velocity(0, 0, 0);
 	Vector3f acceleration(0, 0, -0.2);
-	//player{position};
-	//player.init(width/2, height/2, 20); // x, y, z
+
 	if (MAP == 1){
 		Vector3f position(5, 5, 20);
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
@@ -79,7 +78,8 @@ void Game::render() {
 
     //player.render(renderer);
 	for(auto s: sectors)
-		render_util::render_map(renderer, player.x(), player.y(), player.z(), player.angle(), s->getVertices());
+		render_util::render_map(renderer, &player, s->getVertices());
+		//render_util::render_map(renderer, player.x(), player.y(), player.z(), player.angle(), s->getVertices());
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);

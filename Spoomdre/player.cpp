@@ -63,6 +63,7 @@ void Player::update() {
 	    if (keys_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
 	    if (keys_.at(9)) { isJumping = true; } 
 	    if (keys_.at(10)) { shootProjectile(); }
+	    if (keys_.at(11)){ checkForEvent(); }
 
 	    // set moving to true if movement-key is pressed
 	    bool pushing = false;
@@ -127,13 +128,16 @@ bool Player::checkForWall(Vector3f& velo){
 					float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
             		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
             		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
-            	
+            		
+            		//is this wall a door?
+        			door* door_ = n->getWallDoor(a,b);
+        			bool isDoorLocked = (door_ != NULL && door_->doorLocked());
             		// can player walk/jump through opening?
             		std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
             		//is sector changed if falling? easier to get into portals while falling(jumping)
             		if(isFalling){
             														//z-kneeheight 
-						if(((hole_high - hole_low) >= BODYHEIGHT) && (z()-KNEEHEIGHT) >= hole_low && z() <= hole_high) 
+						if(((hole_high - hole_low) >= BODYHEIGHT) && (z()-KNEEHEIGHT) >= hole_low && z() <= hole_high && !isDoorLocked )
 						{
 							std::cout << "entered sector(FALLING)=" << n->getId() << std::endl;
 
@@ -148,7 +152,7 @@ bool Player::checkForWall(Vector3f& velo){
             		}
             		//is sector changed? if not falling
             		else{
-	            		if(((hole_high - hole_low) >= BODYHEIGHT) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high)) 
+	            		if(((hole_high - hole_low) >= BODYHEIGHT) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high) && !isDoorLocked) 
 						{
 							std::cout << "entered sector=" << n->getId() << std::endl;
 
@@ -210,6 +214,64 @@ void Player::move(Vector3f velo) {
 	Vector3f pos = position();
 	pos += velo;
 	setPosition(pos);
+}
+
+void Player::checkForEvent(){
+	Vector3f pos = position();
+	float x = pos(0);
+	//all doors
+	std::vector<door*> doors = getSector()->getDoors();
+	//sector has door // should be has "event" (when we add more)
+	if(doors.size() > 0)
+	{
+		door* active = NULL;
+		float margin = 0;
+		for(door* e : doors)
+		{
+			vertex a = e->getDoorA();
+			vertex b = e->getDoorB();
+			float x_event_a = a.x();
+			float x_event_b = b.x();
+			// bool close_a = ((x + x_event_a) >= x_event_a >= (x - x_event_a));
+			// bool close_b = ((x + x_event_b) >= x_event_b >= (x - x_event_b));
+			float temp;
+			if((x + x_event_a) >= x_event_a >= (x - x_event_a))
+			{
+				temp = std::abs(x - x_event_a);
+				if(active == NULL){
+					active = e;
+					margin = temp;
+				}
+				else{
+					if(temp < margin)
+					{
+						active = e;
+						margin = temp;
+					}
+				}
+			}
+			else if((x + x_event_b) >= x_event_b >= (x - x_event_b))
+			{
+				temp = std::abs(x - x_event_b);
+				if(active == NULL){
+					active = e;
+					margin = temp;
+				}
+				else{
+					if(temp < margin)
+					{
+						active = e;
+						margin = temp;
+					}
+				}
+			}
+		}
+
+		if(active != NULL)
+		{
+			active->setDoorLocked();
+		}
+	}
 }
 
 void Player::updatePOV(){

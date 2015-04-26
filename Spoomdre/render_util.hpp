@@ -4,6 +4,7 @@
 #include "player.hpp"
 #include "sector.hpp"
 #include "vertex.hpp"
+#include "door.hpp"
 #include <SDL2/SDL.h>
 #include "gfx_util.hpp"
 #include <stdio.h>

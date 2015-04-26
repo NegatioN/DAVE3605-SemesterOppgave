@@ -55,6 +55,7 @@ public:
 
 	std::vector<vertex> getVertices(){return vertices;};
 	std::vector<sector*> getNeighbours(){return neighbours;};
+	std::vector<door*> getDoors(){return doors;};
 
 	float floor(){ return floor_height_; };
 	float ceiling(){ return ceiling_height_; };

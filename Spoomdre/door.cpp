@@ -10,3 +10,8 @@ bool door::checkPoints(vertex a, vertex b){
 		return false;
 	return true;
 }
+
+void door::setDoorLocked()
+{
+	door_locked = !door_locked;
+}

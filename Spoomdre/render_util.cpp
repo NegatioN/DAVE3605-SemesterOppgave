@@ -7,7 +7,7 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 
 	//keeps track of y-coord for neighbour-sector
 	int ytop[screenWidth], ybottom[screenWidth];
-	for(int i = 0; i < screenWidth; ++i) ybottom[i] = screenHeight-1;
+	for(int i = 0; i < screenWidth; ++i){ ybottom[i] = screenHeight-1; ytop[i] = 0;}
 
 	//get sector of player
 	sector* playerSector = player->getSector();
@@ -123,43 +123,43 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	            // Acquire the Y coordinates for our ceiling & floor for this X coordinate. 
 	            int yCeiling = (x - x1) * (y2Ceil-y1Ceil) / (x2-x1) + y1Ceil;// top
 	            int yFloor = (x - x1) * (y2Floor-y1Floor) / (x2-x1) + y1Floor;// bottom
-
+                int cropYCeiling = gfx_util::clamp(yCeiling, top, bottom);
+                int cropYFloor = gfx_util::clamp(yFloor, top, bottom);
 	            
-	            
+                //Draw floor and ceiling
+                unsigned roofColor = 0x99/currentSector->getId();
+                //if(yCeiling > top )
+                render_util::drawVLine(renderer, x, top, cropYCeiling-1, roofColor, roofColor, roofColor, 1);
+                //if(yFloor < bottom )
+                render_util::drawVLine(renderer, x, cropYFloor+1, bottom, 0x66, 0x33, 0x00, 1);
 	            
 	            /* Is there another sector behind this edge? */
-	            if(neighbour != NULL)
+	           if(neighbour != NULL)
 	            {
 	                //Find their floor and ceiling
 	                //int nya = 1;
 	                int nbrYCeil = (x - x1) * (nbrY2Ceil-nbrY1Ceil) / (x2-x1) + nbrY1Ceil;
 	                int nbrYFloor = (x - x1) * (nbrY2Floor-nbrY1Floor) / (x2-x1) + nbrY1Floor;
-	                nbrYCeil = gfx_util::clamp(nbrYCeil, top,bottom);   //clamp ceiling of neighbour to our POV
-	                nbrYFloor = gfx_util::clamp(nbrYFloor, top,bottom); //clamp floor of neighbour to our POV
+	                nbrYCeil = gfx_util::clamp(nbrYCeil, top, bottom);   //clamp ceiling of neighbour to our POV
+	                nbrYFloor = gfx_util::clamp(nbrYFloor, top, bottom); //clamp floor of neighbour to our POV
 
 	                // If our ceiling is higher than their ceiling, render upper wall                 
-	                render_util::drawVLine(renderer, x, top, nbrYCeil-1, r_, g_, b_, shade);       // Between our and their ceiling
+	                render_util::drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade);       // Between our and their ceiling
 
 	                // If our floor is lower than their floor, render bottom wall 
-	                render_util::drawVLine(renderer,x, nbrYFloor+1, bottom, r_, g_, b_, shade);         // Between their and our floor
+	                render_util::drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade);         // Between their and our floor
 
 	                //std::cout << "Sector=" << neighbour->getId() << " top=" << top << " bottom=" << bottom << std::endl;
-	                ytop[x] = gfx_util::clamp(std::max(yCeiling, nbrYCeil), top, screenHeight-1);    // Shrink the remaining window below these ceilings
-	                ybottom[x] = gfx_util::clamp(std::min(yFloor, nbrYFloor), 0, bottom); // Shrink the remaining window above these floors
+	                ytop[x] = gfx_util::clamp(std::max(cropYCeiling, nbrYCeil), top, screenHeight-1);    // Shrink the remaining window below these ceilings
+	                ybottom[x] = gfx_util::clamp(std::min(cropYFloor, nbrYFloor), 0, bottom); // Shrink the remaining window above these floors
 	            
 	            }
-	            
 	            else{
 	                
-	                render_util::drawVLine(renderer, x, top, bottom, r_, g_, b_, shade);
+	                render_util::drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade);
 	            }
 
-	            //Draw floor and ceiling
-	            unsigned roofColor = 0x99/currentSector->getId();
-	            if(yCeiling > top )
-	                render_util::drawVLine(renderer, x, top, yCeiling, roofColor, roofColor, roofColor, 1);
-	            if(yFloor < bottom )
-	                render_util::drawVLine(renderer, x, yFloor, bottom, 0x66, 0x33, 0x00, 1);
+
 
 	        }
 

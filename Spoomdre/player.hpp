@@ -26,7 +26,7 @@ class Player : public Entity {
 	float const BODYHEIGHT = 10; //size of player
 	float const KNEEHEIGHT = (BODYHEIGHT/2.5);
 
-	float const event_radius = 3.0f;
+	int const event_radius = 10.0;
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;
 	// variables for cooldown between each projectile-shoot

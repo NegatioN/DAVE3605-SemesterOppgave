@@ -51,6 +51,8 @@ public:
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }
 
 	float angle(){ return angle_; };
+	float anglesin(){return anglesin_;};
+	float anglecos(){return anglecos_;};
 	float yaw() { return yaw_; }
 	float x(){ return position()(0); };
 	float y(){ return position()(1); };

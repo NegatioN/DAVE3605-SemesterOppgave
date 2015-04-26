@@ -75,9 +75,9 @@ void Game::render() {
     SDL_RenderClear(renderer);
 
     // render player & world
-    //player.render(renderer);
+    render_util::renderView(renderer, &player, height_, width_);
 
-    player.render(renderer);
+    //player.render(renderer);
 	for(auto s: sectors)
 		render_util::render_map(renderer, player.x(), player.y(), player.z(), player.angle(), s->getVertices());
 

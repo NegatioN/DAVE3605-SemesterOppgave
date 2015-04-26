@@ -1,9 +1,13 @@
 #include "render_util.hpp"
 
 
-void render_util::renderView(Player* player, int screenHeight, int screenWidth){
+void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenHeight, int screenWidth){
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
 	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
+
+	//keeps track of y-coord for neighbour-sector
+	int ytop[screenWidth], ybottom[screenWidth];
+	for(int i = 0; i < screenWidth; ++i) ybottom[i] = screenHeight-1;
 
 	//get sector of player
 	sector* playerSector = player->getSector();
@@ -15,22 +19,167 @@ void render_util::renderView(Player* player, int screenHeight, int screenWidth){
 	sectorRenderQueue.push(playerSectorView);
 
 
-
 	while(!sectorRenderQueue.empty()){
 		sectorView currentSectorView = sectorRenderQueue.front(); //get front-element from queue
 		sector* currentSector = currentSectorView.thisSector;
 		sectorRenderQueue.pop();	//remove front-element from queue
 
-		//for each sector do render
+		///START RENDER SECTOR
 		
+		std::vector<vertex> vertices = currentSector->getVertices();	//verticies in sector
+		int vertexCount = vertices.size();	//number of verticies in sector
+
+		//draw lines for each vertex in sector
+		for (int i = 0; i < vertexCount; i++) {
+			vertex a = vertices[i]; vertex b = vertices[0];
+			
+			if (i < vertexCount-1)
+				b = vertices[i+1];
 
 
+			// x & y of sector-edge endpoints
+	        float vertexAx = a.x() - player->x(); float vertexAy = a.y() - player->y();
+	        float vertexBx = b.x() - player->x(); float vertexBy = b.y() - player->y();
+
+	        float psin = player->anglesin(); float pcos = player->anglecos();
+	      	//player translated coordinates of vertexes
+	        float txA = vertexAx * psin - vertexAy * pcos; float tzA = vertexAx * pcos + vertexAy * psin;
+	        float txB = vertexBx * psin - vertexBy * pcos; float tzB = vertexBx * pcos + vertexBy * psin;
+
+            // Is wall at least partially in front of player
+        	if(tzA <= 0 && tzB <= 0) continue;
+
+        	// If partially behind player, clip it
+	        if(tzA <= 0 || tzB <= 0)
+	        {
+	            float nearz = 1e-4f, farz = 5, nearside = 1e-5f, farside = 20.f;
+
+	            // Intersection between wall and edges of player-view
+	            xy i1 = gfx_util::intersect(txA,tzA,txB,tzB, -nearside,nearz, -farside,farz);
+	            xy i2 = gfx_util::intersect(txA,tzA,txB,tzB,  nearside,nearz,  farside,farz);
+	            if(tzA < nearz) { if(i1.y > 0) { txA = i1.x; tzA = i1.y; } else { txA = i2.x; tzA = i2.y; } }
+	            if(tzB < nearz) { if(i1.y > 0) { txB = i1.x; tzB = i1.y; } else { txB = i2.x; tzB = i2.y; } }
+	        }
+            // Perspective transformation
+	        float xscale1 = hfov / tzA; float yscale1 = vfov / tzA;  
+	       	float xscale2 = hfov / tzB; float yscale2 = vfov / tzB; 
+	       
+	        int x1 = screenWidth/2 - (int)(txA * xscale1); 
+	        int x2 = screenWidth/2 - (int)(txB * xscale2);
+
+    		// Only render if it's visible (doesn't render the backside of walls)
+        	if(x1 >= x2 || x2 < currentSectorView.leftCropX || x1 > currentSectorView.rightCropX) continue;
+
+        	float playerZ = player->z();
+	        // Ceiling&floor-height relative to player
+        	float yceil  = currentSector->ceiling()  - playerZ;
+        	float yfloor = currentSector->floor() - playerZ;
+
+        	float nbrCeil=0; float nbrFloor=0;
+        	
+
+        	
+        	//are current vertexes shared between neighbour-sector?
+        	sector* neighbour = currentSector->getWallNeighbour(a, b);
+
+	        if (neighbour != NULL)
+	        {
+	            nbrCeil  = neighbour->ceiling()  - playerZ;
+	            nbrFloor = neighbour->floor() - playerZ;
+	        }
+	        float yaw = player->yaw();
+
+	        // Project ceiling and floor heights to screen coordinates
+	        int y1Ceil = screenHeight / 2 - (int) ((yceil + tzA * yaw) * yscale1);
+	        int y1Floor = screenHeight / 2 - (int) ((yfloor + tzA * yaw) * yscale1);
+	        int y2Ceil = screenHeight / 2 - (int) ((yceil + tzB * yaw) * yscale2);
+	        int y2Floor = screenHeight / 2 - (int) ((yfloor + tzB * yaw) * yscale2);
+	        
+	        /* The same for the neighboring sector */
+	        int nbrY1Ceil = screenHeight/2 - (int)((nbrCeil+ tzA * yaw) * yscale1);
+	        int nbrY1Floor = screenHeight/2 - (int)((nbrFloor + tzA * yaw) * yscale1);
+	        int nbrY2Ceil = screenHeight/2 - (int)((nbrCeil + tzB * yaw) * yscale2);
+	        int nbrY2Floor = screenHeight/2 - (int)((nbrFloor + tzB * yaw) * yscale2);
+
+            // Render the wall. 
+        	int beginx = std::max(x1, currentSectorView.leftCropX);
+        	int endx = std::min(x2, currentSectorView.rightCropX);
+
+	        for(int x = beginx; x <= endx; ++x)
+	        {
+	            int top = ytop[x];
+	            int bottom = ybottom[x];
+
+	            int r_, g_, b_;
+	            //Paint corners black
+	            if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
+	            else {r_ = 0xEE/currentSector->getId(); g_ = 0xBB; b_ = 0x77;}//Wall brown
+
+
+	            // Calculate the Z coordinate for this point. (Only used for lighting.) 
+	            int z_ = ((x - x1) * (tzB-tzA) / (x2-x1) + tzA) * 8;
+	            int shade = (z_ - 16) / 4; // calculated from the Z-distance
+
+	            // Acquire the Y coordinates for our ceiling & floor for this X coordinate. 
+	            int yCeiling = (x - x1) * (y2Ceil-y1Ceil) / (x2-x1) + y1Ceil;// top
+	            int yFloor = (x - x1) * (y2Floor-y1Floor) / (x2-x1) + y1Floor;// bottom
+
+	            
+	            
+	            
+	            /* Is there another sector behind this edge? */
+	            if(neighbour != NULL)
+	            {
+	                //Find their floor and ceiling
+	                //int nya = 1;
+	                int nbrYCeil = (x - x1) * (nbrY2Ceil-nbrY1Ceil) / (x2-x1) + nbrY1Ceil;
+	                int nbrYFloor = (x - x1) * (nbrY2Floor-nbrY1Floor) / (x2-x1) + nbrY1Floor;
+	                nbrYCeil = gfx_util::clamp(nbrYCeil, top,bottom);   //clamp ceiling of neighbour to our POV
+	                nbrYFloor = gfx_util::clamp(nbrYFloor, top,bottom); //clamp floor of neighbour to our POV
+
+	                // If our ceiling is higher than their ceiling, render upper wall                 
+	                render_util::drawVLine(renderer, x, top, nbrYCeil-1, r_, g_, b_, shade);       // Between our and their ceiling
+
+	                // If our floor is lower than their floor, render bottom wall 
+	                render_util::drawVLine(renderer,x, nbrYFloor+1, bottom, r_, g_, b_, shade);         // Between their and our floor
+
+	                //std::cout << "Sector=" << neighbour->getId() << " top=" << top << " bottom=" << bottom << std::endl;
+	                ytop[x] = gfx_util::clamp(std::max(yCeiling, nbrYCeil), top, screenHeight-1);    // Shrink the remaining window below these ceilings
+	                ybottom[x] = gfx_util::clamp(std::min(yFloor, nbrYFloor), 0, bottom); // Shrink the remaining window above these floors
+	            
+	            }
+	            
+	            else{
+	                
+	                render_util::drawVLine(renderer, x, top, bottom, r_, g_, b_, shade);
+	            }
+
+	            //Draw floor and ceiling
+	            unsigned roofColor = 0x99/currentSector->getId();
+	            if(yCeiling > top )
+	                render_util::drawVLine(renderer, x, top, yCeiling, roofColor, roofColor, roofColor, 1);
+	            if(yFloor < bottom )
+	                render_util::drawVLine(renderer, x, yFloor, bottom, 0x66, 0x33, 0x00, 1);
+
+	        }
+
+	        //add sector-neighbours to renderQueue
+	        if(neighbour != NULL && endx >= beginx){
+	        	sectorView nbrSectorView{neighbour, beginx, endx};
+	        	sectorRenderQueue.push(nbrSectorView);
+	        }
+
+		}
+
+		///END RENDER SECTOR
+/*
 
 		//add sector-neighbours to renderQueue
 		for(auto nbrSector : currentSector->getNeighbours()){
 			sectorView nbrSectorView{nbrSector, 0, screenWidth-1};
 			sectorRenderQueue.push(nbrSectorView);
 		}
+		*/
 	}
 
 

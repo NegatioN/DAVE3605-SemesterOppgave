@@ -24,7 +24,7 @@ int main(int argc, char* args[]){
 	SDL_Event event;	// Holds the next event to be handled (user-input)
 
 	std::vector<bool> keys;
-	for(int i = 0; i < 11; i++) // values for keyboard-keys (movement) & km (rotation)
+	for(int i = 0; i < 12; i++) // values for keyboard-keys (movement) & km (rotation)
 		keys.push_back(false);
 
 	//init variables
@@ -71,7 +71,7 @@ int main(int argc, char* args[]){
                         else if (code == SDLK_s)        keys.at(2) = state;     // down
                         else if (code == SDLK_d)        keys.at(3) = state;     // right
                         else if (code == SDLK_RIGHT)    keys.at(4) = state;     // turn right
-                        else if (code == SDLK_e)        keys.at(4) = state;     // -----||-----
+                        //else if (code == SDLK_e)        keys.at(4) = state;     // -----||----- brukes for nå til event(som åpne før)
                         else if (code == SDLK_l)        keys.at(4) = state;     // -----||-----
                         else if (code == SDLK_LEFT)     keys.at(5) = state;     // turn left
                         else if (code == SDLK_q)        keys.at(5) = state;     // -----||-----
@@ -82,6 +82,7 @@ int main(int argc, char* args[]){
                         else if (code == SDLK_c)        keys.at(8) = state;     // -----||-----
                         else if (code == SDLK_SPACE)    keys.at(9) = state;     // jump
                         else if (code == SDLK_RETURN)   keys.at(10) = state;    // shoot
+                        else if (code == SDLK_e)        keys.at(11) = state;    // evnt/interact
 
                         // Pressed ESC-key, close program
                         else if (code == SDLK_ESCAPE && state) running = false;

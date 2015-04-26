@@ -25,6 +25,8 @@ class Player : public Entity {
 
 	float const BODYHEIGHT = 10; //size of player
 	float const KNEEHEIGHT = (BODYHEIGHT/2.5);
+
+	float const event_radius = 3.0f;
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;
 	// variables for cooldown between each projectile-shoot
@@ -42,6 +44,7 @@ public:
 	bool checkForWall(Vector3f& velo);	//collision-detection
 	void crouchMove(bool isCrouch);		//crouch
 	void jump(Vector3f& velo);			//jumps. Updates Z-axis etc
+	void checkForEvent();				//checks for events close by, 
 	void updatePOV();					//updates player POV (angle+yaw)
 
 	void shootProjectile();

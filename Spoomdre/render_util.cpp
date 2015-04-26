@@ -81,7 +81,8 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
         	
         	//are current vertexes shared between neighbour-sector?
         	sector* neighbour = currentSector->getWallNeighbour(a, b);
-
+        	//is this wall a door?
+        	door* door_ = currentSector->getWallDoor(a,b);
 	        if (neighbour != NULL)
 	        {
 	            nbrCeil  = neighbour->ceiling()  - playerZ;
@@ -164,7 +165,8 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	        }
 
 	        //add sector-neighbours to renderQueue
-	        if(neighbour != NULL && endx >= beginx){
+	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
+	        if(neighbour != NULL && endx >= beginx && !(isDoorLocked)){
 	        	sectorView nbrSectorView{neighbour, beginx, endx};
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }

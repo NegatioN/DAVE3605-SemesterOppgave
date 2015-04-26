@@ -2,6 +2,7 @@
 #define CLASS_DOOR_H
 
 #include "vertex.hpp"
+#include "linedef.hpp"
 #include <SDL2/SDL.h>
 #include <vector>
 #include <Eigen/Core>
@@ -21,6 +22,8 @@ public:
 	vertex getDoorA(){ return door_a; };
 	vertex getDoorB(){ return door_b; };
 	bool doorLocked(){ return door_locked; };
+
+	void setDoorLocked();
 };
 
 #endif

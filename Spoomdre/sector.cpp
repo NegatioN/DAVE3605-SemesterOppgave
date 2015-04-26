@@ -56,6 +56,7 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
     float py = pos(1);
     float pz = pos(2);
 
+    //draw lines for each vertex in sector
     for (int i = 0; i < vCount; i++) {
 		vertex a = vertices[i];
 		vertex b = vertices[0];
@@ -76,24 +77,25 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
         
 
 		// x & y of sector-edge endpoints
-        float vx1 = a.x() - px;
-        float vy1 = a.y() - py;
-        float vx2 = b.x() - px;
-        float vy2 = b.y() - py;
+        float vertexAx = a.x() - px;
+        float vertexAy = a.y() - py;
+        float vertexBx = b.x() - px;
+        float vertexBy = b.y() - py;
 
         // Rotate around player-view
         float pcos = cos(angle);
         float psin = sin(angle);
-        float tx1 = vx1 * psin - vy1 * pcos;
-        float tz1 = vx1 * pcos + vy1 * psin;
-        float tx2 = vx2 * psin - vy2 * pcos;
-        float tz2 = vx2 * pcos + vy2 * psin;
+        //player translated coordinates of vertexes
+        float txA = vertexAx * psin - vertexAy * pcos;
+        float tzA = vertexAx * pcos + vertexAy * psin;
+        float txB = vertexBx * psin - vertexBy * pcos;
+        float tzB = vertexBx * pcos + vertexBy * psin;
 
         // Is wall at least partially in front of player
-        if(tz1 <= 0 && tz2 <= 0) continue;
+        if(tzA <= 0 && tzB <= 0) continue;
 
         // If partially behind player, clip it
-        if(tz1 <= 0 || tz2 <= 0)
+        if(tzA <= 0 || tzB <= 0)
         {
             float nearz = 1e-4f;
             float farz = 5;
@@ -101,22 +103,19 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
             float farside = 20.f;
 
             // Intersection between wall and edges of player-view
-            xy i1 = gfx_util::intersect(tx1,tz1,tx2,tz2, -nearside,nearz, -farside,farz);
-            xy i2 = gfx_util::intersect(tx1,tz1,tx2,tz2,  nearside,nearz,  farside,farz);
-            if(tz1 < nearz) { if(i1.y > 0) { tx1 = i1.x; tz1 = i1.y; } else { tx1 = i2.x; tz1 = i2.y; } }
-            if(tz2 < nearz) { if(i1.y > 0) { tx2 = i1.x; tz2 = i1.y; } else { tx2 = i2.x; tz2 = i2.y; } }
+            xy i1 = gfx_util::intersect(txA,tzA,txB,tzB, -nearside,nearz, -farside,farz);
+            xy i2 = gfx_util::intersect(txA,tzA,txB,tzB,  nearside,nearz,  farside,farz);
+            if(tzA < nearz) { if(i1.y > 0) { txA = i1.x; tzA = i1.y; } else { txA = i2.x; tzA = i2.y; } }
+            if(tzB < nearz) { if(i1.y > 0) { txB = i1.x; tzB = i1.y; } else { txB = i2.x; tzB = i2.y; } }
         }
 
         // Perspective transformation
-        float xscale1 = hfov / tz1;
-        float yscale1 = vfov / tz1;    
-        int x1 = W/2 - (int)(tx1 * xscale1);
-        float xscale2 = hfov / tz2;
-        float yscale2 = vfov / tz2;    
-        int x2 = W/2 - (int)(tx2 * xscale2);
-
-        // setLeft(x1);
-        // setRight(x2);
+        float xscale1 = hfov / tzA;
+        float yscale1 = vfov / tzA;    
+        int x1 = W/2 - (int)(txA * xscale1);
+        float xscale2 = hfov / tzB;
+        float yscale2 = vfov / tzB;    
+        int x2 = W/2 - (int)(txB * xscale2);
 
 		// Only render if it's visible (doesn't render the backside of walls)
         if(x1 >= x2) continue; // Only render if it's visible
@@ -126,28 +125,28 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
         float yceil  = ceiling_height_  - pz;
         float yfloor = floor_height_ - pz;
 
-        float nyceil=0;
-        float nyfloor=0;
+        float nbrCeil=0;
+        float nbrFloor=0;
 
         sector* neighbour = getWallNeighbour(a, b);
         door* door_ = getWallDoor(a,b);
         if (neighbour != NULL)
         {
-            nyceil  = neighbour->ceiling()  - pz;
-            nyfloor = neighbour->floor() - pz;
+            nbrCeil  = neighbour->ceiling()  - pz;
+            nbrFloor = neighbour->floor() - pz;
         }
 
         // Project ceiling and floor heights to screen coordinates
-        int y1a = H / 2 - (int) ((yceil + tz1 * yaw) * yscale1);
-        int y1b = H / 2 - (int) ((yfloor + tz1 * yaw) * yscale1);
-        int y2a = H / 2 - (int) ((yceil + tz2 * yaw) * yscale2);
-        int y2b = H / 2 - (int) ((yfloor + tz2 * yaw) * yscale2);
+        int y1Ceil = H / 2 - (int) ((yceil + tzA * yaw) * yscale1);
+        int y1Floor = H / 2 - (int) ((yfloor + tzA * yaw) * yscale1);
+        int y2Ceil = H / 2 - (int) ((yceil + tzB * yaw) * yscale2);
+        int y2Floor = H / 2 - (int) ((yfloor + tzB * yaw) * yscale2);
         
         /* The same for the neighboring sector */
-        int ny1a = H/2 - (int)((nyceil+ tz1 * yaw) * yscale1);
-        int ny1b = H/2 - (int)((nyfloor + tz1 * yaw) * yscale1);
-        int ny2a = H/2 - (int)((nyceil + tz2 * yaw) * yscale2);
-        int ny2b = H/2 - (int)((nyfloor + tz2 * yaw) * yscale2);
+        int nbrY1Ceil = H/2 - (int)((nbrCeil+ tzA * yaw) * yscale1);
+        int nbrY1Floor = H/2 - (int)((nbrFloor + tzA * yaw) * yscale1);
+        int nbrY2Ceil = H/2 - (int)((nbrCeil + tzB * yaw) * yscale2);
+        int nbrY2Floor = H/2 - (int)((nbrFloor + tzB * yaw) * yscale2);
 
         // Render the wall. 
         int beginx = std::max(x1, 0), endx = std::min(x2, W-1);
@@ -165,42 +164,52 @@ void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, fl
             }
 
             // Calculate the Z coordinate for this point. (Only used for lighting.) 
-            int z_ = ((x - x1) * (tz2-tz1) / (x2-x1) + tz1) * 8;
+            int z_ = ((x - x1) * (tzB-tzA) / (x2-x1) + tzA) * 8;
             int shade = (z_ - 16) / 4; // calculated from the Z-distance
 
             // Acquire the Y coordinates for our ceiling & floor for this X coordinate. 
-            int ya = (x - x1) * (y2a-y1a) / (x2-x1) + y1a;// top
-            int yb = (x - x1) * (y2b-y1b) / (x2-x1) + y1b;// bottom
+            int yCeiling = (x - x1) * (y2Ceil-y1Ceil) / (x2-x1) + y1Ceil;// top
+            int yFloor = (x - x1) * (y2Floor-y1Floor) / (x2-x1) + y1Floor;// bottom
+            
             
             /* Is there another sector behind this edge? */
+
+
             if(neighbour != NULL)
             {
                 //Find their floor and ceiling
-                int nya = (x - x1) * (ny2a-ny1a) / (x2-x1) + ny1a;
-                int nyb = (x - x1) * (ny2b-ny1b) / (x2-x1) + ny1b;
-                int cnya = gfx_util::clamp(nya, top,bottom);
-                int cnyb = gfx_util::clamp(nyb, top,bottom);
+                //int nya = 1;
+                int nbrYCeil = (x - x1) * (nbrY2Ceil-nbrY1Ceil) / (x2-x1) + nbrY1Ceil;
+                int nbrYFloor = (x - x1) * (nbrY2Floor-nbrY1Floor) / (x2-x1) + nbrY1Floor;
+                nbrYCeil = gfx_util::clamp(nbrYCeil, top,bottom);   //clamp ceiling of neighbour to our POV
+                nbrYFloor = gfx_util::clamp(nbrYFloor, top,bottom); //clamp floor of neighbour to our POV
 
-                /* If our ceiling is higher than their ceiling, render upper wall */                
-                render_util::drawVLine(renderer, x, top, cnya-1, r_, g_, b_, shade);       // Between our and their ceiling
+                // If our ceiling is higher than their ceiling, render upper wall                 
+                render_util::drawVLine(renderer, x, top, nbrYCeil-1, r_, g_, b_, shade);       // Between our and their ceiling
 
-                /* If our floor is lower than their floor, render bottom wall */
-                render_util::drawVLine(renderer,x, cnyb+1, bottom, r_, g_, b_, shade);         // Between their and our floor
+                // If our floor is lower than their floor, render bottom wall 
+                render_util::drawVLine(renderer,x, nbrYFloor+1, bottom, r_, g_, b_, shade);         // Between their and our floor
 
-                win[x].top = gfx_util::clamp(std::max(ya, cnya), top, H-1);    // Shrink the remaining window below these ceilings
-                win[x].bottom = gfx_util::clamp(std::min(yb, cnyb), 0, bottom); // Shrink the remaining window above these floors
+                //std::cout << "Sector=" << neighbour->getId() << " top=" << top << " bottom=" << bottom << std::endl;
+                win[x].top = gfx_util::clamp(std::max(yCeiling, nbrYCeil), top, H-1);    // Shrink the remaining window below these ceilings
+                win[x].bottom = gfx_util::clamp(std::min(yFloor, nbrYFloor), 0, bottom); // Shrink the remaining window above these floors
             
             }
+            
             else{
+                
                 render_util::drawVLine(renderer, x, top, bottom, r_, g_, b_, shade);
             }
+            
+            
+
 
             //Draw floor and ceiling
             unsigned roofColor = 0x99/getId();
-            if(ya > top )
-                render_util::drawVLine(renderer, x, top, ya, roofColor, roofColor, roofColor, 1);
-            if(yb < bottom )
-                render_util::drawVLine(renderer, x, yb, bottom, 0x66, 0x33, 0x00, 1);
+            if(yCeiling > top )
+                render_util::drawVLine(renderer, x, top, yCeiling, roofColor, roofColor, roofColor, 1);
+            if(yFloor < bottom )
+                render_util::drawVLine(renderer, x, yFloor, bottom, 0x66, 0x33, 0x00, 1);
 
         }
     }

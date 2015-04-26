@@ -1,6 +1,6 @@
 #include "render_util.hpp"
 
-
+// WELCOME TO THE MATRIX
 void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenHeight, int screenWidth){
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
 	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
@@ -64,8 +64,8 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	        float xscale1 = hfov / tzA; float yscale1 = vfov / tzA;  
 	       	float xscale2 = hfov / tzB; float yscale2 = vfov / tzB; 
 	       
-	        int x1 = screenWidth/2 - (int)(txA * xscale1); 
-	        int x2 = screenWidth/2 - (int)(txB * xscale2);
+	        int x1 = screenWidth / 2 - (int)(txA * xscale1); 
+	        int x2 = screenWidth / 2 - (int)(txB * xscale2);
 
     		// Only render if it's visible (doesn't render the backside of walls)
         	if(x1 >= x2 || x2 < currentSectorView.leftCropX || x1 > currentSectorView.rightCropX) continue;
@@ -75,11 +75,9 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
         	float yceil  = currentSector->ceiling()  - playerZ;
         	float yfloor = currentSector->floor() - playerZ;
 
-        	float nbrCeil=0; float nbrFloor=0;
-        	
+        	float nbrCeil = 0; float nbrFloor = 0;
 
-        	
-        	//are current vertexes shared between neighbour-sector?
+        	// Are current vertexes shared between neighbour-sector?
         	sector* neighbour = currentSector->getWallNeighbour(a, b);
 
 	        if (neighbour != NULL)
@@ -90,16 +88,16 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	        float yaw = player->yaw();
 
 	        // Project ceiling and floor heights to screen coordinates
-	        int y1Ceil = screenHeight / 2 - (int) ((yceil + tzA * yaw) * yscale1);
+	        int y1Ceil  = screenHeight / 2 - (int) ((yceil + tzA * yaw) * yscale1);
 	        int y1Floor = screenHeight / 2 - (int) ((yfloor + tzA * yaw) * yscale1);
-	        int y2Ceil = screenHeight / 2 - (int) ((yceil + tzB * yaw) * yscale2);
+	        int y2Ceil  = screenHeight / 2 - (int) ((yceil + tzB * yaw) * yscale2);
 	        int y2Floor = screenHeight / 2 - (int) ((yfloor + tzB * yaw) * yscale2);
 	        
-	        /* The same for the neighboring sector */
-	        int nbrY1Ceil = screenHeight/2 - (int)((nbrCeil+ tzA * yaw) * yscale1);
-	        int nbrY1Floor = screenHeight/2 - (int)((nbrFloor + tzA * yaw) * yscale1);
-	        int nbrY2Ceil = screenHeight/2 - (int)((nbrCeil + tzB * yaw) * yscale2);
-	        int nbrY2Floor = screenHeight/2 - (int)((nbrFloor + tzB * yaw) * yscale2);
+	        // The same for the neighboring sector
+	        int nbrY1Ceil  = screenHeight / 2 - (int)((nbrCeil+ tzA * yaw) * yscale1);
+	        int nbrY1Floor = screenHeight / 2 - (int)((nbrFloor + tzA * yaw) * yscale1);
+	        int nbrY2Ceil  = screenHeight / 2 - (int)((nbrCeil + tzB * yaw) * yscale2);
+	        int nbrY2Floor = screenHeight / 2 - (int)((nbrFloor + tzB * yaw) * yscale2);
 
             // Render the wall. 
         	int beginx = std::max(x1, currentSectorView.leftCropX);
@@ -115,7 +113,6 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	            if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
 	            else {r_ = 0xEE/currentSector->getId(); g_ = 0xBB; b_ = 0x77;}//Wall brown
 
-
 	            // Calculate the Z coordinate for this point. (Only used for lighting.) 
 	            int z_ = ((x - x1) * (tzB-tzA) / (x2-x1) + tzA) * 8;
 	            int shade = (z_ - 16) / 4; // calculated from the Z-distance
@@ -126,91 +123,54 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
                 int cropYCeiling = gfx_util::clamp(yCeiling, top, bottom);
                 int cropYFloor = gfx_util::clamp(yFloor, top, bottom);
 	            
-                //Draw floor and ceiling
+                // Draw floor and ceiling
                 unsigned roofColor = 0x99/currentSector->getId();
-                //if(yCeiling > top )
                 render_util::drawVLine(renderer, x, top, cropYCeiling-1, roofColor, roofColor, roofColor, 1);
-                //if(yFloor < bottom )
                 render_util::drawVLine(renderer, x, cropYFloor+1, bottom, 0x66, 0x33, 0x00, 1);
 	            
-	            /* Is there another sector behind this edge? */
-	           if(neighbour != NULL)
+	            // Another sector behind this edge?
+	            if(neighbour != NULL)
 	            {
 	                //Find their floor and ceiling
-	                //int nya = 1;
 	                int nbrYCeil = (x - x1) * (nbrY2Ceil-nbrY1Ceil) / (x2-x1) + nbrY1Ceil;
 	                int nbrYFloor = (x - x1) * (nbrY2Floor-nbrY1Floor) / (x2-x1) + nbrY1Floor;
 	                nbrYCeil = gfx_util::clamp(nbrYCeil, top, bottom);   //clamp ceiling of neighbour to our POV
 	                nbrYFloor = gfx_util::clamp(nbrYFloor, top, bottom); //clamp floor of neighbour to our POV
 
-	                // If our ceiling is higher than their ceiling, render upper wall                 
-	                render_util::drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade);       // Between our and their ceiling
+	                // If our ceiling is higher than their ceiling, render upper wall     
+                    if(cropYCeiling < nbrYCeil)           
+	                   render_util::drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade); // Between our and their ceiling
 
-	                // If our floor is lower than their floor, render bottom wall 
-	                render_util::drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade);         // Between their and our floor
-
-	                //std::cout << "Sector=" << neighbour->getId() << " top=" << top << " bottom=" << bottom << std::endl;
-	                ytop[x] = gfx_util::clamp(std::max(cropYCeiling, nbrYCeil), top, screenHeight-1);    // Shrink the remaining window below these ceilings
-	                ybottom[x] = gfx_util::clamp(std::min(cropYFloor, nbrYFloor), 0, bottom); // Shrink the remaining window above these floors
-	            
+	                // If our floor is lower than their floor, render bottom wall
+                    if(cropYFloor > nbrYFloor) 
+                        render_util::drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade);  // Between their and our floor
+                    
+                    // Shrink the remaining window below this ceiling and floor
+	                ytop[x] = gfx_util::clamp(std::max(cropYCeiling, nbrYCeil), top, screenHeight-1);
+	                ybottom[x] = gfx_util::clamp(std::min(cropYFloor, nbrYFloor), 0, bottom);          
 	            }
 	            else{
-	                
-	                render_util::drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade);
+                    // No neighbors, render wall from top to bottom
+                    render_util::drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade);
 	            }
-
-
-
 	        }
 
-	        //add sector-neighbours to renderQueue
+	        // Add sector-neighbours to renderQueue
 	        if(neighbour != NULL && endx >= beginx){
 	        	sectorView nbrSectorView{neighbour, beginx, endx};
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }
-
 		}
 
 		///END RENDER SECTOR
-/*
-
-		//add sector-neighbours to renderQueue
-		for(auto nbrSector : currentSector->getNeighbours()){
-			sectorView nbrSectorView{nbrSector, 0, screenWidth-1};
-			sectorRenderQueue.push(nbrSectorView);
-		}
-		*/
 	}
-
-
 }
 
 void render_util::renderSector(sector currentSect){
 
 }
 
-
-/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
-/*
-void render_util::drawVLine(SDL_Renderer* renderer, Linedef line, float height, float width, int red, int green, int blue, int shade)
-{
-    //y1 = gfx_util::clamp(y1, 0, height-1);
-    //y2 = gfx_util::clamp(y2, 0, height-1);
-
-    vertex left = line.left();
-    vertex right = line.right();
-    // if calculated shade (color - shade) is under the threshold, set the color as the threshold
-    SDL_SetRenderDrawColor(renderer, (red - shade < red / 4) ? red / 4 : red - shade, (green - shade < green / 4) ? green / 4 : green - shade, (blue - shade < blue / 4) ? blue / 4 : blue - shade, 0xFF);//vegg
-    SDL_RenderDrawLine(renderer, left.x(), left.y(), right.x(), right.y());
-
-    //Borders?
-    SDL_SetRenderDrawColor(renderer, 5, 5, 5, 0.5f);
-    SDL_RenderDrawPoint(renderer, left.x(), left.y();
-    SDL_RenderDrawPoint(renderer, left.x(), right.y());
-}
-*/
-
-/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
+// vline: Draw a vertical line on screen, with a different color pixel in top & bottom 
 void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade)
 {
 	int H = 480; // window-height

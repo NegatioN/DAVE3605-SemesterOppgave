@@ -1,6 +1,46 @@
 #include "render_util.hpp"
 
 
+void render_util::renderView(Player* player, int screenHeight, int screenWidth){
+	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
+	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
+
+	//get sector of player
+	sector* playerSector = player->getSector();
+	//define view of first sector (whole screen)
+	sectorView playerSectorView{playerSector, 0, screenWidth-1};
+
+	std::queue<sectorView> sectorRenderQueue;
+	//std::queue<sector*> sectorRenderQueue;
+	sectorRenderQueue.push(playerSectorView);
+
+
+
+	while(!sectorRenderQueue.empty()){
+		sectorView currentSectorView = sectorRenderQueue.front(); //get front-element from queue
+		sector* currentSector = currentSectorView.thisSector;
+		sectorRenderQueue.pop();	//remove front-element from queue
+
+		//for each sector do render
+		
+
+
+
+		//add sector-neighbours to renderQueue
+		for(auto nbrSector : currentSector->getNeighbours()){
+			sectorView nbrSectorView{nbrSector, 0, screenWidth-1};
+			sectorRenderQueue.push(nbrSectorView);
+		}
+	}
+
+
+}
+
+void render_util::renderSector(sector currentSect){
+
+}
+
+
 /* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
 /*
 void render_util::drawVLine(SDL_Renderer* renderer, Linedef line, float height, float width, int red, int green, int blue, int shade)

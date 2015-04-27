@@ -31,8 +31,14 @@ std::vector<sector*> mapmaker::createMap(){
 
 	vertex v12 = vertex{10, 10};
 	vertex v13 = vertex{10, 50};
+	vertex v14 = vertex{50, 20};
+	vertex v15 = vertex{50, 30};
+	vertex v16 = vertex{40, 50};
+	vertex v17 = vertex{40, 30};
+	vertex v18 = vertex{40, 20};
+	vertex v19 = vertex{40, 10};
 
-	static door d1{v1, v7, true};
+	static door d1{v14, v15, true}; // "smallest" point first
 
 	s1.addVertex(v1);
 	s1.addVertex(v2);
@@ -41,6 +47,8 @@ std::vector<sector*> mapmaker::createMap(){
 	s1.addVertex(v5);
 
 	s2.addVertex(v1);
+	s2.addVertex(v15);
+	s2.addVertex(v14);
 	s2.addVertex(v7);
 	s2.addVertex(v6);
 	s2.addVertex(v2);
@@ -55,10 +63,14 @@ std::vector<sector*> mapmaker::createMap(){
 	s4.addVertex(v10);
 	s4.addVertex(v3);
 
-	s5.addVertex(v1);
+	s5.addVertex(v15);
+	s5.addVertex(v17);
+	s5.addVertex(v16);
 	s5.addVertex(v13);
 	s5.addVertex(v12);
-	s5.addVertex(v7);
+	s5.addVertex(v19);
+	s5.addVertex(v18);
+	s5.addVertex(v14);
 
 	s1.addNeighbour(&s2);
 	s1.addNeighbour(&s3);

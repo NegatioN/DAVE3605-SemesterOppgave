@@ -26,7 +26,7 @@ class Player : public Entity {
 	float const BODYHEIGHT = 10; //size of player
 	float const KNEEHEIGHT = (BODYHEIGHT/2.5);
 
-	int const event_radius = 10.0;
+	int const event_radius = 5;
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;
 	// variables for cooldown between each projectile-shoot
@@ -52,6 +52,8 @@ public:
 
 	void setMoveVector(std::vector<bool> &keys){ keys_ = keys; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }
+
+	std::vector<float> closeToEvent(vertex a, vertex b, float middle_x, float middle_y);
 
 	float angle(){ return angle_; };
 	float anglesin(){return anglesin_;};

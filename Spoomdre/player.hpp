@@ -53,7 +53,7 @@ public:
 	void setMoveVector(std::vector<bool> &keys){ keys_ = keys; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }
 
-	std::vector<float> closeToEvent(vertex a, vertex b, float middle_x, float middle_y);
+	std::vector<float> closestToEvent(vertex a, vertex b, float middle_x, float middle_y);
 
 	float angle(){ return angle_; };
 	float anglesin(){return anglesin_;};

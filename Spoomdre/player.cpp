@@ -223,22 +223,20 @@ void Player::checkForEvent(){
 	if(doors.size() > 0)
 	{
 		door* active = NULL;
-		float margin_x = -1, margin_y = -1;
+		float margin_x = 0, margin_y = 0;
 
 		float x_, y_;
 		for(door* e : doors)
 		{
 			vertex a = e->getDoorA();
 			vertex b = e->getDoorB();
-			//std::vector<float> x_event;
-			//std::vector<float> y_event;
 
 			float x_middle, y_middle;
 
 			x_middle = (std::abs(b.x()-a.x())/2) + min(a.x(),b.x());
 			y_middle = (std::abs(b.y()-a.y())/2) + min(a.y(),b.y());
 
-			std::vector<float> closest_point = closeToEvent(a,b,x_middle,y_middle);
+			std::vector<float> closest_point = closestToEvent(a,b,x_middle,y_middle);
 
 			float temp_x = closest_point.at(0);
 			float temp_y = closest_point.at(1);
@@ -257,93 +255,6 @@ void Player::checkForEvent(){
 					active = e;
 				}
 			}
-			
-
-			//y = mx + b_const -> find all coordinates for door
-			//float m = ( (a.x() - b.x()) / (a.y() - b.y()) );//(( min(a.y(), b.y()) - max(a.y(), b.y()) ) / ( min(a.x(), b.x()) - max(a.x(), b.x()) ));
-			//float b_const = a.y() - (m * a.x());
-
-
-			/*for(int i = a.y(); i <= b.y(); i++){
-				x_event.push_back(i);
-				y_event.push_back(m * i + b_const);
-			}*/
-
-
-			//float temp_x, temp_y;
-
-			//Stepsize og beregn over det
-			//beregn kun over endep + midt
-
-			// for(int i = 0; i < y_event.size(); i++){
-			// 	x_ = x_event.back();
-			// 	y_ = y_event.back();
-
-			// 	bool test = (((x_ + event_radius) >= x >= (x_ - event_radius)) && ((y_ + event_radius) >= y >= (y_ - event_radius)));
-			// 	//std::cout << x_ << "," << y_ << ". i: " << i << "rad: "<< test <<std::endl;
-
-
-
-			// 	if((x_ >= x-event_radius && x_<x+event_radius) && (y_ >= y-event_radius && y_<y+event_radius)){ //(((x + event_radius) >= x_ >= (x - event_radius)) && ((y + event_radius) >= y_ >= (y - event_radius)))
-			// 		temp_x = std::abs(x-x_);
-			// 		temp_y = std::abs(y-y_);
-
-			// 		std::cout << "FANT DEN!!!" << std::endl;
-			// 		std::cout << x_ << "," << y_ <<std::endl;
-			// 		if(active == NULL){
-			// 			margin_x = temp_x;
-			// 			margin_y =temp_y;
-			// 			active = e;
-			// 		}
-			// 		else{
-			// 			if(temp_x < margin_x && temp_y < margin_y){
-			// 				margin_x = temp_x;
-			// 				margin_y =temp_y;
-			// 				active = e;
-			// 			}
-			// 		}
-
-			// 	}
-
-			// 	if(x_event.size()>1) x_event.pop_back();
-			// 	if(y_event.size()>1)y_event.pop_back();	
-			// }
-
-			//float x_event_a = a.x();
-			//float x_event_b = b.x();
-			// bool close_a = ((x + x_event_a) >= x_event_a >= (x - x_event_a));
-			// bool close_b = ((x + x_event_b) >= x_event_b >= (x - x_event_b));
-			
-			/*if((x + x_event_a) >= x_event_a >= (x - x_event_a))
-			{
-				temp = std::abs(x - x_event_a);
-				if(active == NULL){
-					active = e;
-					margin = temp;
-				}
-				else{
-					if(temp < margin)
-					{
-						active = e;
-						margin = temp;
-					}
-				}
-			}
-			else if((x + x_event_b) >= x_event_b >= (x - x_event_b))
-			{
-				temp = std::abs(x - x_event_b);
-				if(active == NULL){
-					active = e;
-					margin = temp;
-				}
-				else{
-					if(temp < margin)
-					{
-						active = e;
-						margin = temp;
-					}
-				}
-			}*/
 		}
 
 		if(active != NULL)
@@ -353,7 +264,8 @@ void Player::checkForEvent(){
 	}
 }
 
-std::vector<float> Player::closeToEvent(vertex a, vertex b, float middle_x, float middle_y){
+//checks which point is closest to player(a-middle-b)
+std::vector<float> Player::closestToEvent(vertex a, vertex b, float middle_x, float middle_y){
 	float margin_a_x, margin_a_y, margin_middle_x,margin_middle_y, margin_b_x,margin_b_y,
 		total_a, total_b, total_middle;
 	std:vector<float> margin;
@@ -361,8 +273,6 @@ std::vector<float> Player::closeToEvent(vertex a, vertex b, float middle_x, floa
 	Vector3f pos = position();
 	float x = pos(0);
 	float y = pos(1);
-	std::cout << "Player : ("<< x << "," << y <<")" << std::endl;
-	
 
 	margin_a_x = std::abs(x - a.x());
 	margin_a_y = std::abs(y - a.y());

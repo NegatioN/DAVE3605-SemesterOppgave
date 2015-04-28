@@ -280,28 +280,26 @@ std::vector<float> Player::closestToEvent(vertex a, vertex b, float middle_x, fl
 
 	margin_middle_x = std::abs(x - middle_x);
 	margin_middle_y = std::abs(y - middle_y);
-	total_middle == margin_middle_x + margin_middle_y;
+	total_middle = margin_middle_x + margin_middle_y;
 
 	margin_b_x = std::abs(x - b.x());
 	margin_b_y = std::abs(y - b.y());
 	total_b = margin_b_x + margin_b_y;
 
-	if(total_a <= total_middle){
-		if(total_a <= total_b){
-			//a is closest
-			margin.push_back(margin_a_x);
-			margin.push_back(margin_a_y);
-		}else{
-			//b is closest
-			margin.push_back(margin_middle_x);
-			margin.push_back(margin_middle_y);
-		}
-	}else{
+	if(total_a < total_b && total_a < total_middle)
+	{
+		//a is closest
+		margin.push_back(margin_a_x);
+		margin.push_back(margin_a_y);
+	}else if(total_b < total_middle && total_b < total_a){
 		//middle is closest
 		margin.push_back(margin_b_x);
 		margin.push_back(margin_b_y);
+	}else{
+		//b is closest
+		margin.push_back(margin_middle_x);
+		margin.push_back(margin_middle_y);
 	}
-
 	return margin;
 }
 

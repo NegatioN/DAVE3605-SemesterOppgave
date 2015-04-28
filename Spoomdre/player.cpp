@@ -6,6 +6,7 @@ using namespace std;
 
 SDL_Rect sprite;
 
+bool isCrouching = false;
 
 void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setPosition(pos);
@@ -19,9 +20,9 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 //Take input accelleration-vector?
 void Player::update() {
 	isFalling = false;
+	isCrouching = false;
 	bool isJumping = false;
-	bool isCrouching = false;
-	
+
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 
@@ -38,6 +39,9 @@ void Player::update() {
 	//std::cout << "Player Sector=" << getSector()->getId() << " isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << " default_z=" << default_z << std::endl;
 
 	if(isFalling){
+		 //Crouching while jumping. Not visible, but makes it possible to jump into small openings.
+		if (keys_.at(8)) { isCrouching = true;}
+
 		Vector3f fallingVelo = velocity();
 		Vector3f pos = position();
 
@@ -133,11 +137,11 @@ bool Player::checkForWall(Vector3f& velo){
         			door* door_ = n->getWallDoor(a,b);
         			bool isDoorLocked = (door_ != NULL && door_->doorLocked());
             		// can player walk/jump through opening?
-            		std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
+            		//std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
             		//is sector changed if falling? easier to get into portals while falling(jumping)
             		if(isFalling){
             														//z-kneeheight 
-						if(((hole_high - hole_low) >= BODYHEIGHT) && (z()-KNEEHEIGHT) >= hole_low && z() <= hole_high && !isDoorLocked )
+						if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (z()-KNEEHEIGHT) >= hole_low && z() <= hole_high && !isDoorLocked )
 						{
 							std::cout << "entered sector(FALLING)=" << n->getId() << std::endl;
 
@@ -152,7 +156,7 @@ bool Player::checkForWall(Vector3f& velo){
             		}
             		//is sector changed? if not falling
             		else{
-	            		if(((hole_high - hole_low) >= BODYHEIGHT) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high) && !isDoorLocked) 
+	            		if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high) && !isDoorLocked) 
 						{
 							std::cout << "entered sector=" << n->getId() << std::endl;
 

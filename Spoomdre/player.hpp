@@ -23,7 +23,9 @@ class Player : public Entity {
 
 	float const speed_ = 1.5f;
 
+	float const HEADSIZE = 3;
 	float const BODYHEIGHT = 10; //size of player
+	float const CROUCHHEIGHT = BODYHEIGHT/2; //size of player
 	float const KNEEHEIGHT = (BODYHEIGHT/2);
 
 	int const event_radius = 5;

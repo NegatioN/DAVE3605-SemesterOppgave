@@ -33,6 +33,8 @@ class Player : public Entity {
 	int projectileCooldown = 50;
 	int projectileCountdown = 0;
 
+	int doorCountdown = 0;
+
 public:
 	Player(){};
 	Player(Vector3f &pos) : Entity(pos){};
@@ -42,6 +44,7 @@ public:
 	void move(Vector3f velo);			//add velocity to position of player
 	void render(SDL_Renderer* renderer);
 	bool checkForWall(Vector3f& velo);	//collision-detection
+	bool checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b);
 	void crouchMove(bool isCrouch);		//crouch
 	void jump(Vector3f& velo);			//jumps. Updates Z-axis etc
 	void checkForEvent();				//checks for events close by, 

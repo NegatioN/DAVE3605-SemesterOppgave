@@ -22,7 +22,8 @@ void Player::update() {
 	isFalling = false;
 	isCrouching = false;
 	bool isJumping = false;
-
+	if(doorCountdown > 0) --doorCountdown;
+	
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 
@@ -67,7 +68,7 @@ void Player::update() {
 	    if (keys_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
 	    if (keys_.at(9)) { isJumping = true; } 
 	    if (keys_.at(10)) { shootProjectile(); }
-	    if (keys_.at(11)){ checkForEvent(); }
+	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }
 
 	    // set moving to true if movement-key is pressed
 	    bool pushing = false;
@@ -127,58 +128,72 @@ bool Player::checkForWall(Vector3f& velo){
         if( gfx_util::intersectBox(x(), y(), x()+velo(0),y()+velo(1), a.x(), a.y(), b.x(), b.y()) && 
             gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
         { 
-			for (sector* n: neighbours)
-				if (n->containsVertices(a, b)){ 
-					float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
-            		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
-            		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
-            		
-            		//is this wall a door?
-        			door* door_ = n->getWallDoor(a,b);
-        			bool isDoorLocked = (door_ != NULL && door_->doorLocked());
-            		// can player walk/jump through opening?
-            		//std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
-            		//is sector changed if falling? easier to get into portals while falling(jumping)
-            		if(isFalling){
-            														//z-kneeheight 
-						if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (z()-KNEEHEIGHT) >= hole_low && z() <= hole_high && !isDoorLocked )
-						{
-							std::cout << "entered sector(FALLING)=" << n->getId() << std::endl;
-
-					    	setSector(n);
-					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
-					    	default_z = getSector()->floor() + BODYHEIGHT;
-					    	velo(2) = 0;	//remove extra velocity up when jumping into sector
-					    	velo /= 2;
-					    	setVelocity(velo);		//if we fall after sector-change we fall forward.
-					    	return true;
-	            		}	
-            		}
-            		//is sector changed? if not falling
-            		else{
-	            		if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high) && !isDoorLocked) 
-						{
-							std::cout << "entered sector=" << n->getId() << std::endl;
-
-					    	setSector(n);
-					    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
-					    	default_z = getSector()->floor() + BODYHEIGHT;
-					    	velo /= 2;
-					    	setVelocity(velo);		//if we fall after sector-change we fall forward.
-					    	return true;
-	            		}	
-            	}
-            	}
+			for (sector* n: neighbours){
+				checkForPortal(n, velo, a, b);
+			}
 			//Bumps into a wall! Slide along the wall. 
 			// This formula is from Wikipedia article "vector projection". 
 			float xd = b.x() - a.x(), yd = b.y() - a.y();
 			velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
 			velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
 			//std::cout << "Hopper, men treffer vegg" << std::endl;
+
+			//will you hit slide past this wall now?
+			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
+				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
+				//but will you hit sector? - need test
+				velo(0) = 0;
+				velo(1) = 0;
+			}
 			return true;
 		}
     }
     return false;
+}
+
+bool Player::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
+	if (n->containsVertices(a, b)){ 
+		float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
+		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
+		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
+		
+		//is this wall a door?
+		door* door_ = n->getWallDoor(a,b);
+		bool isDoorLocked = (door_ != NULL && door_->doorLocked());
+		// can player walk/jump through opening?
+		// std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
+		//is sector changed if falling? easier to get into portals while falling(jumping)
+		if(isFalling){
+														//z-kneeheight 
+			if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (z()-KNEEHEIGHT) >= hole_low && z() <= hole_high && !isDoorLocked )
+			{
+				std::cout << "entered sector(FALLING)=" << n->getId() << std::endl;
+
+		    	setSector(n);
+		    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
+		    	default_z = getSector()->floor() + BODYHEIGHT;
+		    	velo(2) = 0;	//remove extra velocity up when jumping into sector
+		    	velo /= 2;
+		    	setVelocity(velo);		//if we fall after sector-change we fall forward.
+		    	return true;
+    		}	
+		}
+		//is sector changed? if not falling
+		else{
+    		if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high) && !isDoorLocked) 
+			{
+				std::cout << "entered sector=" << n->getId() << std::endl;
+
+		    	setSector(n);
+		    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
+		    	default_z = getSector()->floor() + BODYHEIGHT;
+		    	velo /= 2;
+		    	setVelocity(velo);		//if we fall after sector-change we fall forward.
+		    	return true;
+    		}	
+		}
+	}
+	return false;
 }
 
 void Player::crouchMove(bool isCrouch){
@@ -221,6 +236,7 @@ void Player::move(Vector3f velo) {
 }
 
 void Player::checkForEvent(){
+	doorCountdown = 10;
 	//all doors
 	std::vector<door*> doors = getSector()->getDoors();
 	//sector has door // should be has "event" (when we add more)

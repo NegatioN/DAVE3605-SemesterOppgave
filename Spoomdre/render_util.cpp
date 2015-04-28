@@ -18,6 +18,10 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	//std::queue<sector*> sectorRenderQueue;
 	sectorRenderQueue.push(playerSectorView);
 
+	int NumSectors = 26;
+	int renderedSectors[NumSectors];
+	for(unsigned n=0; n<NumSectors; ++n) renderedSectors[n] = 0;
+
 
 	while(!sectorRenderQueue.empty()){
 		sectorView currentSectorView = sectorRenderQueue.front(); //get front-element from queue
@@ -28,6 +32,10 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 		
 		std::vector<vertex> vertices = currentSector->getVertices();	//verticies in sector
 		int vertexCount = vertices.size();	//number of verticies in sector
+
+		//If render int == 1, sector is still rendering. If it's 2, it's finished rendering.
+    	if(renderedSectors[currentSector->getId()-1] & 0x21) continue; 
+			++renderedSectors[currentSector->getId()-1];
 
 		//draw lines for each vertex in sector
 		for (int i = 0; i < vertexCount; i++) {
@@ -111,8 +119,8 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 
 	            int r_, g_, b_;
 	            //Paint corners black
-	            if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-	            else {r_ = 0xEE/currentSector->getId(); g_ = 0xBB; b_ = 0x77;}//Wall brown
+	            //if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
+	             {r_ = 0xEE/3; g_ = 0xBB; b_ = 0x77;}//Wall brown
 
 	            // Calculate the Z coordinate for this point. (Only used for lighting.) 
 	            int z_ = ((x - x1) * (tzB-tzA) / (x2-x1) + tzA) * 8;
@@ -125,7 +133,7 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
                 int cropYFloor = gfx_util::clamp(yFloor, top, bottom);
 	            
                 // Draw floor and ceiling
-                unsigned roofColor = 0x99/currentSector->getId();
+                unsigned roofColor = 0x99;
                 render_util::drawVLine(renderer, x, top, cropYCeiling-1, roofColor, roofColor, roofColor, 1);
                 render_util::drawVLine(renderer, x, cropYFloor+1, bottom, 0x66, 0x33, 0x00, 1);
 	            
@@ -139,13 +147,17 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	                nbrYFloor = gfx_util::clamp(nbrYFloor, top, bottom); //clamp floor of neighbour to our POV
 
 	                // If our ceiling is higher than their ceiling, render upper wall     
-                    if(cropYCeiling < nbrYCeil)           
+                    if(cropYCeiling < nbrYCeil)    {
+						if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
 	                   render_util::drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade); // Between our and their ceiling
+                    }       
 
 	                // If our floor is lower than their floor, render bottom wall
-                    if(cropYFloor > nbrYFloor) 
+                    if(cropYFloor > nbrYFloor) {
+                    	if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
                         render_util::drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade);  // Between their and our floor
-                    
+                    }
+
                     // Shrink the remaining window below this ceiling and floor
 	                ytop[x] = gfx_util::clamp(std::max(cropYCeiling, nbrYCeil), top, screenHeight-1);
 	                ybottom[x] = gfx_util::clamp(std::min(cropYFloor, nbrYFloor), 0, bottom);          
@@ -155,14 +167,16 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
                     render_util::drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade);
 	            }
 	        }
+	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 
 	        //add sector-neighbours to renderQueue
-	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 	        if(neighbour != NULL && endx >= beginx && !(isDoorLocked)){
 	        	sectorView nbrSectorView{neighbour, beginx, endx};
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }
 		}
+
+		++renderedSectors[currentSector->getId()-1];
 
 		///END RENDER SECTOR
 	}

@@ -161,36 +161,20 @@ bool Player::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
 		bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 		// can player walk/jump through opening?
 		// std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
-		//is sector changed if falling? easier to get into portals while falling(jumping)
-		if(isFalling){
-														//z-kneeheight 
-			if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (z()-KNEEHEIGHT) >= hole_low && z() <= hole_high && !isDoorLocked )
-			{
-				std::cout << "entered sector(FALLING)=" << n->getId() << std::endl;
+    	if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (z() <= hole_high) && !isDoorLocked &&
+    		((!isFalling && floor_diff <= KNEEHEIGHT) || (isFalling && z()-KNEEHEIGHT >= hole_low))) 
+		{
+			std::cout << "entered sector=" << n->getId() << std::endl;
 
-		    	setSector(n);
-		    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
-		    	default_z = getSector()->floor() + BODYHEIGHT;
-		    	velo(2) = 0;	//remove extra velocity up when jumping into sector
-		    	velo /= 2;
-		    	setVelocity(velo);		//if we fall after sector-change we fall forward.
-		    	return true;
-    		}	
-		}
-		//is sector changed? if not falling
-		else{
-    		if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (floor_diff <= (KNEEHEIGHT)) && (z() <= hole_high) && !isDoorLocked) 
-			{
-				std::cout << "entered sector=" << n->getId() << std::endl;
+		   	setSector(n);
+			move(velo);
 
-		    	setSector(n);
-		    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
-		    	default_z = getSector()->floor() + BODYHEIGHT;
-		    	velo /= 2;
-		    	setVelocity(velo);		//if we fall after sector-change we fall forward.
-		    	return true;
-    		}	
-		}
+		   	//sets default_z to floor + BodyHeight. Player will move towards this next frame
+		   	default_z = getSector()->floor() + BODYHEIGHT;
+		   	velo /= 2;
+		   	setVelocity(velo);		//if we fall after sector-change we fall forward.
+	    	return true;
+   		}	
 	}
 	return false;
 }

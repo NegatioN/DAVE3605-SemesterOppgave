@@ -20,10 +20,12 @@ class render_util{
 	
 
 public:
-	static void renderView(SDL_Renderer* renderer, Player* player, int screenHeight, int screenWidth);
+	static void renderView(SDL_Renderer* renderer, SDL_Texture* texture, Player* player, int screenHeight, int screenWidth);
 	//static void drawVLine(SDL_Renderer* renderer, Linedef line, float height, float width, int red, int green, int blue, int shade);
 	static void render_map(SDL_Renderer* renderer, Player* player, std::vector<vertex> vertices);
 	static void drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade);
+	static void vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y1, int y2, int top, int middle, int bottom);
+
 };
 
 

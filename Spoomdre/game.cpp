@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "player.hpp"
+#include "enemy.hpp"
 #include "sector.hpp"
 #include "vertex.hpp"
 #include "mapmaker.hpp"
@@ -59,6 +60,11 @@ void Game::initialize(int height, int width) {
 	else{
 		Vector3f position(80, 75, 20);
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
+	
+		//Vector3f positionE(70, 80, 20);
+		//Enemy enemy1;
+		//enemy1.init(positionE, velocity, acceleration, sectors[0]);
+		//sectors[0]->addEnemy(enemy);
 	}
 }
 

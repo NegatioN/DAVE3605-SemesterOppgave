@@ -210,8 +210,8 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
 
 	int vCount = vertices.size();
     
-    int yOffset = -100; // displaces map by a given y
-    int xOffset = 150;  // displaces map by a give x
+    int yOffset = -150; // displaces map by a given y //-150 
+    int xOffset = 250;  // displaces map by a give x  //250
 
     // Render player on map
     SDL_Rect prect;
@@ -235,6 +235,12 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
         vertex b = vertices[0];
         if (i < vCount-1)
             b = vertices[i+1];
+
+
+        int range = 70;
+        if(std::abs(a.x()- (std::abs(playerX))) > range || std::abs(a.y()- (std::abs(playerY))) > range &&
+        	std::abs(a.x()- (std::abs(playerX))) > range || std::abs(b.y()- (std::abs(playerY))) > range)
+        	continue;
 
         //Calculate 
         float txa = a.x()-playerX, tya = a.y()-playerY;

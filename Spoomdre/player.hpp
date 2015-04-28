@@ -16,12 +16,16 @@
 class Player : public Entity {
 	float angle_, anglesin_, anglecos_, yaw_, mouse_x, mouse_y;
 	float default_z;
+
+	float max_yaw = 5.5;
 	//sector * sector_; -> is in entity 
 	std::vector<bool> keys_;
 
 	bool isFalling = false;
 
-	float const speed_ = 1.5f;
+	float const normalspeed_ = 1.5f;
+	float const sprintspeed_ = 2.8f;
+	float activespeed_ = normalspeed_;
 
 	float const BODYHEIGHT = 10; //size of player
 	float const KNEEHEIGHT = (BODYHEIGHT/2);

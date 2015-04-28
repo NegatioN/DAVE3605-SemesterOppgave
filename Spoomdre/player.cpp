@@ -6,7 +6,6 @@ using namespace std;
 
 SDL_Rect sprite;
 
-
 void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setPosition(pos);
 	setVelocity(vel);
@@ -54,17 +53,16 @@ void Player::update() {
 		checkForWall(fallingVelo);
 		setVelocity(fallingVelo);
 	}else{
-
-
 	    // keyboard-events
-	    if (keys_.at(0)) { vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_; } 	// W
-	    if (keys_.at(1)) { vecAddition(0) += anglesin_ * speed_; vecAddition(1) -= anglecos_  * speed_; } 	// A
-	    if (keys_.at(2)) { vecAddition(0) -= anglecos_  * speed_; vecAddition(1) -= anglesin_ * speed_; } 	// S
-	    if (keys_.at(3)) { vecAddition(0) -= anglesin_ * speed_; vecAddition(1) += anglecos_  * speed_; } 	// D
-	    if (keys_.at(8)) { isCrouching = true;}									//Crouch, Z-axis
-	    if (keys_.at(9)) { isJumping = true; } 
-	    if (keys_.at(10)) { shootProjectile(); }
-	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }
+	    if (keys_.at(0)) { vecAddition(0) += anglecos_  * activespeed_; vecAddition(1)  += anglesin_ * activespeed_; } 	// W
+	    if (keys_.at(1)) { vecAddition(0) += anglesin_ * activespeed_; vecAddition(1) -= anglecos_  * activespeed_; } 	// A
+	    if (keys_.at(2)) { vecAddition(0) -= anglecos_  * activespeed_; vecAddition(1) -= anglesin_ * activespeed_; } 	// S
+	    if (keys_.at(3)) { vecAddition(0) -= anglesin_ * activespeed_; vecAddition(1) += anglecos_  * activespeed_; } 	// D
+	    if (keys_.at(8)) { isCrouching = true;}													//Crouch, Z-axis
+	    if (keys_.at(9)) { isJumping = true; } 													//Jump, Z-axis
+	    if (keys_.at(10)) { shootProjectile(); }												//Shoot
+	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }							//Interact
+	    if (keys_.at(12)){ activespeed_ = sprintspeed_; } else {activespeed_ = normalspeed_;}							//Sprint
 
 	    // set moving to true if movement-key is pressed
 	    bool pushing = false;
@@ -133,7 +131,7 @@ bool Player::checkForWall(Vector3f& velo){
 			velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
 			velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
 
-			//will you hit slide past this wall now?
+			//will you slide past this wall?
 			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
 				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
 				//but will you hit sector? - need test
@@ -320,10 +318,11 @@ std::vector<float> Player::closestToEvent(vertex a, vertex b, float middle_x, fl
 
 void Player::updatePOV(){
 	//Keyboard-events for POV (Yaw+angle)
+
     if (keys_.at(4)) { angle_ += 0.1; }		// right
     if (keys_.at(5)) { angle_ -= 0.1; }		// left
-    if (keys_.at(6)) { yaw_ -= 0.1; }		// up
-    if (keys_.at(7)) { yaw_ += 0.1; }		// down
+    if (keys_.at(6)) { if(yaw_ > -max_yaw ) yaw_ -= 0.1; }		// up
+    if (keys_.at(7)) { if(yaw_ < max_yaw ) yaw_ += 0.1; }		// down
 
     //Mouse-events for POV (Yaw+Angle)
 	if(mouse_x != 0) angle_ = mouse_x * 0.015f;

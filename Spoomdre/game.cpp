@@ -12,14 +12,14 @@ Player player;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
-int MAP = 1;
+int MAP = 0;
 
 //get window surface
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	/*texture = SDL_CreateTexture(renderer,
-        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);*/
+	// texture = SDL_CreateTexture(renderer,
+ //        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
 }
 
 void Game::initialize(int height, int width) {
@@ -74,7 +74,7 @@ void Game::render() {
     SDL_RenderClear(renderer);
 
     // render player & world
-    render_util::renderView(renderer, &player, height_, width_);
+    render_util::renderView(renderer, texture, &player, height_, width_);
 
     //player.render(renderer);
 	for(auto s: sectors)

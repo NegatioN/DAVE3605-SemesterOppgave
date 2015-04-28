@@ -1,7 +1,7 @@
 #include "render_util.hpp"
-
+#include <iostream>
 // WELCOME TO THE MATRIX
-void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenHeight, int screenWidth){
+void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Player* player, int screenHeight, int screenWidth){
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
 	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
 
@@ -134,9 +134,11 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	            
                 // Draw floor and ceiling
                 unsigned roofColor = 0x99;
-                render_util::drawVLine(renderer, x, top, cropYCeiling-1, roofColor, roofColor, roofColor, 1);
-                render_util::drawVLine(renderer, x, cropYFloor+1, bottom, 0x66, 0x33, 0x00, 1);
-	            
+                drawVLine(renderer, x, top, cropYCeiling-1, roofColor, roofColor, roofColor, 1);
+                drawVLine(renderer, x, cropYFloor+1, bottom, 0x66, 0x33, 0x00, 1);
+				// vLineTexture(renderer, texture, x, top, cropYCeiling-1, 0,0,0);
+				// vLineTexture(renderer, texture, x, cropYFloor+1, bottom, 0,0,0);
+
 	            // Another sector behind this edge?
 	            if(neighbour != NULL)
 	            {
@@ -149,13 +151,17 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	                // If our ceiling is higher than their ceiling, render upper wall     
                     if(cropYCeiling < nbrYCeil)    {
 						if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-	                   render_util::drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade); // Between our and their ceiling
+	                   	drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade); // Between our and their ceiling
+                    	// vLineTexture(renderer, texture, x, cropYCeiling, nbrYCeil-1, 0,0,0);
+
                     }       
 
 	                // If our floor is lower than their floor, render bottom wall
                     if(cropYFloor > nbrYFloor) {
                     	if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-                        render_util::drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade);  // Between their and our floor
+                        drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade);  // Between their and our floor
+						//vLineTexture(renderer, texture, x, nbrYFloor+1, cropYFloor, 0,0,0);
+
                     }
 
                     // Shrink the remaining window below this ceiling and floor
@@ -164,7 +170,8 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 	            }
 	            else{
                     // No neighbors, render wall from top to bottom
-                    render_util::drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade);
+                    drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade);
+                    //vLineTexture(renderer, texture, x, cropYCeiling, cropYFloor, 0,0,0);
 	            }
 	        }
 	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
@@ -177,7 +184,6 @@ void render_util::renderView(SDL_Renderer* renderer, Player* player, int screenH
 		}
 
 		++renderedSectors[currentSector->getId()-1];
-
 		///END RENDER SECTOR
 	}
 }
@@ -202,6 +208,32 @@ void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int r
     SDL_SetRenderDrawColor(renderer, 5, 5, 5, 0.5f);
     SDL_RenderDrawPoint(renderer, x1, y1);
     SDL_RenderDrawPoint(renderer, x1, y2);
+}
+
+void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y1, int y2, int top, int middle, int bottom)
+{
+	/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
+	top = 0x111111;
+	middle = 0x222222;
+	bottom = 0x111111;
+	int H = 480, W = 640;
+
+	void *pixels;
+	int pitch;
+
+	SDL_LockTexture(texture, NULL, &pixels, &pitch);
+	Uint32 *pix = (Uint32*)pixels;
+
+	// for (int i = 1; i < 200; ++i)
+	// {
+	// 	;;
+	// }
+
+	std::cout << "I vLineTexture" << std::endl;
+
+	SDL_UnlockTexture(texture);
+
+    //SDL_RenderCopy(renderer, line, NULL, NULL);
 }
 
 

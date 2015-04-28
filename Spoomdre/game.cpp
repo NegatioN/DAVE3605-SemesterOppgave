@@ -12,7 +12,7 @@ Player player;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
-int MAP = 0;
+int MAP = 1;
 
 //get window surface
 void Game::makeRenderer(){

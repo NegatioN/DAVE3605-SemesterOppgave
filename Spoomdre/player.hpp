@@ -24,7 +24,7 @@ class Player : public Entity {
 	float const speed_ = 1.5f;
 
 	float const BODYHEIGHT = 10; //size of player
-	float const KNEEHEIGHT = (BODYHEIGHT/2.5);
+	float const KNEEHEIGHT = (BODYHEIGHT/2);
 
 	int const event_radius = 5;
 	// list of projectiles (i.e bullets)

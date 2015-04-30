@@ -99,7 +99,7 @@ void Game::render() {
 
     //player.render(renderer);
 	for(auto s : sectors)
-		render_util::render_map(renderer, &player, s->getVertices());
+		render_util::render_map(renderer, &player, s->getVertices(), height_, width_);
 		//render_util::render_map(renderer, player.x(), player.y(), player.z(), player.angle(), s->getVertices());
 
 	//for(auto e : enemies)

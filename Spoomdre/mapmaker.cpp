@@ -1,18 +1,14 @@
 #include "mapmaker.hpp"
+#include "abstract_sector_factory.hpp"
+#include "normal_sector_factory.hpp"
 
 
 std::vector<sector*> mapmaker::createMap(){
 	int id = 1;
 	std::vector<sector*> sectors;
-	//Need static to save the sectors. (New causes wierd bug)
-	static sector s1{id++, 10.f, 40.f}, 
-				  s2{id++, 25.f, 45.f},
-				  s3{id++, 7.f, 35.f},
-				  s4{id++, 10.f, 30.f},
-				  s5{id++, 25.f, 45.f}, // same as s2 (used to test door)
-				  s6{id++, 25.f, 45.f};
 
-
+	AbstractSectorFactory* factory = new NormalSectorFactory();
+	
 	// vertexes for test-map
 	vertex v1 = vertex{50, 50};
 	vertex v2 = vertex{90, 50};
@@ -39,75 +35,99 @@ std::vector<sector*> mapmaker::createMap(){
 	vertex v18 = vertex{40, 20};
 	vertex v19 = vertex{40, 10};
 
+	vertex v20 = vertex{0, 50};
+	vertex v21 = vertex{0, 10};
+
+	std::vector<vertex> s1_vertex;
+	std::vector<vertex> s2_vertex;
+	std::vector<vertex> s3_vertex;
+	std::vector<vertex> s4_vertex;
+	std::vector<vertex> s5_vertex;
+	std::vector<vertex> s6_vertex;
+	std::vector<vertex> s7_vertex;
+
+	s1_vertex.push_back(v1);
+	s1_vertex.push_back(v2);
+	s1_vertex.push_back(v3);
+	s1_vertex.push_back(v4);
+	s1_vertex.push_back(v5);
+
+	s2_vertex.push_back(v1);
+	s2_vertex.push_back(v15);
+	s2_vertex.push_back(v14);
+	s2_vertex.push_back(v7);
+	s2_vertex.push_back(v6);
+	s2_vertex.push_back(v2);
+
+	s3_vertex.push_back(v2);
+	s3_vertex.push_back(v6);
+	s3_vertex.push_back(v8);
+	s3_vertex.push_back(v3);
+
+	s4_vertex.push_back(v8);
+	s4_vertex.push_back(v9);
+	s4_vertex.push_back(v10);
+	s4_vertex.push_back(v3);
+
+	s6_vertex.push_back(v15);
+	s6_vertex.push_back(v17);
+	s6_vertex.push_back(v18);
+	s6_vertex.push_back(v14);
+
+	s5_vertex.push_back(v17);
+	s5_vertex.push_back(v16);
+	s5_vertex.push_back(v13);
+	s5_vertex.push_back(v12);
+	s5_vertex.push_back(v19);
+	s5_vertex.push_back(v18);
+
+	s7_vertex.push_back(v13);
+	s7_vertex.push_back(v20);
+	s7_vertex.push_back(v21);
+	s7_vertex.push_back(v12);
+
+	sector* s1 = factory->createSector(id++, 10.f, 40.f, s1_vertex);
+	sector* s2 = factory->createSector(id++, 25.f, 45.f, s2_vertex);
+	sector* s3 = factory->createSector(id++,  7.f, 35.f, s3_vertex);
+	sector* s4 = factory->createSector(id++, 10.f, 30.f, s4_vertex);
+	sector* s5 = factory->createSector(id++, 25.f, 45.f, s5_vertex);
+	sector* s6 = factory->createSector(id++, 25.f, 45.f, s6_vertex);
+	sector* s7 = factory->createSector(id++, 25.f, 45.f, s7_vertex);
+
+	s1->addNeighbour(s2);
+	s1->addNeighbour(s3);
+	s2->addNeighbour(s1);
+	s2->addNeighbour(s3);
+	s2->addNeighbour(s6);
+	s3->addNeighbour(s1);
+	s3->addNeighbour(s2);
+	s3->addNeighbour(s4);
+	s4->addNeighbour(s3);
+	s5->addNeighbour(s6);
+	s5->addNeighbour(s7);
+	s6->addNeighbour(s2);
+	s6->addNeighbour(s5);
+	s7->addNeighbour(s5);
+
 	static door d1{v14, v15, true}; // "smallest" point first
 
-	s1.addVertex(v1);
-	s1.addVertex(v2);
-	s1.addVertex(v3);
-	s1.addVertex(v4);
-	s1.addVertex(v5);
+	s2->addDoor(&d1);
+	s6->addDoor(&d1);
 
-	s2.addVertex(v1);
-	s2.addVertex(v15);
-	s2.addVertex(v14);
-	s2.addVertex(v7);
-	s2.addVertex(v6);
-	s2.addVertex(v2);
-
-	s3.addVertex(v2);
-	s3.addVertex(v6);
-	s3.addVertex(v8);
-	s3.addVertex(v3);
-
-	s4.addVertex(v8);
-	s4.addVertex(v9);
-	s4.addVertex(v10);
-	s4.addVertex(v3);
-
-	s6.addVertex(v15);
-	s6.addVertex(v17);
-	s6.addVertex(v18);
-	s6.addVertex(v14);
-
-	//s5.addVertex(v15);
-	s5.addVertex(v17);
-	s5.addVertex(v16);
-	s5.addVertex(v13);
-	s5.addVertex(v12);
-	s5.addVertex(v19);
-	s5.addVertex(v18);
-	//s5.addVertex(v14);
-
-	s1.addNeighbour(&s2);
-	s1.addNeighbour(&s3);
-	s2.addNeighbour(&s1);
-	s2.addNeighbour(&s3);
-	s2.addNeighbour(&s6);
-	s3.addNeighbour(&s1);
-	s3.addNeighbour(&s2);
-	s3.addNeighbour(&s4);
-	s4.addNeighbour(&s3);
-	s5.addNeighbour(&s6);
-	s6.addNeighbour(&s2);
-	s6.addNeighbour(&s5);
-
-	s2.addDoor(&d1);
-
-	s6.addDoor(&d1);
-
-	sectors.push_back(&s1);
-	sectors.push_back(&s2);
-	sectors.push_back(&s3);
-	sectors.push_back(&s4);
-	sectors.push_back(&s6);
-	sectors.push_back(&s5);
+	sectors.push_back(s1);
+	sectors.push_back(s2);
+	sectors.push_back(s3);
+	sectors.push_back(s4);
+	sectors.push_back(s6);
+	sectors.push_back(s5);
+	sectors.push_back(s7);
 
 	return sectors;
 }
 
 std::vector<sector*> mapmaker::createTestMap(){
 	int id = 1;
-std::vector<sector*> sectors;
+	std::vector<sector*> sectors;
 
 	vertex v1 = vertex{0, 0};
 	vertex v2 = vertex{10, 0};

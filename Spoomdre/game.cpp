@@ -14,14 +14,13 @@ std::vector<Enemy*> enemies;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
-int MAP = 1;
+int MAP = 0;
 
 //get window surface
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	// texture = SDL_CreateTexture(renderer,
- //        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
+	texture = IMG_LoadTexture(renderer, "textures/Tute_General_WoodTexture_4.png");
 }
 
 void Game::initialize(int height, int width) {

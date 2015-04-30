@@ -62,10 +62,18 @@ void Game::initialize(int height, int width) {
 		Vector3f position(80, 75, 20);
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 	
-		Vector3f positionE(70, 80, 20);
-		Enemy enemy1;
-		enemy1.init(positionE, velocity, acceleration, sectors[0]);
+		Vector3f positionE1(70, 80, 20);
+		Vector3f positionE2(80, 80, 20);
+		Vector3f positionE3(85, 90, 20);
+		static Enemy enemy1;
+		static Enemy enemy2;
+		static Enemy enemy3;
+		enemy1.init(positionE1, velocity, acceleration, sectors[0]);
+		enemy2.init(positionE2, velocity, acceleration, sectors[0]);
+		enemy3.init(positionE3, velocity, acceleration, sectors[0]);
 		enemies.push_back(&enemy1);
+		enemies.push_back(&enemy2);
+		enemies.push_back(&enemy3);
 
 		std::cout << "Enemy coordinates: " << enemy1.x() << " " << enemy1.y() << " " << enemy1.z() << std::endl;
 		//std::cout << "InitP: " << en->x() << " " << en->y() << " " << en->z() << std::endl;

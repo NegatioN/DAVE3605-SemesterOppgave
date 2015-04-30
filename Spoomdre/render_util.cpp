@@ -190,7 +190,7 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 
         // Render enemies
         for(Enemy* e : enemies)
-        	if(currentSector->getId() == 1) render_util::renderEnemy(renderer, currentSector, player, e, screenHeight, screenWidth);
+        	if(currentSector->getId() == e->getSector()->getId()) render_util::renderEnemy(renderer, currentSector, player, e, screenHeight, screenWidth);
 	    
 
 		++renderedSectors[currentSector->getId()-1];
@@ -204,15 +204,10 @@ void render_util::renderEnemy(SDL_Renderer* renderer, sector* currentSector, Pla
 
 	float px = player->x(), py = player->y(), pz = player->z();
 	float ex = enemy->x(), ey = enemy->y(), ez = enemy->z();
-	//float ex = 70, ey = 80, ez = 20;
-
-	//std::cout << "P: " << px << " " << py << " " << pz << std::endl;
-	//std::cout << "Render: " << ex << " " << ey << " " << ez << std::endl;
 
 	int enemySize = 1200; // enemy-scale
 	// calculate distance between player and enemy
 	float distance = enemySize * 1 / sqrt(pow(ex-px, 2) + pow(ey-py, 2) + pow(ez-pz, 2));
-	//std::cout << distance << std::endl;
 	
 	// don't render if too far away
 	//if(distance < 100) return;

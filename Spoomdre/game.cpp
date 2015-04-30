@@ -10,6 +10,7 @@
 #include <fstream>
 
 Player player;
+std::vector<Enemy*> enemies;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
@@ -61,10 +62,13 @@ void Game::initialize(int height, int width) {
 		Vector3f position(80, 75, 20);
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 	
-		//Vector3f positionE(70, 80, 20);
-		//Enemy enemy1;
-		//enemy1.init(positionE, velocity, acceleration, sectors[0]);
-		//sectors[0]->addEnemy(enemy);
+		Vector3f positionE(70, 80, 20);
+		Enemy enemy1;
+		enemy1.init(positionE, velocity, acceleration, sectors[0]);
+		enemies.push_back(&enemy1);
+
+		std::cout << "Enemy coordinates: " << enemy1.x() << " " << enemy1.y() << " " << enemy1.z() << std::endl;
+		//std::cout << "InitP: " << en->x() << " " << en->y() << " " << en->z() << std::endl;
 	}
 }
 
@@ -79,13 +83,19 @@ void Game::render() {
 	// empty renderer from previous iteration
     SDL_RenderClear(renderer);
 
+    Enemy* en = enemies.at(0);
+
+    //std::cout << "Before Render: " << en->x() << " " << en->y() << " " << en->z() << std::endl;
     // render player & world
-    render_util::renderView(renderer, texture, &player, height_, width_);
+    render_util::renderView(renderer, texture, &player, enemies, height_, width_);
 
     //player.render(renderer);
-	for(auto s: sectors)
+	for(auto s : sectors)
 		render_util::render_map(renderer, &player, s->getVertices());
 		//render_util::render_map(renderer, player.x(), player.y(), player.z(), player.angle(), s->getVertices());
+
+	//for(auto e : enemies)
+	//	render_util::renderEnemy(renderer, e->getSector(), &player, e, height_, width_);
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
-SDL_Rect enemySprite;
+//SDL_Rect enemySprite;
 
 void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setPosition(pos);
@@ -10,10 +10,10 @@ void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setAcceleration(acc);
 	setSector(sec);
 
-	enemySprite.w = 100;
-	enemySprite.h = 50;
-	enemySprite.x = 10;
-	enemySprite.y = 20;
+//	enemySprite.w = 100;
+	//enemySprite.h = 50;
+	//enemySprite.x = 10;
+	//enemySprite.y = 20;
 }
 
 void Enemy::update() {

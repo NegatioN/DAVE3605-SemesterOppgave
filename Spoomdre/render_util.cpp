@@ -2,7 +2,7 @@
 #include <iostream>
 
 // WELCOME TO THE MATRIX
-void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Player* player, int screenHeight, int screenWidth){
+void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Player* player, std::vector<Enemy*> enemies, int screenHeight, int screenWidth){
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
 	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
 
@@ -176,8 +176,8 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	            }
 	        }
 
-	        // Render enemies
-	        //render_util::renderEnemy(renderer, currentSector, player, enemy, screenHeight, screenWidth);
+	       	//if(e->getSector()->getId() == currentSector->getId()) 
+    		
 
 	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 
@@ -187,6 +187,11 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }
 		}
+
+        // Render enemies
+        for(Enemy* e : enemies)
+        	if(currentSector->getId() == e->getSector()->getId()) render_util::renderEnemy(renderer, currentSector, player, e, screenHeight, screenWidth);
+	    
 
 		++renderedSectors[currentSector->getId()-1];
 		///END RENDER SECTOR
@@ -203,7 +208,6 @@ void render_util::renderEnemy(SDL_Renderer* renderer, sector* currentSector, Pla
 	int enemySize = 1200; // enemy-scale
 	// calculate distance between player and enemy
 	float distance = enemySize * 1 / sqrt(pow(ex-px, 2) + pow(ey-py, 2) + pow(ez-pz, 2));
-	//std::cout << distance << std::endl;
 	
 	// don't render if too far away
 	//if(distance < 100) return;

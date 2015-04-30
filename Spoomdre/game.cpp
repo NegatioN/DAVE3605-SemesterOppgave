@@ -117,6 +117,9 @@ void Game::terminate(){
 	//Destroy renderer
 	SDL_DestroyRenderer(renderer);
 
+	//Destroy texture
+	SDL_DestroyTexture(texture);
+
 	//Destroy window
 	SDL_DestroyWindow(window);
 

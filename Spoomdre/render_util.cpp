@@ -29,7 +29,6 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 		sector* currentSector = currentSectorView.thisSector;
 		sectorRenderQueue.pop();	//remove front-element from queue
 
-		// std::cout << currentSector->getId() << std::endl;
 		///START RENDER SECTOR
 		
 		std::vector<vertex> vertices = currentSector->getVertices();	//verticies in sector

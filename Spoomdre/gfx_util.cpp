@@ -30,7 +30,10 @@ float gfx_util::pointSide(float px, float py,float x0, float y0, float x1, float
 
 xy gfx_util::intersect(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
 	xy pos;
-	pos.x = vcp( vcp( x1,y1,x2,y2 ), ( x1 - x2 ), vcp(x3,y3,x4,y4) , ( ( x3 - x4 ) / vcp( ( x1-x2 ),( y1-y2 ),( x3-x4 ),( y3-y4 ) ) ));
-	pos.y = vcp( vcp( x1,y1,x2,y2 ), ( y1 - y2 ), vcp(x3,y3,x4,y4) , ( ( y3 - y4 ) / vcp( ( x1-x2 ),( y1-y2 ),( x3-x4 ),( y3-y4 ) ) ));
+	// Eigen::Vector2f line1(x2-x1,y2-y1);
+	// Eigen::Vector2f line2(x4-x3,y4-y3);
+	pos.x = vcp( vcp( x1,y1,x2,y2 ), ( x1 - x2 ), vcp(x3,y3,x4,y4) ,  ( x3 - x4 )) / vcp( ( x1-x2 ),( y1-y2 ),( x3-x4 ),( y3-y4 ) );
+	pos.y = vcp( vcp( x1,y1,x2,y2 ), ( y1 - y2 ), vcp(x3,y3,x4,y4) ,  ( y3 - y4 )) / vcp( ( x1-x2 ),( y1-y2 ),( x3-x4 ),( y3-y4 ) );
 	return pos;
 }
+

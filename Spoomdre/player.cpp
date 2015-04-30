@@ -156,7 +156,7 @@ bool Player::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
 		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
 		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
 		
-		//is this wall a door?
+		//is this wall a door? and if so, is it locked?
 		door* door_ = n->getWallDoor(a,b);
 		bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 		// can player walk/jump through opening?

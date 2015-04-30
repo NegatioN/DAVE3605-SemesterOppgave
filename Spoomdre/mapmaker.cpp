@@ -107,7 +107,7 @@ std::vector<sector*> mapmaker::createMap(){
 
 std::vector<sector*> mapmaker::createTestMap(){
 	int id = 1;
-std::vector<sector*> sectors;
+	std::vector<sector*> sectors;
 
 	vertex v1 = vertex{0, 0};
 	vertex v2 = vertex{10, 0};

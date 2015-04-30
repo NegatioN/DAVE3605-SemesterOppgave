@@ -1,0 +1,12 @@
+#ifndef CLASS_ABSTRACTSECTORFACTORY_H
+#define CLASS_ABSTRACTSECTORFACTORY_H
+
+#include "sector.hpp"
+
+class AbstractSectorFactory {
+
+ 	public: 
+		virtual sector* createSector(int id, float floor_height, float ceiling_height) = 0;
+};
+
+#endif

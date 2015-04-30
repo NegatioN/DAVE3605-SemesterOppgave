@@ -23,6 +23,8 @@ class Game{
 
 	SDL_Texture * texture = NULL;
 
+	SDL_Surface* surface = NULL;
+
 	void makeRenderer();					//simply creates the SDL_Surface
 
 public:

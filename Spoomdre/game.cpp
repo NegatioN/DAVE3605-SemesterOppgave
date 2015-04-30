@@ -14,7 +14,7 @@ std::vector<Enemy*> enemies;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
-int MAP = 0;
+int MAP = 1;
 
 //get window surface
 void Game::makeRenderer(){
@@ -91,7 +91,7 @@ void Game::render() {
 	// empty renderer from previous iteration
     SDL_RenderClear(renderer);
 
-    Enemy* en = enemies.at(0);
+    //Enemy* en = enemies.at(0);
 
     //std::cout << "Before Render: " << en->x() << " " << en->y() << " " << en->z() << std::endl;
     // render player & world

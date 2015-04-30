@@ -205,16 +205,12 @@ void render_util::renderEnemy(SDL_Renderer* renderer, sector* currentSector, Pla
 	float px = player->x(), py = player->y(), pz = player->z();
 	float ex = enemy->x(), ey = enemy->y(), ez = enemy->z();
 
-	int enemySize = 1200; // enemy-scale
+	int enemySize = 800; // enemy-scale
 	// calculate distance between player and enemy
-	float distance = enemySize * 1 / sqrt(pow(ex-px, 2) + pow(ey-py, 2) + pow(ez-pz, 2));
+	float distance = enemySize * 1 / sqrt(pow(ex-px, 2) + pow(ey-py, 2));// + pow(ez-pz, 2));
 	
 	// don't render if too far away
 	//if(distance < 100) return;
-
-	SDL_Rect enemysprite;
-	enemysprite.x = 0; enemysprite.y = 0;
-	enemysprite.w = 100; enemysprite.h = 100;
 
 	float psin = player->anglesin(); float pcos = player->anglecos();
     float enemyAx = ex - px; float enemyAy = ey - py;
@@ -228,12 +224,42 @@ void render_util::renderEnemy(SDL_Renderer* renderer, sector* currentSector, Pla
 	int enemyX = screenWidth / 2 - (int) (etx * exscale);
     int enemyY = screenHeight / 2 - (int) ((currentSector->floor() - pz + etz * player->yaw()) * eyscale);
 
-    enemysprite.w = (int) distance;
-    enemysprite.h = (int) distance;
-    enemysprite.x = enemyX - enemysprite.w / 2;
-	enemysprite.y = enemyY - enemysprite.h;// / 2;
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderFillRect(renderer, &enemysprite);
+
+    // Rendering
+	SDL_Rect enemysprite1;
+	SDL_Rect enemysprite2;
+	SDL_Rect enemysprite3;
+	SDL_Rect enemysprite4;
+
+	// left leg
+    enemysprite1.w = (int) distance / 4;
+    enemysprite1.h = (int) distance;
+    enemysprite1.x = enemyX - distance / 2;
+	enemysprite1.y = enemyY - enemysprite1.h;
+
+	// right leg
+    enemysprite2.w = (int) distance / 4;
+    enemysprite2.h = (int) distance;
+    enemysprite2.x = enemyX - distance / 2 + enemysprite2.w * 3;
+	enemysprite2.y = enemyY - enemysprite2.h;
+
+	// torso
+    enemysprite3.w = (int) distance;
+    enemysprite3.h = (int) distance;
+    enemysprite3.x = enemyX - distance / 2;
+	enemysprite3.y = enemyY - enemysprite3.h * 2;
+
+	// head
+    enemysprite4.w = (int) distance / 2;
+    enemysprite4.h = (int) distance / 2;
+    enemysprite4.x = enemyX - distance / 4;
+	enemysprite4.y = enemyY - enemysprite4.h * 5;
+
+	SDL_SetRenderDrawColor(renderer, 0xCC, 0xEE, 0xFF, 0xFF);
+	SDL_RenderFillRect(renderer, &enemysprite1);
+	SDL_RenderFillRect(renderer, &enemysprite2);
+	SDL_RenderFillRect(renderer, &enemysprite3);
+	SDL_RenderFillRect(renderer, &enemysprite4);
 }
 
 void render_util::renderSector(sector currentSect){

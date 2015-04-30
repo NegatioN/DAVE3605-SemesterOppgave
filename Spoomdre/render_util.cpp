@@ -1,5 +1,6 @@
 #include "render_util.hpp"
 #include <iostream>
+
 // WELCOME TO THE MATRIX
 void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Player* player, int screenHeight, int screenWidth){
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
@@ -174,6 +175,10 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
                     //vLineTexture(renderer, texture, x, cropYCeiling, cropYFloor, 0,0,0);
 	            }
 	        }
+
+	        // Render enemies
+	        //render_util::renderEnemy(renderer, currentSector, player, enemy, screenHeight, screenWidth);
+
 	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 
 	        //add sector-neighbours to renderQueue
@@ -186,6 +191,45 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 		++renderedSectors[currentSector->getId()-1];
 		///END RENDER SECTOR
 	}
+}
+
+void render_util::renderEnemy(SDL_Renderer* renderer, sector* currentSector, Player* player, Enemy* enemy, int screenHeight, int screenWidth) {
+	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
+	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
+
+	float px = player->x(), py = player->y(), pz = player->z();
+	float ex = enemy->x(), ey = enemy->y(), ez = enemy->z();
+
+	int enemySize = 1200; // enemy-scale
+	// calculate distance between player and enemy
+	float distance = enemySize * 1 / sqrt(pow(ex-px, 2) + pow(ey-py, 2) + pow(ez-pz, 2));
+	//std::cout << distance << std::endl;
+	
+	// don't render if too far away
+	//if(distance < 100) return;
+
+	SDL_Rect enemysprite;
+	enemysprite.x = 0; enemysprite.y = 0;
+	enemysprite.w = 100; enemysprite.h = 100;
+
+	float psin = player->anglesin(); float pcos = player->anglecos();
+    float enemyAx = ex - px; float enemyAy = ey - py;
+    float etx = enemyAx * psin - enemyAy * pcos; float etz = enemyAx * pcos + enemyAy * psin;
+
+    // Is wall at least partially in front of player
+	if(etz <= 0) return;
+
+	float exscale = hfov / etz; float eyscale = vfov / etz;
+
+	int enemyX = screenWidth / 2 - (int) (etx * exscale);
+    int enemyY = screenHeight / 2 - (int) ((currentSector->floor() - pz + etz * player->yaw()) * eyscale);
+
+    enemysprite.w = (int) distance;
+    enemysprite.h = (int) distance;
+    enemysprite.x = enemyX - enemysprite.w / 2;
+	enemysprite.y = enemyY - enemysprite.h;// / 2;
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderFillRect(renderer, &enemysprite);
 }
 
 void render_util::renderSector(sector currentSect){

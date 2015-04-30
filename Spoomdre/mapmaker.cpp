@@ -1,4 +1,6 @@
 #include "mapmaker.hpp"
+#include "abstract_sector_factory.hpp"
+#include "normal_sector_factory.hpp"
 
 
 std::vector<sector*> mapmaker::createMap(){
@@ -11,6 +13,9 @@ std::vector<sector*> mapmaker::createMap(){
 				  s4{id++, 10.f, 30.f},
 				  s5{id++, 25.f, 45.f}, // same as s2 (used to test door)
 				  s6{id++, 25.f, 45.f};
+
+	AbstractSectorFactory* factory = new NormalSectorFactory();
+	
 
 
 	// vertexes for test-map
@@ -39,7 +44,10 @@ std::vector<sector*> mapmaker::createMap(){
 	vertex v18 = vertex{40, 20};
 	vertex v19 = vertex{40, 10};
 
-	static door d1{v14, v15, true}; // "smallest" point first
+	vertex v20 = vertex{0, 50};
+	vertex v21 = vertex{0, 10};
+
+	std::vector<vertex> s7_vertex;
 
 	s1.addVertex(v1);
 	s1.addVertex(v2);
@@ -69,14 +77,18 @@ std::vector<sector*> mapmaker::createMap(){
 	s6.addVertex(v18);
 	s6.addVertex(v14);
 
-	//s5.addVertex(v15);
 	s5.addVertex(v17);
 	s5.addVertex(v16);
 	s5.addVertex(v13);
 	s5.addVertex(v12);
 	s5.addVertex(v19);
 	s5.addVertex(v18);
-	//s5.addVertex(v14);
+
+	s7_vertex.push_back(v13);
+	s7_vertex.push_back(v20);
+	s7_vertex.push_back(v21);
+	s7_vertex.push_back(v12);
+	static sector* s7 = factory->createSector(id++, 25.f, 45.f);
 
 	s1.addNeighbour(&s2);
 	s1.addNeighbour(&s3);
@@ -91,8 +103,9 @@ std::vector<sector*> mapmaker::createMap(){
 	s6.addNeighbour(&s2);
 	s6.addNeighbour(&s5);
 
-	s2.addDoor(&d1);
+	static door d1{v14, v15, true}; // "smallest" point first
 
+	s2.addDoor(&d1);
 	s6.addDoor(&d1);
 
 	sectors.push_back(&s1);

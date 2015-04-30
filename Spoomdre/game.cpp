@@ -31,7 +31,7 @@ void Game::initialize(int height, int width) {
 			SDL_GetError());
 	}else{
 	//Create Window
-		window = SDL_CreateWindow("SDL Hello World", 
+		window = SDL_CreateWindow("Spoomdre", 
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
 			width, height, SDL_WINDOW_SHOWN);
 		if(window == NULL)

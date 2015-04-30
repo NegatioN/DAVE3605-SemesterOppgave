@@ -2,6 +2,8 @@
 #define CLASS_ABSTRACTSECTORFACTORY_H
 
 #include "sector.hpp"
+#include "vertex.hpp"
+#include <vector>
 
 class AbstractSectorFactory {
 

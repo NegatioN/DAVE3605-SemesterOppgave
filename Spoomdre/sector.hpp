@@ -36,6 +36,8 @@ std::vector<door*> doors;
 public:
 	sector(int id_, float floor_height, float ceiling_height);
 
+	sector(int id_, float floor_height, float ceiling_height, std::vector<vertex> vert);
+
 	void addVertex(vertex v);
 	void addNeighbour(sector* s);
 	void addDoor(door* d);

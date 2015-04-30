@@ -12,6 +12,10 @@ sector::sector(int id, float floor_height, float ceiling_height) : id_{id}, floo
 
 };
 
+sector::sector(int id, float floor_height, float ceiling_height, std::vector<vertex> vert) : id_{id}, floor_height_{floor_height}, ceiling_height_{ceiling_height}, vertices{vert} {
+    vCount = vert.size();
+};
+
 void sector::addVertex(vertex v){
 	vertices.push_back(v);
 	vCount++;

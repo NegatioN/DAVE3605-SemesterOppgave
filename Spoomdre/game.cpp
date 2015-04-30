@@ -123,6 +123,12 @@ void Game::terminate(){
 
 	//quit SDL Subsystems
 	SDL_Quit();
+
+	if(MAP == 0){
+		//delete all sectors
+		for(sector* a : sectors)
+			delete a;
+	}
 }
 void Game::wait(int milliseconds){
 	SDL_Delay(milliseconds);

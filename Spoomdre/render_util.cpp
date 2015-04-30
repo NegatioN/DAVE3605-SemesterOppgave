@@ -255,7 +255,6 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
     SDL_SetRenderDrawColor(renderer, 0xBB, 0xBB, 0xBB, 0xFF); // map-color, Blue/green-ish
     SDL_RenderFillRect(renderer, &prect); // render map 
 
-
     //get player-variables
     Vector3f posVector = player->position();
     float playerX = posVector(0); float playerY = posVector(1); float playerZ = posVector(2);
@@ -270,7 +269,7 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
 
 
         int range = 70;
-        if(std::abs(a.x()- (std::abs(playerX))) > range || std::abs(a.y()- (std::abs(playerY))) > range &&
+        if(std::abs(a.x()- (std::abs(playerX))) > range || std::abs(a.y()- (std::abs(playerY))) > range ||
         	std::abs(a.x()- (std::abs(playerX))) > range || std::abs(b.y()- (std::abs(playerY))) > range)
         	continue;
 

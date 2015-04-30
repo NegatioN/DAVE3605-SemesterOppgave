@@ -135,8 +135,8 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	            
                 // Draw floor and ceiling
                 unsigned roofColor = 0x99;
-                drawVLine(renderer, x, top, cropYCeiling-1, roofColor, roofColor, roofColor, 1);
-                drawVLine(renderer, x, cropYFloor+1, bottom, 0x66, 0x33, 0x00, 1);
+                drawVLine(renderer, x, top, cropYCeiling-1, roofColor, roofColor, roofColor, 1, screenHeight, screenWidth);
+                drawVLine(renderer, x, cropYFloor+1, bottom, 0x66, 0x33, 0x00, 1, screenHeight, screenWidth);
 				// vLineTexture(renderer, texture, x, top, cropYCeiling-1, 0,0,0);
 				// vLineTexture(renderer, texture, x, cropYFloor+1, bottom, 0,0,0);
 
@@ -152,7 +152,7 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	                // If our ceiling is higher than their ceiling, render upper wall     
                     if(cropYCeiling < nbrYCeil)    {
 						if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-	                   	drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade); // Between our and their ceiling
+	                   	drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade, screenHeight, screenWidth); // Between our and their ceiling
                     	// vLineTexture(renderer, texture, x, cropYCeiling, nbrYCeil-1, 0,0,0);
 
                     }       
@@ -160,7 +160,7 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	                // If our floor is lower than their floor, render bottom wall
                     if(cropYFloor > nbrYFloor) {
                     	if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-                        drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade);  // Between their and our floor
+                        drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);  // Between their and our floor
 						//vLineTexture(renderer, texture, x, nbrYFloor+1, cropYFloor, 0,0,0);
 
                     }
@@ -171,7 +171,7 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	            }
 	            else{
                     // No neighbors, render wall from top to bottom
-                    drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade);
+                    drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);
                     //vLineTexture(renderer, texture, x, cropYCeiling, cropYFloor, 0,0,0);
 	            }
 	        }
@@ -267,12 +267,12 @@ void render_util::renderSector(sector currentSect){
 }
 
 // vline: Draw a vertical line on screen, with a different color pixel in top & bottom 
-void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade)
+void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade, int screenHeight, int screenWidth)
 {
-	int H = 480; // window-height
-	int W = 640; // window-width
-    y1 = gfx_util::clamp(y1, 0, H-1);
-    y2 = gfx_util::clamp(y2, 0, H-1);
+	//int H = 480; // window-height
+	//int W = 640; // window-width
+    y1 = gfx_util::clamp(y1, 0, screenHeight-1);
+    y2 = gfx_util::clamp(y2, 0, screenHeight-1);
 
     // if calculated shade (color - shade) is under the threshold, set the color as the threshold
     SDL_SetRenderDrawColor(renderer, (red - shade < red / 4) ? red / 4 : red - shade, (green - shade < green / 4) ? green / 4 : green - shade, (blue - shade < blue / 4) ? blue / 4 : blue - shade, 0xFF);//vegg
@@ -284,13 +284,13 @@ void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int r
     SDL_RenderDrawPoint(renderer, x1, y2);
 }
 
-void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y1, int y2, int top, int middle, int bottom)
+void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y1, int y2, int top, int middle, int bottom, int screenHeight, int screenWidth)
 {
 	/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
 	top = 0x111111;
 	middle = 0x222222;
 	bottom = 0x111111;
-	int H = 480, W = 640;
+	//int H = 480, W = 640;
 
 	void *pixels;
 	int pitch;
@@ -312,20 +312,20 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int
 
 
 //Temporary method for showing a top-down view on screen.
-void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector<vertex> vertices){
+void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector<vertex> vertices, int screenHeight, int screenWidth){
 
 	int vCount = vertices.size();
     
-    int yOffset = -150; // displaces map by a given y //-150 
-    int xOffset = 250;  // displaces map by a give x  //250
+    int yOffset = 100; // displaces map by a given y //-150 
+    int xOffset = screenWidth - 100;  // displaces map by a give x  //250
 
     // Render player on map
     SDL_Rect prect;
     prect.w = 5; prect.h = 5;
-    prect.x = (320+xOffset) - prect.w / 2; prect.y = (240+yOffset) - prect.h / 2;
+    prect.x = (xOffset) - prect.w / 2; prect.y = (yOffset) - prect.h / 2;
 
     SDL_SetRenderDrawColor(renderer, 0x55, 0xFF, 0x55, 0xFF); // map-color, Blue/green-ish
-    SDL_RenderDrawLine(renderer, 320 + xOffset, 240 + yOffset, 320 + xOffset, 232 + yOffset); // render map 
+    SDL_RenderDrawLine(renderer, xOffset, yOffset, xOffset, yOffset); // render map 
     SDL_SetRenderDrawColor(renderer, 0xBB, 0xBB, 0xBB, 0xFF); // map-color, Blue/green-ish
     SDL_RenderFillRect(renderer, &prect); // render map 
 
@@ -357,7 +357,7 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
               txb = txb*anglesin - tyb*anglecos;
 
         SDL_SetRenderDrawColor(renderer, 0x00, 0x77, 0xFF, 0xFF); // map-color, Blue/green-ish
-        SDL_RenderDrawLine(renderer, 320-txa + xOffset, 240-tza + yOffset, 320-txb + xOffset, 240-tzb + yOffset); // render map
+        SDL_RenderDrawLine(renderer, -txa + xOffset, -tza + yOffset, -txb + xOffset, -tzb + yOffset); // render map
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
     }
 }

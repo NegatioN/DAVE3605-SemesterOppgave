@@ -31,6 +31,7 @@ void Player::update() {
 
 	updatePOV();
 
+	//if player z is higher than sector z+bodyheight, we should be falling
 	if(z() > default_z)
 		isFalling = true;
 	else
@@ -128,7 +129,8 @@ bool Player::checkForWall(Vector3f& velo){
             gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
         { 
 			for (sector* n: neighbours){
-				checkForPortal(n, velo, a, b);
+				if(checkForPortal(n, velo, a, b)) //did we hit a portal?
+					return true;
 			}
 			//Bumps into a wall! Slide along the wall. 
 			// This formula is from Wikipedia article "vector projection". 
@@ -165,13 +167,12 @@ bool Player::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
     		((!isFalling && floor_diff <= KNEEHEIGHT) || (isFalling && z()-KNEEHEIGHT >= hole_low))) 
 		{
 			std::cout << "entered sector=" << n->getId() << std::endl;
-
 		   	setSector(n);
 			move(velo);
 
 		   	//sets default_z to floor + BodyHeight. Player will move towards this next frame
 		   	default_z = getSector()->floor() + BODYHEIGHT;
-		   	velo /= 2;
+		   	//velo /= 2;
 		   	setVelocity(velo);		//if we fall after sector-change we fall forward.
 	    	return true;
    		}	
@@ -201,7 +202,7 @@ void Player::crouchMove(bool isCrouch){
 }
 
 void Player::jump(Vector3f& velo){
-	velo(2) = 2.5;
+	velo(2) = 2.8;
 	setVelocity(velo);
 
 	Vector3f pos = position();

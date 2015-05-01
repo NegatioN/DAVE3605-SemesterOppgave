@@ -1,6 +1,7 @@
 #include "enemy.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <cmath>
 
 //SDL_Rect enemySprite;
 
@@ -12,6 +13,7 @@ void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setAcceleration(acc);
 	setSector(sec);
 
+	angle_ = 1;
 
 //	enemySprite.w = 100;
 	//enemySprite.h = 50;
@@ -58,16 +60,17 @@ bool Enemy::checkForWall(Vector3f& velo){
 			// 	if(checkForPortal(n, velo, a, b)) //did we hit a portal?
 			// 		return true;
 			// }
-			//Bumps into a wall! Slide along the wall. 
-			// This formula is from Wikipedia article "vector projection". 
-			float xd = b.x() - a.x(), yd = b.y() - a.y();
-			velo(0) =  xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
-			velo(1) =  yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
-			//velo(0) = -velo(0);
-			//velo(1) = -velo(1);
-			angle_ = (TAU/2)-angle_;
-			//std::cout << "Hopper, men treffer vegg" << std::endl;
 
+			//hits wall, uses normal vector(wall) and direction to calculate new direction and angle
+			float xd = b.x() - a.x(), yd = b.y() - a.y();
+			Vector2f normal(xd, yd);
+			Vector2f new_dir(velo(0),velo(1));
+			Vector2f dir; 
+			dir = -2 * (( normal.dot(new_dir) * new_dir) - normal);//-2 *new_dir.dot(normal)* normal + new_dir;
+			float vector_angle = std::atan2(dir(1),dir(0));
+			velo(0) = dir(0);
+			velo(1) = dir(1);
+			angle_ = vector_angle;//(TAU/2)-angle_;
 			//will you slide past this wall?
 			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
 				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){

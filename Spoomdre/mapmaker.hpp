@@ -5,6 +5,7 @@
 #include "sector.hpp"
 #include "vertex.hpp"
 #include "door.hpp"
+#include "level_portal.hpp"
 
 class mapmaker{
 public:

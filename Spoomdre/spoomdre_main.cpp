@@ -9,8 +9,8 @@
 #include <vector>
 
 //screen dimension constants
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
 //KeyboardHandler keyboardHandler;
 

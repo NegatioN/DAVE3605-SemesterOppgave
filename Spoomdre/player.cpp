@@ -23,7 +23,8 @@ void Player::update() {
 	isCrouching = false;
 	bool isJumping = false;
 	if(doorCountdown > 0) --doorCountdown;
-	
+	if(portalCountdown > 0) --portalCountdown;
+
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 
@@ -67,7 +68,8 @@ void Player::update() {
 	    if (keys_.at(8)) { isCrouching = true;}													//Crouch, Z-axis
 	    if (keys_.at(9)) { isJumping = true; } 													//Jump, Z-axis
 	    if (keys_.at(10)) { shootProjectile(); }												//Shoot
-	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }							//Interact
+	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }	//Interact	
+	    //if (keys_.at(11)){ if(portalCountdown == 0) checkForLevelPortal();	}
 	    if (keys_.at(12)){ activespeed_ = sprintspeed_; } else {activespeed_ = normalspeed_;}							//Sprint
 
 	    // set moving to true if movement-key is pressed
@@ -217,6 +219,25 @@ void Player::move(Vector3f velo) {
 	Vector3f pos = position();
 	pos += velo;
 	setPosition(pos);
+}
+
+void Player::checkForLevelPortal() {
+	portalCountdown = 10;
+
+	LevelPortal* lvlPortal = getSector()->getLevelPortal();
+
+	if(lvlPortal == NULL) return;
+
+	Vector3f pos = position();
+	float px = pos(0); float py = pos(1);
+	float porX = lvlPortal->getX(); float porY = lvlPortal->getY();
+
+	float distanceToPortal = sqrt(pow(px-porX,2) + pow(py-porY,2));
+	std::cout << distanceToPortal << std::endl;
+
+	if(distanceToPortal < 100) {
+		std::cout << "Under 100 dist" << std::endl;
+	}
 }
 
 void Player::checkForEvent(){

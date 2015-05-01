@@ -215,7 +215,7 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	float px = player->x(), py = player->y(), pz = player->z();
 	float ex = enemy->x(), ey = enemy->y(), ez = enemy->z();
 
-	int enemySize = 2000; // enemy-scale
+	int enemySize = 1000; // enemy-scale
 
 	// calculate distance between player and enemy
 	float distance = enemySize * 1 / sqrt(pow(ex-px, 2) + pow(ey-py, 2));// + pow(ez-pz, 2));
@@ -237,13 +237,13 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 
     // std::cout << "EnemyX: " << enemyX << " EnemyY: " << enemyY << " Distance: " << distance << std::endl;
     // Rendering
-	SDL_Rect enemysprite;
+	SDL_Rect enemySprite;
 
 	//Set bounds for enemy
-    enemysprite.w = (int) distance;
-    enemysprite.h = (int) distance*2;
-    enemysprite.x = enemyX - distance*2;
-	enemysprite.y = enemyY - distance;
+    enemySprite.w = (int) distance;
+    enemySprite.h = (int) distance*2;
+    enemySprite.x = enemyX - enemySprite.w/2;
+	enemySprite.y = enemyY - enemySprite.h + (enemySprite.h/10);
 
 
 	SDL_Rect crop;
@@ -252,7 +252,7 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	crop.x = 0;
 	crop.y = 0;
 
-	SDL_RenderCopy(renderer, texture, &crop, &enemysprite);
+	SDL_RenderCopy(renderer, texture, &crop, &enemySprite);
 }
 
 void render_util::renderSector(sector currentSect){

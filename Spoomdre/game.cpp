@@ -66,7 +66,7 @@ void Game::initialize(int height, int width) {
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 	
 		Vector3f positionE1(70, 80, 20);
-		Vector3f positionE2(80, 80, 20);
+		Vector3f positionE2(50, 50, 20);
 		Vector3f positionE3(85, 90, 20);
 		static Enemy enemy1;
 		// static Enemy enemy2;

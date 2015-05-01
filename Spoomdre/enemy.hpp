@@ -3,6 +3,10 @@
 
 #include <Eigen/Core>
 #include "entity.hpp"
+#include "gfx_util.hpp"
+#include "vertex.hpp"
+#include "door.hpp"
+#include <math.h>
 
 using namespace Eigen;
 
@@ -21,6 +25,8 @@ class Enemy : public Entity {
 	float const BODYHEIGHT = 10; //size of player
 	float const KNEEHEIGHT = (BODYHEIGHT/2);
 
+	const double TAU=M_PI*2;
+
 	// list of projectiles (i.e bullets)
 	//std::vector<Projectile*> projectiles;
 	// variables for cooldown between each projectile-shoot
@@ -36,6 +42,10 @@ public:
 	void update();						//updates all vectors and values for player
 	void move(Vector3f velo);			//add velocity to position of player
 	void render(SDL_Renderer* renderer);
+
+	bool checkForWall(Vector3f& velo);	//collision-detection
+	bool checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b);
+	
 	
 	//void shootProjectile();
 	//void removeDeadProjectiles();

@@ -49,7 +49,6 @@ public:
 	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
 	void update();						//updates all vectors and values for player
 	void move(Vector3f velo);			//add velocity to position of player
-	void render(SDL_Renderer* renderer);
 	bool checkForWall(Vector3f& velo);	//collision-detection
 	bool checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b);
 	void crouchMove(bool isCrouch);		//crouch
@@ -73,6 +72,7 @@ public:
 	float x(){ return position()(0); };
 	float y(){ return position()(1); };
 	float z(){ return position()(2); }
+	std::vector<Projectile*> getProjectiles(){return projectiles;};
 
 };
 

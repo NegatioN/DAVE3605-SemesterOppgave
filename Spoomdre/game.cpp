@@ -14,7 +14,7 @@ std::vector<Enemy*> enemies;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
-int MAP = 1;
+int MAP = 0;
 
 //get window surface
 void Game::makeRenderer(){

@@ -349,7 +349,8 @@ void Player::shootProjectile() {
 	if(projectileCountdown < 1) {
 		Projectile* proj = new Projectile();
 		Vector3f pos = position();
-		proj->init(pos, angle_);
+		Vector3f bulletSpeed(0.01,0.01,0);
+		proj->init(pos, bulletSpeed);
 		projectiles.push_back(proj);
 		
 		projectileCountdown = projectileCooldown;
@@ -368,33 +369,4 @@ void Player::removeDeadProjectiles() {
 			std::cout << "projectile removed()" << std::endl;
 		}
 	}
-}
-
-void Player::render(SDL_Renderer* renderer) {
-	int W = 640;
-	int H = 480;
-	sector::window windows[W];
-	for(unsigned i = 0; i < W; ++i) {
-        windows[i].bottom = H-1;
-        windows[i].top = 0;
-    }
-
-    getSector()->render(renderer, position(), angle(), yaw(), windows);
-
-	std::vector<sector*> visibleSectors = getSector()->getNeighbours();
-	for (int i = 0; i < visibleSectors.size() ; i++){
-		sector* s = visibleSectors[i];
-
-		//Add neighbour's neighbours
-		for(sector* n : s->getNeighbours())
-			if (find(visibleSectors.begin(), visibleSectors.end(), n) == visibleSectors.end() && n != getSector())
-				visibleSectors.push_back(n);
-
-		//Render sector
-		s->render(renderer, position(), angle(), yaw(), windows);
-	}
-    
-	// Renders projectiles
-	for(Projectile* p : projectiles)
-		p->render(renderer);
 }

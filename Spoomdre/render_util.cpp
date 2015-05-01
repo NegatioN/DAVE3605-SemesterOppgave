@@ -191,6 +191,9 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
         // Render enemies
         for(Enemy* e : enemies)
         	if(currentSector->getId() == e->getSector()->getId()) render_util::renderEnemy(renderer, texture, currentSector, player, e, screenHeight, screenWidth);
+
+        //render projectiles
+        render_projectiles(renderer, player);
 	    
 
 		++renderedSectors[currentSector->getId()-1];
@@ -280,10 +283,6 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int
 	// 	;;
 	// }
 
-	std::cout << "I vLineTexture" << std::endl;
-
-	SDL_UnlockTexture(texture);
-
     //SDL_RenderCopy(renderer, line, NULL, NULL);
 }
 
@@ -337,5 +336,10 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
         SDL_RenderDrawLine(renderer, -txa + xOffset, -tza + yOffset, -txb + xOffset, -tzb + yOffset); // render map
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
     }
+}
+
+void render_util::render_projectiles(SDL_Renderer* renderer, Player* player){
+	for(Projectile* p : player->getProjectiles())
+	p->render(renderer);
 }
 

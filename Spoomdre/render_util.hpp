@@ -27,7 +27,7 @@ public:
 	static void render_map(SDL_Renderer* renderer, Player* player, std::vector<vertex> vertices, int screenHeight, int screenWidth);
 	static void drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int red, int green, int blue, int shade, int screenHeight, int screenWidth);
 	static void vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y1, int y2, int top, int middle, int bottom, int screenHeight, int screenWidth);
-
+	static void render_projectiles(SDL_Renderer* renderer, Player* player);
 };
 
 

@@ -2,7 +2,6 @@
 #include "abstract_sector_factory.hpp"
 #include "normal_sector_factory.hpp"
 
-
 std::vector<sector*> mapmaker::createMap(){
 	int id = 1;
 	std::vector<sector*> sectors;
@@ -93,6 +92,9 @@ std::vector<sector*> mapmaker::createMap(){
 	sector* s5 = factory->createSector(id++, 25.f, 45.f, s5_vertex);
 	sector* s6 = factory->createSector(id++, 25.f, 45.f, s6_vertex);
 	sector* s7 = factory->createSector(id++, 25.f, 45.f, s7_vertex);
+
+	static LevelPortal lvlPortal{5, 30, 1, 2};
+	s7->setLevelPortal(&lvlPortal);
 
 	s1->addNeighbour(s2);
 	s1->addNeighbour(s3);

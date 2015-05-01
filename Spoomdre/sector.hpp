@@ -3,6 +3,7 @@
 
 #include "vertex.hpp"
 #include "door.hpp"
+#include "level_portal.hpp"
 #include <SDL2/SDL.h>
 #include <vector>
 #include <Eigen/Core>
@@ -33,6 +34,8 @@ std::vector<sector*> neighbours;
 //all doors in this sector
 std::vector<door*> doors;
 
+LevelPortal* levelPortal;
+
 public:
 	sector(int id_, float floor_height, float ceiling_height);
 
@@ -41,6 +44,7 @@ public:
 	void addVertex(vertex v);
 	void addNeighbour(sector* s);
 	void addDoor(door* d);
+	void setLevelPortal(LevelPortal* lp);
 
 	struct window {int top, bottom;};
 
@@ -58,6 +62,7 @@ public:
 	std::vector<vertex> getVertices(){return vertices;};
 	std::vector<sector*> getNeighbours(){return neighbours;};
 	std::vector<door*> getDoors(){return doors;};
+	LevelPortal* getLevelPortal(){return levelPortal;};
 
 	float floor(){ return floor_height_; };
 	float ceiling(){ return ceiling_height_; };

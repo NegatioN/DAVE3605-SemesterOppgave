@@ -1,8 +1,13 @@
 #ifndef GFX_UTIL_H
 #define GFX_UTIL_H
 
+#include <stdio.h>
+#include <Eigen/Core>
+#include <SDL2/SDL.h>
+
 //last ned eigen3 for matte. vectorer etc.    libeigen3-dev
 // ex: Eigen::Vector3f (tror jeg)
+using namespace Eigen;
 
 struct xy{float x,y;}; // struct used for returning a pos
 
@@ -20,6 +25,7 @@ class gfx_util {
 	static xy intersect(float x1, float y1, float x2, float y2, 
 				float x3, float y3, float x4, float y4);//Calculate the point of intercetion
 														// between two lines
+	static bool hitScan(Vector3f position, Vector3f enemyPos, SDL_Rect hitBox, Vector3f direction);
 };
 
 #endif

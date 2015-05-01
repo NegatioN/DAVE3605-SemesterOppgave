@@ -29,6 +29,7 @@ public:
 	};
 	virtual void update()=0;
 	virtual void move(Vector3f velo)=0;
+	virtual void takeDamage()=0;
 
 	Vector3f& position(){ return position_;};				//return position-vector
 	Vector3f velocity(){return velocity_;};					//return velocity-vector

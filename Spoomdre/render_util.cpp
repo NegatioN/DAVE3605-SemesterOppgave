@@ -298,6 +298,7 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
     enemySprite.x = enemyX - enemySprite.w/2;
 	enemySprite.y = enemyY - enemySprite.h + (enemySprite.h/10);
 
+	enemy->setRect(enemySprite);
 
 	SDL_Rect crop;
     crop.w = 328;
@@ -365,6 +366,6 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
 
 void render_util::render_projectiles(SDL_Renderer* renderer, Player* player){
 	for(Projectile* p : player->getProjectiles())
-	p->render(renderer);
+		p->render(renderer);
 }
 

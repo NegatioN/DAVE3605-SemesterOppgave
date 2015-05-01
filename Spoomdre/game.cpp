@@ -69,13 +69,13 @@ void Game::initialize(int height, int width) {
 		Vector3f positionE2(50, 50, 20);
 		Vector3f positionE3(85, 90, 20);
 		static Enemy enemy1;
-		// static Enemy enemy2;
+		static Enemy enemy2;
 		// static Enemy enemy3;
 		enemy1.init(positionE1, velocity, acceleration, sectors[0]);
-		// enemy2.init(positionE2, velocity, acceleration, sectors[0]);
+		enemy2.init(positionE2, velocity, acceleration, sectors[0]);
 		// enemy3.init(positionE3, velocity, acceleration, sectors[0]);
 		enemies.push_back(&enemy1);
-		// enemies.push_back(&enemy2);
+		enemies.push_back(&enemy2);
 		// enemies.push_back(&enemy3);
 
 		std::cout << "Enemy coordinates: " << enemy1.x() << " " << enemy1.y() << " " << enemy1.z() << std::endl;
@@ -86,8 +86,36 @@ void Game::initialize(int height, int width) {
 void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 	player.setMoveVector(keys);
 	player.setMouseValues(mouse_x, mouse_y);
-	for(Enemy* e : enemies)
+	for(Enemy* e : enemies){
+		if (player.getSector()->getId() == e->getSector()->getId())
+		{
+			e->setPlayer(&player);
+		}
 		e->update();
+	}
+
+    if(keys.at(10) == true){
+        Vector3f playerPos = player.position();
+        Vector3f direction(0,0,0);
+        direction(0) += player.anglecos();  
+        direction(1)  += player.anglesin();
+        direction.normalize();
+
+
+        for(int i = 0; i < enemies.size(); i++){
+        	Enemy* enemy = enemies.at(i);
+        	bool isHit = gfx_util::hitScan(player.position(), enemy->position(),enemy->getRect(), direction);
+
+
+	        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
+	        if(isHit){
+	        	enemies.erase(enemies.begin()+i);
+	        	std::cout << "Mob killed" << std::endl;
+	        	break;
+	        }
+        }
+    	
+    }
 	//player.move(0,0);
 	player.update();
 }

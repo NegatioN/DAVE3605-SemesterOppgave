@@ -33,9 +33,9 @@ void Projectile::update() {
 void Projectile::move(Vector3f velo) {
 	Vector3f pos = position();
 	pos += velo;
-
+/*
 	std::cout << "Bullet X=" << pos(0) << " Y=" << pos(1) << " Z=" << pos(2) << std::endl;
-
+*/
 	setPosition(pos);
 
 	spritep.x = 640/2-spritep.w/2;
@@ -69,4 +69,9 @@ void Projectile::render(SDL_Renderer* renderer) {
 			flashTimer = 0;
 		} 
 	}
+}
+
+
+void Projectile::takeDamage(){
+	
 }

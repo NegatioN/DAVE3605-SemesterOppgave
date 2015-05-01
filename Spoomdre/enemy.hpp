@@ -7,6 +7,7 @@
 #include "vertex.hpp"
 #include "door.hpp"
 #include <math.h>
+#include <SDL2/SDL.h>
 
 using namespace Eigen;
 
@@ -16,24 +17,18 @@ class Enemy : public Entity {
 
 	float angle_, anglesin_, anglecos_;
 	float default_z;
-	//sector * sector_; -> is in entity 
 
-	//bool isFalling = false;
-
-	float const speed_ = 1.5f;
+	float const speed_ = 0.5f;
 
 	float const BODYHEIGHT = 10; //size of enemy
 	float const KNEEHEIGHT = (BODYHEIGHT/2);
+	SDL_Rect renderRect;
+
+	int damageCountdown = 0;
 
 	const double TAU=M_PI*2;
 
 	Entity* player_;
-
-	// list of projectiles (i.e bullets)
-	//std::vector<Projectile*> projectiles;
-	// variables for cooldown between each projectile-shoot
-	//int projectileCooldown = 50;
-	//int projectileCountdown = 0;
 
 public:
 	Enemy(){};
@@ -43,15 +38,14 @@ public:
 
 	void update();						//updates all vectors and values for enemy
 	void move(Vector3f velo);			//add velocity to position of enemy
+	void takeDamage();					//deal dmg to player
 	void render(SDL_Renderer* renderer);
 
 	bool checkForWall(Vector3f& velo);	//collision-detection
 	bool checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b);
+	bool checkForPlayer(Vector3f& velo);
 
 	void setPlayer(Entity* p){ player_ = p; };
-	
-	//void shootProjectile();
-	//void removeDeadProjectiles();
 
 	float angle(){ return angle_; };
 	float anglesin(){return anglesin_;};
@@ -60,6 +54,8 @@ public:
 	float y(){ return position()(1); };
 	float z(){ return position()(2); };
 	Entity* player(){ return player_; };
+	SDL_Rect getRect(){return renderRect;};
+	void setRect(SDL_Rect rect){renderRect = rect;};
 };
 
 #endif

@@ -12,6 +12,7 @@
 Player player;
 std::vector<Enemy*> enemies;
 std::vector<sector*> sectors;
+std::vector<SDL_Texture*> textures;
 SDL_Rect rect;
 
 int MAP = 0;
@@ -20,7 +21,10 @@ int MAP = 0;
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	texture = IMG_LoadTexture(renderer, "textures/Brick_Texture.png");
+	SDL_Texture* wallTexture = IMG_LoadTexture(renderer, "textures/Brick_Texture.png");
+	SDL_Texture* enemyTexture = IMG_LoadTexture(renderer, "textures/Enemy_Texture.png");
+	textures.push_back(wallTexture);
+	textures.push_back(enemyTexture);
 }
 
 void Game::initialize(int height, int width) {
@@ -94,7 +98,7 @@ void Game::render() {
 
     //std::cout << "Before Render: " << en->x() << " " << en->y() << " " << en->z() << std::endl;
     // render player & world
-    render_util::renderView(renderer, texture, &player, enemies, height_, width_);
+    render_util::renderView(renderer, textures, &player, enemies, height_, width_);
 
     //player.render(renderer);
 	for(auto s : sectors)
@@ -117,8 +121,10 @@ void Game::terminate(){
 	//Destroy renderer
 	SDL_DestroyRenderer(renderer);
 
-	//Destroy texture
-	SDL_DestroyTexture(texture);
+	//Destroy textures
+	for (SDL_Texture* t : textures)
+		SDL_DestroyTexture(t);
+	
 
 	//Destroy window
 	SDL_DestroyWindow(window);

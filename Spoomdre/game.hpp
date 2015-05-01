@@ -19,10 +19,8 @@ class Game{
 	int height_, width_;
 
 	SDL_Window* window = NULL; 			//Window to render to
-	//SDL_Surface* screenSurface = NULL; 	//surface of window
+	
 	SDL_Renderer* renderer = NULL; 		//renderer renders
-
-	SDL_Texture * texture = NULL;
 
 	SDL_Surface* surface = NULL;
 

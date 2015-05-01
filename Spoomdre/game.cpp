@@ -69,13 +69,13 @@ void Game::initialize(int height, int width) {
 		Vector3f positionE2(50, 50, 20);
 		Vector3f positionE3(85, 90, 20);
 		static Enemy enemy1;
-		static Enemy enemy2;
+		// static Enemy enemy2;
 		// static Enemy enemy3;
 		enemy1.init(positionE1, velocity, acceleration, sectors[0]);
-		enemy2.init(positionE2, velocity, acceleration, sectors[0]);
+		// enemy2.init(positionE2, velocity, acceleration, sectors[0]);
 		// enemy3.init(positionE3, velocity, acceleration, sectors[0]);
 		enemies.push_back(&enemy1);
-		enemies.push_back(&enemy2);
+		// enemies.push_back(&enemy2);
 		// enemies.push_back(&enemy3);
 
 		std::cout << "Enemy coordinates: " << enemy1.x() << " " << enemy1.y() << " " << enemy1.z() << std::endl;
@@ -86,13 +86,8 @@ void Game::initialize(int height, int width) {
 void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 	player.setMoveVector(keys);
 	player.setMouseValues(mouse_x, mouse_y);
-	for(Enemy* e : enemies){
-		if (player.getSector()->getId() == e->getSector()->getId())
-		{
-			e->setPlayer(&player);
-		}
+	for(Enemy* e : enemies)
 		e->update();
-	}
 	//player.move(0,0);
 	player.update();
 }

@@ -13,6 +13,8 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setVelocity(vel);
 	setAcceleration(acc);
 	setSector(sec);
+	setStartPos(pos);
+	setStartSector(sec);
 	default_z = sec->floor() + BODYHEIGHT; 
 	yaw_ = 0;
 }
@@ -68,7 +70,9 @@ void Player::update() {
 	    if (keys_.at(9)) { isJumping = true; } 													//Jump, Z-axis
 	    if (keys_.at(10)) { shootProjectile(); }												//Shoot
 	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }							//Interact
-	    if (keys_.at(12)){ activespeed_ = sprintspeed_; } else {activespeed_ = normalspeed_;}							//Sprint
+	    if (keys_.at(12)){ activespeed_ = sprintspeed_; } else {activespeed_ = normalspeed_;}	//Sprint
+	    if (keys_.at(13)){ respawn();}															//Respawn
+	    
 
 	    // set moving to true if movement-key is pressed
 	    bool pushing = false;
@@ -135,14 +139,14 @@ bool Player::checkForWall(Vector3f& velo){
 			//Bumps into a wall! Slide along the wall. 
 			// This formula is from Wikipedia article "vector projection". 
 			float xd = b.x() - a.x(), yd = b.y() - a.y();
-			velo(0) = xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
-			velo(1) = yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
+			velo(0) =  xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
+			velo(1) =  yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
 			//std::cout << "Hopper, men treffer vegg" << std::endl;
 
 			//will you slide past this wall?
 			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
 				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
-				//but will you hit sector? - need test
+				//but will you hit new sector? - need test
 				velo(0) = 0;
 				velo(1) = 0;
 			}
@@ -376,4 +380,14 @@ void Player::render(SDL_Renderer* renderer) {
 	// Renders projectiles
 	for(Projectile* p : projectiles)
 		p->render(renderer);
+}
+
+void Player::respawn(){
+	setSector(getStartSector());
+	setPosition(getStartPos());
+	default_z = getSector()->floor() + BODYHEIGHT; 
+	yaw_ = 0;
+	angle_ = 0;
+	anglesin_ = 0;
+	anglecos_ = 0;
 }

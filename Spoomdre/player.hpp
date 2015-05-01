@@ -55,6 +55,7 @@ public:
 	void jump(Vector3f& velo);			//jumps. Updates Z-axis etc
 	void checkForEvent();				//checks for events close by, 
 	void updatePOV();					//updates player POV (angle+yaw)
+	void respawn();						//respawns player - set position to startPos_
 
 	void shootProjectile();
 	void removeDeadProjectiles();

@@ -24,7 +24,7 @@ int main(int argc, char* args[]){
 	SDL_Event event;	// Holds the next event to be handled (user-input)
 
 	std::vector<bool> keys;
-	for(int i = 0; i < 13; i++) // values for keyboard-keys (movement) & km (rotation)
+	for(int i = 0; i < 14; i++) // values for keyboard-keys (movement) & km (rotation)
 		keys.push_back(false);
 
 	//init variables
@@ -82,6 +82,7 @@ int main(int argc, char* args[]){
                         else if (code == SDLK_RETURN)   keys.at(10) = state;    // shoot
                         else if (code == SDLK_e)        keys.at(11) = state;    // evnt/interact
                         else if (code == SDLK_LSHIFT)   keys.at(12) = state;    // sprint
+                        else if (code == SDLK_BACKSPACE)keys.at(13) = state;    // respawn
 
                         // Pressed ESC-key, close program
                         else if (code == SDLK_ESCAPE && state) running = false;

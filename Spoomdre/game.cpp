@@ -14,14 +14,13 @@ std::vector<Enemy*> enemies;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
-int MAP = 1;
+int MAP = 0;
 
 //get window surface
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	// texture = SDL_CreateTexture(renderer,
- //        SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, 640, 480);
+	texture = IMG_LoadTexture(renderer, "textures/Tute_General_WoodTexture_4.png");
 }
 
 void Game::initialize(int height, int width) {
@@ -66,14 +65,14 @@ void Game::initialize(int height, int width) {
 		Vector3f positionE2(80, 80, 20);
 		Vector3f positionE3(85, 90, 20);
 		static Enemy enemy1;
-		static Enemy enemy2;
-		static Enemy enemy3;
+		// static Enemy enemy2;
+		// static Enemy enemy3;
 		enemy1.init(positionE1, velocity, acceleration, sectors[0]);
-		enemy2.init(positionE2, velocity, acceleration, sectors[0]);
-		enemy3.init(positionE3, velocity, acceleration, sectors[0]);
+		// enemy2.init(positionE2, velocity, acceleration, sectors[0]);
+		// enemy3.init(positionE3, velocity, acceleration, sectors[0]);
 		enemies.push_back(&enemy1);
-		enemies.push_back(&enemy2);
-		enemies.push_back(&enemy3);
+		// enemies.push_back(&enemy2);
+		// enemies.push_back(&enemy3);
 
 		std::cout << "Enemy coordinates: " << enemy1.x() << " " << enemy1.y() << " " << enemy1.z() << std::endl;
 		//std::cout << "InitP: " << en->x() << " " << en->y() << " " << en->z() << std::endl;
@@ -83,6 +82,8 @@ void Game::initialize(int height, int width) {
 void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 	player.setMoveVector(keys);
 	player.setMouseValues(mouse_x, mouse_y);
+	for(Enemy* e : enemies)
+		e->update();
 	//player.move(0,0);
 	player.update();
 }
@@ -117,6 +118,9 @@ void Game::render() {
 void Game::terminate(){
 	//Destroy renderer
 	SDL_DestroyRenderer(renderer);
+
+	//Destroy texture
+	SDL_DestroyTexture(texture);
 
 	//Destroy window
 	SDL_DestroyWindow(window);

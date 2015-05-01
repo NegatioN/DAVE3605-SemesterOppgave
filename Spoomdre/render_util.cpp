@@ -190,7 +190,7 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 
         // Render enemies
         for(Enemy* e : enemies)
-        	if(currentSector->getId() == e->getSector()->getId()) render_util::renderEnemy(renderer, currentSector, player, e, screenHeight, screenWidth);
+        	if(currentSector->getId() == e->getSector()->getId()) render_util::renderEnemy(renderer, texture, currentSector, player, e, screenHeight, screenWidth);
 	    
 
 		++renderedSectors[currentSector->getId()-1];
@@ -198,7 +198,7 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	}
 }
 
-void render_util::renderEnemy(SDL_Renderer* renderer, sector* currentSector, Player* player, Enemy* enemy, int screenHeight, int screenWidth) {
+void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sector* currentSector, Player* player, Enemy* enemy, int screenHeight, int screenWidth) {
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
 	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
 
@@ -255,11 +255,18 @@ void render_util::renderEnemy(SDL_Renderer* renderer, sector* currentSector, Pla
     enemysprite4.x = enemyX - distance / 4;
 	enemysprite4.y = enemyY - enemysprite4.h * 5;
 
+	SDL_RenderCopy(renderer, texture, NULL, &enemysprite1);
+	SDL_RenderCopy(renderer, texture, NULL, &enemysprite2);
+	SDL_RenderCopy(renderer, texture, NULL, &enemysprite3);
+	SDL_RenderCopy(renderer, texture, NULL, &enemysprite4);
+
+	/*
 	SDL_SetRenderDrawColor(renderer, 0xCC, 0xEE, 0xFF, 0xFF);
 	SDL_RenderFillRect(renderer, &enemysprite1);
 	SDL_RenderFillRect(renderer, &enemysprite2);
 	SDL_RenderFillRect(renderer, &enemysprite3);
 	SDL_RenderFillRect(renderer, &enemysprite4);
+	*/
 }
 
 void render_util::renderSector(sector currentSect){

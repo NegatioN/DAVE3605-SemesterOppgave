@@ -40,6 +40,7 @@ class Player : public Entity {
 	int projectileCountdown = 0;
 
 	int doorCountdown = 0;
+	int portalCountdown = 0; // The next time the player can check for a level-portal
 
 public:
 	Player(){};
@@ -53,7 +54,8 @@ public:
 	bool checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b);
 	void crouchMove(bool isCrouch);		//crouch
 	void jump(Vector3f& velo);			//jumps. Updates Z-axis etc
-	void checkForEvent();				//checks for events close by, 
+	void checkForEvent();				//checks for events close by
+	void checkForLevelPortal();			//checks for levelportals close by
 	void updatePOV();					//updates player POV (angle+yaw)
 	void respawn();						//respawns player - set position to startPos_
 

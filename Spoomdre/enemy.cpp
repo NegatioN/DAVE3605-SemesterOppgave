@@ -4,11 +4,14 @@
 
 //SDL_Rect enemySprite;
 
+using namespace std;
+
 void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setPosition(pos);
 	setVelocity(vel);
 	setAcceleration(acc);
 	setSector(sec);
+
 
 //	enemySprite.w = 100;
 	//enemySprite.h = 50;
@@ -17,7 +20,93 @@ void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 }
 
 void Enemy::update() {
+	Vector3f vecAddition(0,0,0);
+	anglesin_ = sin(angle_);
+	anglecos_ = cos(angle_);
+
+	std::cout << "Enemy angle : " << angle_ << std::endl;
 	//std::cout << "yoll" << std::endl;
+	vecAddition(0) += anglecos_  * 1.5f;
+	vecAddition(1)  += anglesin_ * 1.5f;
+	Vector3f vel = velocity();
+	    //Vector3f crouchVelocity = velocity();
+	vel(0) = vel(0) * (1 - 0.2) + vecAddition(0) * 0.2;
+	vel(1) = vel(1) * (1 - 0.2) + vecAddition(1) * 0.2;
+
+	checkForWall(vel);
+	move(vel);
+}
+
+//true, hits wall or goto next sector
+bool Enemy::checkForWall(Vector3f& velo){
+	//float px, float py, float& dx, float& dy
+	//Vector3f position = position();
+	std::vector<vertex> vertices = getSector()->getVertices();
+	std::vector<sector*> neighbours = getSector()->getNeighbours();
+
+	// Check if the player is about to cross one of the sector's edges 
+    for(int i = 0; i < vertices.size(); ++i){
+        vertex a = vertices[i]; 
+        vertex b = vertices[i+1];
+	    
+	    //Loop around for last corner
+	    if (i == vertices.size()-1) b = vertices[0];
+        if( gfx_util::intersectBox(x(), y(), x()+velo(0),y()+velo(1), a.x(), a.y(), b.x(), b.y()) && 
+            gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
+        { 
+			// for (sector* n: neighbours){
+			// 	if(checkForPortal(n, velo, a, b)) //did we hit a portal?
+			// 		return true;
+			// }
+			//Bumps into a wall! Slide along the wall. 
+			// This formula is from Wikipedia article "vector projection". 
+			float xd = b.x() - a.x(), yd = b.y() - a.y();
+			velo(0) =  xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
+			velo(1) =  yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
+			//velo(0) = -velo(0);
+			//velo(1) = -velo(1);
+			angle_ = (TAU/2)-angle_;
+			//std::cout << "Hopper, men treffer vegg" << std::endl;
+
+			//will you slide past this wall?
+			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
+				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
+				//but will you hit new sector? - need test
+				velo(0) = 0;
+				velo(1) = 0;
+			}
+			return true;
+		}
+    }
+    return false;
+}
+
+bool Enemy::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
+	if (n->containsVertices(a, b)){ 
+		float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
+		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
+		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
+		
+		//is this wall a door? and if so, is it locked?
+		door* door_ = n->getWallDoor(a,b);
+		bool isDoorLocked = (door_ != NULL && door_->doorLocked());
+		// can player walk/jump through opening?
+		// std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
+  //   	if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (z() <= hole_high) && !isDoorLocked &&
+  //   		((!isFalling && floor_diff <= KNEEHEIGHT) || (isFalling && z()-KNEEHEIGHT >= hole_low))) 
+		// {
+		// 	std::cout << "entered sector=" << n->getId() << std::endl;
+		//    	setSector(n);
+		// 	move(velo);
+
+		//    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
+		//    	default_z = getSector()->floor() + BODYHEIGHT;
+		//    	//velo /= 2;
+		//    	setVelocity(velo);		//if we fall after sector-change we fall forward.
+	 //    	return true;
+  //  		}	
+	}
+	return false;
 }
 
 void Enemy::move(Vector3f velo) {

@@ -3,14 +3,14 @@ GPP=g++
 GPPOPT=-std=c++11
 
 ##DEPENDENCIES
-DEPENDENCIES= -lSDL2
+DEPENDENCIES= -lSDL2 -lSDL2_image
 EIGENLOCAL=-I/usr/include/eigen3
 
 ##FILES FOR OUTPUT
 SPOOMDRE_OUT=spoomdre
 TEST_OUT=test
 
-OFILES= mapmaker.o linedef.o render_util.o game.o spoomdre_main.o keyboard_handler.o player.o enemy.o sector.o gfx_util.o entity.o door.o projectile.o normal_sector_factory.o
+OFILES= mapmaker.o linedef.o render_util.o game.o spoomdre_main.o keyboard_handler.o player.o enemy.o sector.o gfx_util.o entity.o door.o projectile.o normal_sector_factory.o level_portal.o
 OTEST= hello_world.o keyboard_handler.o
 
 

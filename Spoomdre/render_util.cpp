@@ -191,6 +191,9 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
         // Render enemies
         for(Enemy* e : enemies)
         	if(currentSector->getId() == e->getSector()->getId()) render_util::renderEnemy(renderer, texture, currentSector, player, e, screenHeight, screenWidth);
+
+        //render projectiles
+        render_projectiles(renderer, player);
 	    
 
 		++renderedSectors[currentSector->getId()-1];
@@ -205,7 +208,8 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	float px = player->x(), py = player->y(), pz = player->z();
 	float ex = enemy->x(), ey = enemy->y(), ez = enemy->z();
 
-	int enemySize = 800; // enemy-scale
+	int enemySize = 2000; // enemy-scale
+
 	// calculate distance between player and enemy
 	float distance = enemySize * 1 / sqrt(pow(ex-px, 2) + pow(ey-py, 2));// + pow(ez-pz, 2));
 	
@@ -216,7 +220,7 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
     float enemyAx = ex - px; float enemyAy = ey - py;
     float etx = enemyAx * psin - enemyAy * pcos; float etz = enemyAx * pcos + enemyAy * psin;
 
-    // Is wall at least partially in front of player
+    // Is the enemy in front of player
 	if(etz <= 0) return;
 
 	float exscale = hfov / etz; float eyscale = vfov / etz;
@@ -224,49 +228,18 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	int enemyX = screenWidth / 2 - (int) (etx * exscale);
     int enemyY = screenHeight / 2 - (int) ((currentSector->floor() - pz + etz * player->yaw()) * eyscale);
 
-
+    // std::cout << "EnemyX: " << enemyX << " EnemyY: " << enemyY << " Distance: " << distance << std::endl;
     // Rendering
-	SDL_Rect enemysprite1;
-	SDL_Rect enemysprite2;
-	SDL_Rect enemysprite3;
-	SDL_Rect enemysprite4;
+	SDL_Rect enemysprite;
 
-	// left leg
-    enemysprite1.w = (int) distance / 4;
-    enemysprite1.h = (int) distance;
-    enemysprite1.x = enemyX - distance / 2;
-	enemysprite1.y = enemyY - enemysprite1.h;
+	//Set bounds for enemy
+    enemysprite.w = (int) distance;
+    enemysprite.h = (int) distance*2;
+    enemysprite.x = enemyX - distance;
+	enemysprite.y = enemyY - distance;
 
-	// right leg
-    enemysprite2.w = (int) distance / 4;
-    enemysprite2.h = (int) distance;
-    enemysprite2.x = enemyX - distance / 2 + enemysprite2.w * 3;
-	enemysprite2.y = enemyY - enemysprite2.h;
 
-	// torso
-    enemysprite3.w = (int) distance;
-    enemysprite3.h = (int) distance;
-    enemysprite3.x = enemyX - distance / 2;
-	enemysprite3.y = enemyY - enemysprite3.h * 2;
-
-	// head
-    enemysprite4.w = (int) distance / 2;
-    enemysprite4.h = (int) distance / 2;
-    enemysprite4.x = enemyX - distance / 4;
-	enemysprite4.y = enemyY - enemysprite4.h * 5;
-
-	SDL_RenderCopy(renderer, texture, NULL, &enemysprite1);
-	SDL_RenderCopy(renderer, texture, NULL, &enemysprite2);
-	SDL_RenderCopy(renderer, texture, NULL, &enemysprite3);
-	SDL_RenderCopy(renderer, texture, NULL, &enemysprite4);
-
-	/*
-	SDL_SetRenderDrawColor(renderer, 0xCC, 0xEE, 0xFF, 0xFF);
-	SDL_RenderFillRect(renderer, &enemysprite1);
-	SDL_RenderFillRect(renderer, &enemysprite2);
-	SDL_RenderFillRect(renderer, &enemysprite3);
-	SDL_RenderFillRect(renderer, &enemysprite4);
-	*/
+	SDL_RenderCopy(renderer, texture, NULL, &enemysprite);
 }
 
 void render_util::renderSector(sector currentSect){
@@ -309,10 +282,6 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int
 	// {
 	// 	;;
 	// }
-
-	std::cout << "I vLineTexture" << std::endl;
-
-	SDL_UnlockTexture(texture);
 
     //SDL_RenderCopy(renderer, line, NULL, NULL);
 }
@@ -367,5 +336,10 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
         SDL_RenderDrawLine(renderer, -txa + xOffset, -tza + yOffset, -txb + xOffset, -tzb + yOffset); // render map
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
     }
+}
+
+void render_util::render_projectiles(SDL_Renderer* renderer, Player* player){
+	for(Projectile* p : player->getProjectiles())
+	p->render(renderer);
 }
 

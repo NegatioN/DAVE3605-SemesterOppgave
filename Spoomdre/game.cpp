@@ -20,7 +20,7 @@ int MAP = 0;
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	texture = IMG_LoadTexture(renderer, "textures/Tute_General_WoodTexture_4.png");
+	texture = IMG_LoadTexture(renderer, "textures/Enemy_Texture.png");
 }
 
 void Game::initialize(int height, int width) {

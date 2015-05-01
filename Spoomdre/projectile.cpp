@@ -10,23 +10,20 @@ using namespace std;
 SDL_Rect spritep;
 
 
-void Projectile::init(Vector3f pos, float angle) {
-	Vector3f p = position();
+void Projectile::init(Vector3f pos, Vector3f velo) {
 	setPosition(pos);
 
-	angle_ = angle;
+	setVelocity(velo);
 	
 	spritep.w = 5;
 	spritep.h = 5;
 	spritep.x = 640/2 - spritep.w/2;
 	spritep.y = 480/2 - spritep.h/2;
+	
 }
 
 //Take input accelleration-vector?
 void Projectile::update() {
-	anglesin_ = sin(angle_);
-	anglecos_ = cos(angle_);
-
     Vector3f vel = velocity();
     move(vel);
 
@@ -37,11 +34,13 @@ void Projectile::move(Vector3f velo) {
 	Vector3f pos = position();
 	pos += velo;
 
-	anglesin_ = sin(angle_);
-	anglecos_ = cos(angle_);
+	std::cout << "Bullet X=" << pos(0) << " Y=" << pos(1) << " Z=" << pos(2) << std::endl;
+
 	setPosition(pos);
+
 	spritep.x = 640/2-spritep.w/2;
 	spritep.y = 480/2-spritep.h/2;
+	
 }
 
 void Projectile::render(SDL_Renderer* renderer) {

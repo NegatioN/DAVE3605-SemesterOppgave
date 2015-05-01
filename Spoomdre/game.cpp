@@ -14,13 +14,13 @@ std::vector<Enemy*> enemies;
 std::vector<sector*> sectors;
 SDL_Rect rect;
 
-int MAP = 1;
+int MAP = 0;
 
 //get window surface
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	texture = IMG_LoadTexture(renderer, "textures/Enemy_Texture.png");
+	texture = IMG_LoadTexture(renderer, "textures/Brick_Texture.png");
 }
 
 void Game::initialize(int height, int width) {

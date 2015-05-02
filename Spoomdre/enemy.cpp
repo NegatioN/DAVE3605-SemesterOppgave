@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <cmath>
+#include "player.hpp"
 
 //SDL_Rect enemySprite;
 
@@ -13,7 +14,7 @@ void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setAcceleration(acc);
 	setSector(sec);
 
-	angle_ = 1;
+	angle_ = ((double)rand() / 6.2);
 
 //	enemySprite.w = 100;
 	//enemySprite.h = 50;
@@ -23,10 +24,17 @@ void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 
 void Enemy::update() {
 	Vector3f vecAddition(0,0,0);
+
+	if(player() != NULL && player()->getSector()->getId() == getSector()->getId()){
+		//calculate angle to point to player
+		Vector3f player_pos = player_->position();
+		float xd = player_pos(0) - x(), yd = player_pos(1) - y();
+		angle_ = std::atan2(xd,xd)*(TAU/2)/3.14;
+	}
+
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 
-	std::cout << "Enemy angle : " << angle_ << std::endl;
 	//std::cout << "yoll" << std::endl;
 	vecAddition(0) += anglecos_  * 1.5f;
 	vecAddition(1)  += anglesin_ * 1.5f;
@@ -34,9 +42,10 @@ void Enemy::update() {
 	    //Vector3f crouchVelocity = velocity();
 	vel(0) = vel(0) * (1 - 0.2) + vecAddition(0) * 0.2;
 	vel(1) = vel(1) * (1 - 0.2) + vecAddition(1) * 0.2;
-
+	
 	checkForWall(vel);
 	move(vel);
+	
 }
 
 //true, hits wall or goto next sector
@@ -63,6 +72,7 @@ bool Enemy::checkForWall(Vector3f& velo){
 
 			//hits wall, uses normal vector(wall) and direction to calculate new direction and angle
 			float xd = b.x() - a.x(), yd = b.y() - a.y();
+
 			Vector2f normal(xd, yd);
 			Vector2f new_dir(velo(0),velo(1));
 			Vector2f dir; 

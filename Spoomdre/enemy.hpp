@@ -22,10 +22,12 @@ class Enemy : public Entity {
 
 	float const speed_ = 1.5f;
 
-	float const BODYHEIGHT = 10; //size of player
+	float const BODYHEIGHT = 10; //size of enemy
 	float const KNEEHEIGHT = (BODYHEIGHT/2);
 
 	const double TAU=M_PI*2;
+
+	Entity* player_;
 
 	// list of projectiles (i.e bullets)
 	//std::vector<Projectile*> projectiles;
@@ -39,13 +41,14 @@ public:
 	void init(Vector3f pos);
 	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
 
-	void update();						//updates all vectors and values for player
-	void move(Vector3f velo);			//add velocity to position of player
+	void update();						//updates all vectors and values for enemy
+	void move(Vector3f velo);			//add velocity to position of enemy
 	void render(SDL_Renderer* renderer);
 
 	bool checkForWall(Vector3f& velo);	//collision-detection
 	bool checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b);
-	
+
+	void setPlayer(Entity* p){ player_ = p; };
 	
 	//void shootProjectile();
 	//void removeDeadProjectiles();
@@ -56,6 +59,7 @@ public:
 	float x(){ return position()(0); };
 	float y(){ return position()(1); };
 	float z(){ return position()(2); };
+	Entity* player(){ return player_; };
 };
 
 #endif

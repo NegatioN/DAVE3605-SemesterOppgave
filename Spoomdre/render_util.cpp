@@ -86,7 +86,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	        float dx = b.x()-a.x(), dy = b.y()-a.y();
 	        float wallLength = sqrt(dx*dx + dy*dy);
 			float playerWallLength = abs(x2-x1);
-	        float distanceIndex = playerWallLength/wallLength/10;
+	        float distanceIndex = playerWallLength/wallLength/20;
 	        if (wallLength == 25)
 				std::cout << "WallLength: " << wallLength << " PWL: " << playerWallLength << " Index: " << distanceIndex << std::endl;
 
@@ -169,18 +169,12 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
 	                // If our ceiling is higher than their ceiling, render upper wall     
                     if(cropYCeiling < nbrYCeil)    {
-						if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-	                   	// drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade, screenHeight, screenWidth); // Between our and their ceiling
-                    	vLineTexture(renderer, wallTexture, x, yCeiling, nbrYCeil-1, beginx, wallHeight, distanceIndex, top, bottom);
-
+                    	vLineTexture(renderer, wallTexture, x, yCeiling, nbrYCeil-1, x1, wallHeight, distanceIndex, top, bottom);
                     }       
 
 	                // If our floor is lower than their floor, render bottom wall
                     if(cropYFloor > nbrYFloor) {
-                    	if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-                        // drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);  // Between their and our floor
-						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, yFloor, beginx, wallHeight, distanceIndex, top, bottom);
-
+						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, yFloor, x1, wallHeight, distanceIndex, top, bottom);
                     }
 
                     // Shrink the remaining window below this ceiling and floor
@@ -189,8 +183,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	            }
 	            else{
                     // No neighbors, render wall from top to bottom
-                    //drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);
-                    vLineTexture(renderer, wallTexture, x, yCeiling, yFloor, beginx, wallHeight, distanceIndex, top, bottom);
+                    vLineTexture(renderer, wallTexture, x, yCeiling, yFloor, x1, wallHeight, distanceIndex, top, bottom);
 	            }
 	        }
 

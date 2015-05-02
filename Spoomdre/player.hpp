@@ -17,7 +17,7 @@ class Player : public Entity {
 	float angle_, anglesin_, anglecos_, yaw_, mouse_x, mouse_y;
 	float default_z;
 
-	float max_yaw = 5.5;
+	float const max_yaw = 5.5;
 	//sector * sector_; -> is in entity 
 	std::vector<bool> keys_;
 
@@ -33,6 +33,8 @@ class Player : public Entity {
 	float const KNEEHEIGHT = (BODYHEIGHT/2);
 
 	int const event_radius = 5;
+	int const max_hp = 100;
+	int hp_ = max_hp;
 	// list of projectiles (i.e bullets)
 	std::vector<Projectile*> projectiles;
 	// variables for cooldown between each projectile-shoot

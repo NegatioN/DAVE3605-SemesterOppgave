@@ -381,8 +381,14 @@ void Player::respawn(){ // resets all important values for respawn
 	angle_ = 0;
 	anglesin_ = 0;
 	anglecos_ = 0;
+	hp_ = max_hp;
 }
 
 void Player::takeDamage(){
-	
+	hp_ -= 20;
+
+	if(hp_ <= 0){
+		std::cout << "Player is dead!" << std::endl;
+		respawn();
+	}
 }

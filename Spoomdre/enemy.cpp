@@ -28,8 +28,9 @@ void Enemy::update() {
 	if(damageCountdown > 0)
 		damageCountdown--;
 
+	//is player in this sector?
 	if(player() != NULL && player()->getSector()->getId() == getSector()->getId()){
-		//calculate angle to point to player
+		//calculate angle to point towards player
 		Vector3f player_pos = player_->position();
 		float xd = player_pos(0)-x();
 		float yd = player_pos(1)-y();
@@ -39,11 +40,10 @@ void Enemy::update() {
 	anglesin_ = sin(angle_);
 	anglecos_ = cos(angle_);
 
-	//std::cout << "yoll" << std::endl;
 	vecAddition(0) += anglecos_  * speed_;
 	vecAddition(1)  += anglesin_ * speed_;
 	Vector3f vel = velocity();
-	    //Vector3f crouchVelocity = velocity();
+
 	vel(0) = vel(0) * (1 - 0.2) + vecAddition(0) * 0.2;
 	vel(1) = vel(1) * (1 - 0.2) + vecAddition(1) * 0.2;
 	
@@ -65,6 +65,7 @@ bool Enemy::checkForPlayer(Vector3f& velo){
 		   (diff_y > -1 && diff_y <= 1) ){
 		   	if(damageCountdown == 0){
 		   		std::cout << "TREFFER PLAYER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+		   		player_->takeDamage();
 		   		damageCountdown = 50;
 		   	}
 			velo(0) = 0;
@@ -113,7 +114,7 @@ bool Enemy::checkForWall(Vector3f& velo){
 			velo(0) = dir(0);
 			velo(1) = dir(1);
 			angle_ = vector_angle;
-			
+
 			//will you slide past this wall?
 			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
 				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
@@ -163,36 +164,6 @@ void Enemy::move(Vector3f velo) {
 	setPosition(pos);
 }
 
-/*
-void Player::shootProjectile() {
-	if(projectiles.size() < 1) {
-		projectileCountdown = 0;
-	}
-	if(projectileCountdown < 1) {
-		Projectile* proj = new Projectile();
-		Vector3f pos = position();
-		proj->init(pos, angle_);
-		projectiles.push_back(proj);
-		
-		projectileCountdown = projectileCooldown;
-
-		std::cout << "projectile shot()" << std::endl;
-	}
-}
-
-void Player::removeDeadProjectiles() {
-	for(int i = 0; i < projectiles.size(); i++) {
-		if(projectiles.at(i)->isDead()) {
-			Projectile* p = projectiles.at(i);
-			projectiles.erase(projectiles.begin() + i);
-			delete p;
-			i--;
-			std::cout << "projectile removed()" << std::endl;
-		}
-	}
-}
-*/
-
 void Enemy::render(SDL_Renderer* renderer) {
 	//SDL_SetRenderDrawColor(renderer, 0xFF,0xFF,0xFF,0xFF);
 	//SDL_RenderFillRect(renderer, &enemySprite);
@@ -200,5 +171,5 @@ void Enemy::render(SDL_Renderer* renderer) {
 
 
 void Enemy::takeDamage(){
-	
+	//kill enemy
 }

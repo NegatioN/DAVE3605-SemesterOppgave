@@ -16,9 +16,6 @@ class Enemy : public Entity {
 
 	float angle_, anglesin_, anglecos_;
 	float default_z;
-	//sector * sector_; -> is in entity 
-
-	//bool isFalling = false;
 
 	float const speed_ = 0.5f;
 
@@ -30,12 +27,6 @@ class Enemy : public Entity {
 	const double TAU=M_PI*2;
 
 	Entity* player_;
-
-	// list of projectiles (i.e bullets)
-	//std::vector<Projectile*> projectiles;
-	// variables for cooldown between each projectile-shoot
-	//int projectileCooldown = 50;
-	//int projectileCountdown = 0;
 
 public:
 	Enemy(){};
@@ -53,9 +44,6 @@ public:
 	bool checkForPlayer(Vector3f& velo);
 
 	void setPlayer(Entity* p){ player_ = p; };
-	
-	//void shootProjectile();
-	//void removeDeadProjectiles();
 
 	float angle(){ return angle_; };
 	float anglesin(){return anglesin_;};

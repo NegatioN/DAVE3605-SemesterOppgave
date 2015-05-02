@@ -29,7 +29,7 @@ void Enemy::update() {
 		//calculate angle to point to player
 		Vector3f player_pos = player_->position();
 		float xd = player_pos(0) - x(), yd = player_pos(1) - y();
-		angle_ = std::atan2(xd,xd)*(TAU/2)/3.14;
+		angle_ = std::atan2(xd,xd)*(TAU/2)/ M_PI; // 
 	}
 
 	anglesin_ = sin(angle_);

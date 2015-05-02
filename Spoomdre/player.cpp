@@ -69,7 +69,7 @@ void Player::update() {
 	    if (keys_.at(3)) { vecAddition(0) -= anglesin_ * activespeed_; vecAddition(1) += anglecos_  * activespeed_; } 	// D
 	    if (keys_.at(8)) { isCrouching = true;}													//Crouch, Z-axis
 	    if (keys_.at(9)) { isJumping = true; } 													//Jump, Z-axis
-	    if (keys_.at(10)) { shootProjectile(); }												//Shoot
+	    //if (keys_.at(10)) { shootProjectile(); }												//Shoot
 	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }							//Interact
 	    if (keys_.at(12)){ activespeed_ = sprintspeed_; } else {activespeed_ = normalspeed_;}	//Sprint
 	    if (keys_.at(13)){ respawn();}	
@@ -105,14 +105,6 @@ void Player::update() {
 		}
 		else
 			crouchMove(isCrouching);
-	}
-	// update and remove (if appropriate) projectiles if any exists
-	if(projectiles.size() > 0) {
-		projectileCountdown--;
-		for(Projectile* p : projectiles) 
-			p->update();
-			
-		removeDeadProjectiles();
 	}
 }
 //true, hits wall or goto next sector
@@ -344,35 +336,30 @@ void Player::updatePOV(){
 }
 
 
-void Player::shootProjectile() {
-	/*
-	if(projectiles.size() < 1) {
-		projectileCountdown = 0;
-	}
-	if(projectileCountdown < 1) {
-		Projectile* proj = new Projectile();
-		Vector3f pos = position();
-		Vector3f bulletSpeed(0.01,0.01,0);
-		proj->init(pos, bulletSpeed);
-		projectiles.push_back(proj);
-		
-		projectileCountdown = projectileCooldown;
+void Player::shoot(std::vector<Enemy*>* enemies){
+    if(keys_.at(10) == true){
+        Vector3f playerPos = position();
+        Vector3f direction(0,0,0);
+        direction(0) += anglecos();  
+        direction(1)  += anglesin();
+        direction.normalize();
 
-		std::cout << "projectile shot()" << std::endl;
-	}
-	*/
-}
 
-void Player::removeDeadProjectiles() {
-	for(int i = 0; i < projectiles.size(); i++) {
-		if(projectiles.at(i)->isDead()) {
-			Projectile* p = projectiles.at(i);
-			projectiles.erase(projectiles.begin() + i);
-			delete p;
-			i--;
-			std::cout << "projectile removed()" << std::endl;
-		}
-	}
+        for(int i = 0; i < enemies->size(); i++){
+        	Enemy* enemy = enemies->at(i);
+        	bool isHit = gfx_util::hitScan(playerPos, enemy->position(),enemy->getRect(), direction);
+
+
+	        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
+	        if(isHit){
+	        	enemies->erase(enemies->begin()+i);
+	        	std::cout << "Mob killed" << std::endl;
+	        	break;
+	        }
+        }
+    	
+    }
+
 }
 
 void Player::respawn(){ // resets all important values for respawn

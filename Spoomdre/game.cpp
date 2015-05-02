@@ -103,28 +103,8 @@ void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 		e->update();
 	}
 
-    if(keys.at(10) == true){
-        Vector3f playerPos = player.position();
-        Vector3f direction(0,0,0);
-        direction(0) += player.anglecos();  
-        direction(1)  += player.anglesin();
-        direction.normalize();
+	player.shoot(&enemies);
 
-
-        for(int i = 0; i < enemies.size(); i++){
-        	Enemy* enemy = enemies.at(i);
-        	bool isHit = gfx_util::hitScan(player.position(), enemy->position(),enemy->getRect(), direction);
-
-
-	        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
-	        if(isHit){
-	        	enemies.erase(enemies.begin()+i);
-	        	std::cout << "Mob killed" << std::endl;
-	        	break;
-	        }
-        }
-    	
-    }
 	//player.move(0,0);
 	player.update();
 }

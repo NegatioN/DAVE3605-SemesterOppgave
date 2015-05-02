@@ -20,10 +20,12 @@ class Enemy : public Entity {
 
 	//bool isFalling = false;
 
-	float const speed_ = 1.5f;
+	float const speed_ = 0.5f;
 
 	float const BODYHEIGHT = 10; //size of enemy
 	float const KNEEHEIGHT = (BODYHEIGHT/2);
+
+	int damageCountdown = 0;
 
 	const double TAU=M_PI*2;
 
@@ -43,6 +45,7 @@ public:
 
 	void update();						//updates all vectors and values for enemy
 	void move(Vector3f velo);			//add velocity to position of enemy
+	void takeDamage();					//deal dmg to player
 	void render(SDL_Renderer* renderer);
 
 	bool checkForWall(Vector3f& velo);	//collision-detection

@@ -57,6 +57,7 @@ public:
 	void checkForLevelPortal();			//checks for levelportals close by
 	void updatePOV();					//updates player POV (angle+yaw)
 	void respawn();						//respawns player - set position to startPos_
+	void takeDamage();					//deal dmg to player
 
 	void shootProjectile();
 	void removeDeadProjectiles();

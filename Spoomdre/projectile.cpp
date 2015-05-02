@@ -70,3 +70,8 @@ void Projectile::render(SDL_Renderer* renderer) {
 		} 
 	}
 }
+
+
+void Projectile::takeDamage(){
+	
+}

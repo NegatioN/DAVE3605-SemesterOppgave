@@ -25,6 +25,9 @@ void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 void Enemy::update() {
 	Vector3f vecAddition(0,0,0);
 
+	if(damageCountdown > 0)
+		damageCountdown--;
+
 	if(player() != NULL && player()->getSector()->getId() == getSector()->getId()){
 		//calculate angle to point to player
 		Vector3f player_pos = player_->position();
@@ -37,8 +40,8 @@ void Enemy::update() {
 	anglecos_ = cos(angle_);
 
 	//std::cout << "yoll" << std::endl;
-	vecAddition(0) += anglecos_  * 1.5f;
-	vecAddition(1)  += anglesin_ * 1.5f;
+	vecAddition(0) += anglecos_  * speed_;
+	vecAddition(1)  += anglesin_ * speed_;
 	Vector3f vel = velocity();
 	    //Vector3f crouchVelocity = velocity();
 	vel(0) = vel(0) * (1 - 0.2) + vecAddition(0) * 0.2;
@@ -60,7 +63,10 @@ bool Enemy::checkForPlayer(Vector3f& velo){
 		float diff_x = std::abs(x() - player_pos(0)), diff_y = std::abs(y() - player_pos(1));
 		if((diff_x > -1 && diff_x <= 1) &&
 		   (diff_y > -1 && diff_y <= 1) ){
-		   	std::cout << "TREFFER PLAYER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+		   	if(damageCountdown == 0){
+		   		std::cout << "TREFFER PLAYER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+		   		damageCountdown = 50;
+		   	}
 			velo(0) = 0;
 			velo(1) = 0;
 			return true; 
@@ -94,14 +100,20 @@ bool Enemy::checkForWall(Vector3f& velo){
 			//hits wall, uses normal vector(wall) and direction to calculate new direction and angle
 			float xd = b.x() - a.x(), yd = b.y() - a.y();
 
+			//creates 2 2D vectors for normal and direction -> calulates reflection(2D)
 			Vector2f normal(xd, yd);
 			Vector2f new_dir(velo(0),velo(1));
 			Vector2f dir; 
-			dir = -2 * (( normal.dot(new_dir) * new_dir) - normal);//-2 *new_dir.dot(normal)* normal + new_dir;
+			dir = 2*(new_dir.dot(normal))* normal - new_dir;
+
+			//finds angle of reflection vector
 			float vector_angle = std::atan2(dir(1),dir(0));
+
+			//sets new direction
 			velo(0) = dir(0);
 			velo(1) = dir(1);
-			angle_ = vector_angle;//(TAU/2)-angle_;
+			angle_ = vector_angle;
+			
 			//will you slide past this wall?
 			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
 				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
@@ -116,7 +128,7 @@ bool Enemy::checkForWall(Vector3f& velo){
     }
     return false;
 }
-
+//should enemy pass through sector?
 bool Enemy::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
 	if (n->containsVertices(a, b)){ 
 		float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
@@ -184,4 +196,9 @@ void Player::removeDeadProjectiles() {
 void Enemy::render(SDL_Renderer* renderer) {
 	//SDL_SetRenderDrawColor(renderer, 0xFF,0xFF,0xFF,0xFF);
 	//SDL_RenderFillRect(renderer, &enemySprite);
+}
+
+
+void Enemy::takeDamage(){
+	
 }

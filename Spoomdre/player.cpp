@@ -382,3 +382,7 @@ void Player::respawn(){ // resets all important values for respawn
 	anglesin_ = 0;
 	anglecos_ = 0;
 }
+
+void Player::takeDamage(){
+	
+}

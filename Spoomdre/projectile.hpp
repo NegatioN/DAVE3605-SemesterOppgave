@@ -24,6 +24,7 @@ public:
 	void init(Vector3f pos, Vector3f velo);
 	void update();
 	void move(Vector3f velo);
+	void takeDamage();					//virtual in entity... to solve dmg to player/enemy
 	void render(SDL_Renderer* renderer);
 
 	bool isDead() { return lifeTimer > lifeSpan; };

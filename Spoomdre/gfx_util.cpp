@@ -39,9 +39,8 @@ bool gfx_util::hitScan(Vector3f position, Vector3f enemyPos, SDL_Rect hitBox, Ve
 	direction *= 100; //shot travels 100 in direction player is looking
 	direction += position; //add current position to this.
 
-	//float halfWidth = hitBox.w/2;
-	//construct hitbox for enemy
-	float halfWidth = 1.5;
+	//construct hitbox for enemy (disregards z-axis)
+	float halfWidth = 1.15;	   	//serves as hitbox width
 	float mobX1 = enemyPos(0)-halfWidth;
 	float mobX2 = enemyPos(0)+halfWidth;
 	float mobY1 = enemyPos(1)-halfWidth;
@@ -49,7 +48,7 @@ bool gfx_util::hitScan(Vector3f position, Vector3f enemyPos, SDL_Rect hitBox, Ve
 
 
 	std::cout << "CheckValues player X=" << position(0) << " Y=" << position(1) << " destination X=" << direction(0) << " Y= " << direction(1) << " MobX1=" << mobX1 << " MobX2=" << mobX2 << " mobY1=" << mobY1 << " mobY2=" << mobY2 << std::endl;
-	//std::cout << "Mob X=" << enemyPos(0) << " Y=" << enemyPos(1) << " halfWidth=" << halfWidth << std::endl; 
+	std::cout << "Mob X=" << enemyPos(0) << " Y=" << enemyPos(1) << " halfWidth=" << halfWidth << std::endl; 
 
 	/* Hitbox works like this:
 	*	leftLine			RightLine

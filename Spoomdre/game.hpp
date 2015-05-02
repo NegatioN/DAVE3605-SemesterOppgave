@@ -9,8 +9,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-//internal dependencies
-//#include "game_util.hpp"
 
 
 //Defines the underlaying rendering-process
@@ -23,6 +21,9 @@ class Game{
 	SDL_Renderer* renderer = NULL; 		//renderer renders
 
 	SDL_Surface* surface = NULL;
+
+	//rectangle to render gun in.
+	SDL_Rect gunSpace;
 
 	void makeRenderer();					//simply creates the SDL_Surface
 

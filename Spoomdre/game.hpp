@@ -22,8 +22,6 @@ class Game{
 	
 	SDL_Renderer* renderer = NULL; 		//renderer renders
 
-	SDL_Texture * texture = NULL;
-
 	SDL_Surface* surface = NULL;
 
 	void makeRenderer();					//simply creates the SDL_Surface

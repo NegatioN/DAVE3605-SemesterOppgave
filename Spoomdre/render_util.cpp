@@ -1,10 +1,15 @@
 #include "render_util.hpp"
 #include <iostream>
 
+
 // WELCOME TO THE MATRIX
-void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Player* player, std::vector<Enemy*> enemies, int screenHeight, int screenWidth){
+void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> textures, Player* player, std::vector<Enemy*> enemies, int screenHeight, int screenWidth){
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
 	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
+
+
+	SDL_Texture* wallTexture = textures[0];
+	SDL_Texture* enemyTexture = textures[1];
 
 	//keeps track of y-coord for neighbour-sector
 	int ytop[screenWidth], ybottom[screenWidth];
@@ -152,16 +157,16 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	                // If our ceiling is higher than their ceiling, render upper wall     
                     if(cropYCeiling < nbrYCeil)    {
 						if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-	                   	drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade, screenHeight, screenWidth); // Between our and their ceiling
-                    	// vLineTexture(renderer, texture, x, cropYCeiling, nbrYCeil-1, 0,0,0);
+	                   	// drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade, screenHeight, screenWidth); // Between our and their ceiling
+                    	vLineTexture(renderer, wallTexture, x, cropYCeiling, nbrYCeil-1,beginx);
 
                     }       
 
 	                // If our floor is lower than their floor, render bottom wall
                     if(cropYFloor > nbrYFloor) {
                     	if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-                        drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);  // Between their and our floor
-						//vLineTexture(renderer, texture, x, nbrYFloor+1, cropYFloor, 0,0,0);
+                        // drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);  // Between their and our floor
+						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, cropYFloor, beginx);
 
                     }
 
@@ -171,8 +176,8 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	            }
 	            else{
                     // No neighbors, render wall from top to bottom
-                    drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);
-                    //vLineTexture(renderer, texture, x, cropYCeiling, cropYFloor, 0,0,0);
+                    //drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);
+                    vLineTexture(renderer, wallTexture, x, cropYCeiling, cropYFloor, beginx);
 	            }
 	        }
 
@@ -188,14 +193,16 @@ void render_util::renderView(SDL_Renderer* renderer, SDL_Texture* texture, Playe
 	        }
 		}
 
-        // Render enemies
-        for(Enemy* e : enemies)
-        	if(currentSector->getId() == e->getSector()->getId()) render_util::renderEnemy(renderer, texture, currentSector, player, e, screenHeight, screenWidth);
+		if(!enemies.empty()){
+        	//Render enemies
+        	for(Enemy* e : enemies)
+        		if(currentSector->getId() == e->getSector()->getId()) 
+        			render_util::renderEnemy(renderer, enemyTexture, currentSector, player, e, screenHeight, screenWidth);
+	    }
 
         //render projectiles
         render_projectiles(renderer, player);
 	    
-
 		++renderedSectors[currentSector->getId()-1];
 		///END RENDER SECTOR
 	}
@@ -235,11 +242,17 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	//Set bounds for enemy
     enemysprite.w = (int) distance;
     enemysprite.h = (int) distance*2;
-    enemysprite.x = enemyX - distance;
+    enemysprite.x = enemyX - distance*2;
 	enemysprite.y = enemyY - distance;
 
 
-	SDL_RenderCopy(renderer, texture, NULL, &enemysprite);
+	SDL_Rect crop;
+    crop.w = 328;
+    crop.h = 584;
+	crop.x = 0;
+	crop.y = 0;
+
+	SDL_RenderCopy(renderer, texture, &crop, &enemysprite);
 }
 
 void render_util::renderSector(sector currentSect){
@@ -264,26 +277,26 @@ void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int r
     SDL_RenderDrawPoint(renderer, x1, y2);
 }
 
-void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y1, int y2, int top, int middle, int bottom, int screenHeight, int screenWidth)
+void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int x, int y1, int y2, int beginx)
 {
 	/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
-	top = 0x111111;
-	middle = 0x222222;
-	bottom = 0x111111;
-	//int H = 480, W = 640;
 
-	void *pixels;
-	int pitch;
+	int textureWidth = 256, textureHeight = 256;
+	//Set bounds for linerect
+	SDL_Rect line;
+    line.w = 1;
+    line.h = y2-y1;
+	line.x = x;
+	line.y = y1;
 
-	SDL_LockTexture(texture, NULL, &pixels, &pitch);
-	Uint32 *pix = (Uint32*)pixels;
+	//Set crop
+	SDL_Rect crop;
+    crop.w = 1;
+    crop.h = textureHeight;
+	crop.x = (x - beginx)%textureWidth;
+	crop.y = 0;
 
-	// for (int i = 1; i < 200; ++i)
-	// {
-	// 	;;
-	// }
-
-    //SDL_RenderCopy(renderer, line, NULL, NULL);
+    SDL_RenderCopy(renderer, texture, &crop, &line);
 }
 
 

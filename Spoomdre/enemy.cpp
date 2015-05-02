@@ -28,8 +28,9 @@ void Enemy::update() {
 	if(player() != NULL && player()->getSector()->getId() == getSector()->getId()){
 		//calculate angle to point to player
 		Vector3f player_pos = player_->position();
-		float xd = player_pos(0) - x(), yd = player_pos(1) - y();
-		angle_ = std::atan2(xd,xd)*(TAU/2)/ M_PI; // 
+		float xd = player_pos(0)-x();
+		float yd = player_pos(1)-y();
+		angle_ = std::atan2(yd,xd)*(TAU/2)/ M_PI; // 
 	}
 
 	anglesin_ = sin(angle_);
@@ -43,9 +44,29 @@ void Enemy::update() {
 	vel(0) = vel(0) * (1 - 0.2) + vecAddition(0) * 0.2;
 	vel(1) = vel(1) * (1 - 0.2) + vecAddition(1) * 0.2;
 	
-	checkForWall(vel);
+	if(!checkForPlayer(vel))
+		checkForWall(vel);
 	move(vel);
 	
+}
+
+//can handle dmg to player
+bool Enemy::checkForPlayer(Vector3f& velo){
+	//hits player
+	if(player_ != NULL && player()->getSector()->getId() == getSector()->getId())
+	{	
+		Vector3f player_pos = player_->position();
+		//stands next to player
+		float diff_x = std::abs(x() - player_pos(0)), diff_y = std::abs(y() - player_pos(1));
+		if((diff_x > -1 && diff_x <= 1) &&
+		   (diff_y > -1 && diff_y <= 1) ){
+		   	std::cout << "TREFFER PLAYER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+			velo(0) = 0;
+			velo(1) = 0;
+			return true; 
+		}
+	}
+	return false;
 }
 
 //true, hits wall or goto next sector
@@ -88,6 +109,8 @@ bool Enemy::checkForWall(Vector3f& velo){
 				velo(0) = 0;
 				velo(1) = 0;
 			}
+
+			
 			return true;
 		}
     }

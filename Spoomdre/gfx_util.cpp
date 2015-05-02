@@ -39,31 +39,57 @@ bool gfx_util::hitScan(Vector3f position, Vector3f enemyPos, SDL_Rect hitBox, Ve
 	direction *= 100; //shot travels 100 in direction player is looking
 	direction += position; //add current position to this.
 
-
-	float halfWidth = hitBox.w/2;
+	//float halfWidth = hitBox.w/2;
+	//construct hitbox for enemy
+	float halfWidth = 1.5;
 	float mobX1 = enemyPos(0)-halfWidth;
 	float mobX2 = enemyPos(0)+halfWidth;
+	float mobY1 = enemyPos(1)-halfWidth;
+	float mobY2 = enemyPos(1)+halfWidth;
 
 
-	std::cout << "CheckValues X1=" << mobX1 << " X2=" << mobX2 << std::endl;
-	std::cout << "Mob X=" << enemyPos(0) << " Y=" << enemyPos(1) << " halfWidth=" << halfWidth << std::endl; 
+	std::cout << "CheckValues player X=" << position(0) << " Y=" << position(1) << " destination X=" << direction(0) << " Y= " << direction(1) << " MobX1=" << mobX1 << " MobX2=" << mobX2 << " mobY1=" << mobY1 << " mobY2=" << mobY2 << std::endl;
+	//std::cout << "Mob X=" << enemyPos(0) << " Y=" << enemyPos(1) << " halfWidth=" << halfWidth << std::endl; 
 
+	/* Hitbox works like this:
+	*	leftLine			RightLine
+	*	(mobX1, yPos-hwidth)(mobX2, yPos-hwidth) 			
+	*			   \	  /					if shot hits between one of these two lines
+	*			  	\	 /					it's counted as a hit.
+	*				(xPos, yPos) Of Enemy
+	*				 /		\
+	*				/		 \
+	*	(mobX1, yPos+hwidth) (mobX2, yPos+hwidth)
+	*/
 	//get intersection-point of line from player-->shot and enemyLeft-->enemyRight
-	xy pos = gfx_util::intersect(position(0), position(1),  direction(0),  direction(1), 
-	 	mobX1,  enemyPos(1),  mobX2, enemyPos(1));
+	xy leftLinePoint = gfx_util::intersect(position(0), position(1),  direction(0),  direction(1), 
+	 	mobX1,  mobY1,  mobX2, mobY2);
+	xy rightLinePoint = gfx_util::intersect(position(0), position(1),  direction(0),  direction(1), 
+ 	mobX2,  mobY1,  mobX1, mobY2);
+
+
 	
 	//are these intersection-points within the bounds of the specified second line?
 	// ex x3,y3 <--this space--> x4, y4. if yes, it's a hit.
-	if(pos.x <= mobX2 && pos.x >= mobX1){
-		if(pos.y <= enemyPos(1) && pos.y >= enemyPos(1))
+	if(withinBounds(rightLinePoint, mobX1, mobX2, mobY1, mobY2))
+		return true;
+	else if(withinBounds(leftLinePoint, mobX1, mobX2, mobY1, mobY2))
+		return true;
+
+	return false;
+}
+
+bool gfx_util::withinBounds(xy point, float maxX, float minX, float maxY, float minY){
+	if(point.x <= maxX && point.x >= minX){
+		if(point.y <= maxY && point.y >= minY)
 			return true;
-		else if(pos.y <= enemyPos(1) && pos.y >= enemyPos(1))
+		else if(point.y <= minY && point.y >= maxY)
 			return true;
 	}
-	else if(pos.x <= mobX2 && pos.x >= mobX1){
-		if(pos.y <= enemyPos(1) && pos.y >= enemyPos(1))
+	else if(point.x <= minX && point.x >= maxX){
+		if(point.y <= maxY && point.y >= minY)
 			return true;
-		else if(pos.y <= enemyPos(1) && pos.y >= enemyPos(1))
+		else if(point.y <= minY && point.y >= maxY)
 			return true;
 	}
 

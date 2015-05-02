@@ -23,8 +23,10 @@ void Game::makeRenderer(){
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 	SDL_Texture* wallTexture = IMG_LoadTexture(renderer, "textures/Brick_Texture.png");
 	SDL_Texture* enemyTexture = IMG_LoadTexture(renderer, "textures/Enemy_Texture.png");
+	SDL_Texture* gunTexture = IMG_LoadTexture(renderer, "textures/Handgun_Texture.png");
 	textures.push_back(wallTexture);
 	textures.push_back(enemyTexture);
+	textures.push_back(gunTexture);
 }
 
 void Game::initialize(int height, int width) {
@@ -48,6 +50,13 @@ void Game::initialize(int height, int width) {
 
 	width_ = width;
 	height_ = height;
+
+	//init gunSpace on screen
+	int gunW = (width_/5);
+	int gunH = (height_/5)*2;
+	int gunY = (height_-gunH);
+	int gunX = (width_/2)+(gunW/2);
+	gunSpace = {gunX,gunY,gunW, gunH};
 
 	if(MAP == 0)
 		sectors = mapmaker::createMap();
@@ -124,27 +133,26 @@ void Game::render() {
 	// empty renderer from previous iteration
     SDL_RenderClear(renderer);
 
-    //Enemy* en = enemies.at(0);
-
-    //std::cout << "Before Render: " << en->x() << " " << en->y() << " " << en->z() << std::endl;
-    // render player & world
+    // render world from player's POV
     render_util::renderView(renderer, textures, &player, enemies, height_, width_);
 
-    //player.render(renderer);
+ 	//render map
 	for(auto s : sectors)
 		render_util::render_map(renderer, &player, s->getVertices(), height_, width_);
-		//render_util::render_map(renderer, player.x(), player.y(), player.z(), player.angle(), s->getVertices());
-
-	//for(auto e : enemies)
-	//	render_util::renderEnemy(renderer, e->getSector(), &player, e, height_, width_);
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);
     SDL_RenderDrawLine(renderer, width_/2-10, height_/2, width_/2+10, height_/2);
     SDL_RenderDrawLine(renderer, width_/2, height_/2-10, width_/2, height_/2+10);
 
+    //render gun-model
+    SDL_RenderCopy(renderer, textures.at(2), NULL, &gunSpace);
+
+    //Render to screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw
+
+
 }
 
 void Game::terminate(){

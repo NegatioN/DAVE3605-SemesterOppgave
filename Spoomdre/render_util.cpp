@@ -55,6 +55,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	        float vertexAx = a.x() - player->x(); float vertexAy = a.y() - player->y();
 	        float vertexBx = b.x() - player->x(); float vertexBy = b.y() - player->y();
 
+
 	        float psin = player->anglesin(); float pcos = player->anglecos();
 	      	//player translated coordinates of vertexes
 	        float txA = vertexAx * psin - vertexAy * pcos; float tzA = vertexAx * pcos + vertexAy * psin;
@@ -80,6 +81,16 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	       
 	        int x1 = screenWidth / 2 - (int)(txA * xscale1); 
 	        int x2 = screenWidth / 2 - (int)(txB * xscale2);
+
+	        
+	        float dx = b.x()-a.x(), dy = b.y()-a.y();
+	        float wallLength = sqrt(dx*dx + dy*dy);
+			float playerWallLength = abs(x2-x1);
+	        float distanceIndex = playerWallLength/wallLength/10;
+	        if (wallLength == 25)
+				std::cout << "WallLength: " << wallLength << " PWL: " << playerWallLength << " Index: " << distanceIndex << std::endl;
+
+
 
     		// Only render if it's visible (doesn't render the backside of walls)
         	if(x1 >= x2 || x2 < currentSectorView.leftCropX || x1 > currentSectorView.rightCropX) continue;
@@ -160,7 +171,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
                     if(cropYCeiling < nbrYCeil)    {
 						if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
 	                   	// drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade, screenHeight, screenWidth); // Between our and their ceiling
-                    	vLineTexture(renderer, wallTexture, x, yCeiling, nbrYCeil-1, beginx, wallHeight, top, bottom);
+                    	vLineTexture(renderer, wallTexture, x, yCeiling, nbrYCeil-1, beginx, wallHeight, distanceIndex, top, bottom);
 
                     }       
 
@@ -168,7 +179,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
                     if(cropYFloor > nbrYFloor) {
                     	if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
                         // drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);  // Between their and our floor
-						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, yFloor, beginx, wallHeight, top, bottom);
+						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, yFloor, beginx, wallHeight, distanceIndex, top, bottom);
 
                     }
 
@@ -179,13 +190,12 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	            else{
                     // No neighbors, render wall from top to bottom
                     //drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);
-                    vLineTexture(renderer, wallTexture, x, yCeiling, yFloor, beginx, wallHeight, top, bottom);
+                    vLineTexture(renderer, wallTexture, x, yCeiling, yFloor, beginx, wallHeight, distanceIndex, top, bottom);
 	            }
 	        }
 
 	       	//if(e->getSector()->getId() == currentSector->getId()) 
     		
-
 	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 
 	        //add sector-neighbours to renderQueue
@@ -228,7 +238,7 @@ void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int r
     SDL_RenderDrawPoint(renderer, x1, y2);
 }
 
-void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int x, int y1, int y2, int beginx, float wallHeight, int top, int bottom)
+void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int x, int y1, int y2, int beginx, float wallHeight, float widthIndex, int top, int bottom)
 {
 	/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
 	int textureWidth = 256, textureHeight = 256;
@@ -236,7 +246,8 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int 
 	int yCeiling = gfx_util::clamp(y1, top, bottom);
 	int yFloor = gfx_util::clamp(y2, top, bottom);
 
-
+	// std::cout << "Index " << wallLength << std::endl;
+	int textureX = (x-beginx) / widthIndex;
 
 	//Set bounds for linerect
 	SDL_Rect line;
@@ -249,13 +260,13 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int 
 	float part = partWh/wallHeight;
 	float overFlowTop = (yCeiling-y1);
 	float offset = (overFlowTop/wallHeight)*textureHeight;
-	// std::cout << "Ofb: " << overFlowBot << " CropBot: " << cropBot << std::endl;
+	//std::cout << "yCeiling " << yCeiling << " y1 " << y1 << " X: " << x << " Oft: " << overFlowTop << " Offset: " << offset << std::endl;
 
 	//Set crop
 	SDL_Rect crop;
     crop.w = 1;
     crop.h = textureHeight*part;
-	crop.x = (x - beginx) % textureWidth;
+	crop.x = textureX % textureWidth;
 	crop.y = offset;
 
     SDL_RenderCopy(renderer, texture, &crop, &line);

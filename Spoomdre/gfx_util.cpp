@@ -1,7 +1,4 @@
 #include "gfx_util.hpp"
-#include <stdio.h>
-#include <Eigen/Core>
-
 
 //if input is higher than max or lower than min, return closest option
 float gfx_util::clamp(float input, float min, float max){
@@ -35,5 +32,36 @@ xy gfx_util::intersect(float x1, float y1, float x2, float y2, float x3, float y
 	pos.x = vcp( vcp( x1,y1,x2,y2 ), ( x1 - x2 ), vcp(x3,y3,x4,y4) ,  ( x3 - x4 )) / vcp( ( x1-x2 ),( y1-y2 ),( x3-x4 ),( y3-y4 ) );
 	pos.y = vcp( vcp( x1,y1,x2,y2 ), ( y1 - y2 ), vcp(x3,y3,x4,y4) ,  ( y3 - y4 )) / vcp( ( x1-x2 ),( y1-y2 ),( x3-x4 ),( y3-y4 ) );
 	return pos;
+}
+bool gfx_util::hitScan(Vector3f position, Vector3f enemyPos, SDL_Rect hitBox, Vector3f direction){
+	
+	direction *= 100; //shot travels 100 in direction player is looking
+	direction += position; //add current position to this.
+
+	float halfWidth = hitBox.w/2;
+	float mobX1 = enemyPos(0)-halfWidth;
+	float mobX2 = enemyPos(0)+halfWidth;
+
+
+	xy pos = gfx_util::intersect( 
+		position(0), position(1),  direction(0),  direction(1), 
+	 	mobX1,  enemyPos(1),  mobX2, enemyPos(1));
+	
+	//are these intersection-points within the bounds of the specified second line?
+	// ex x3,y3 <--this space--> x4, y4. if yes, it's a hit.
+	if(pos.x <= mobX2 && pos.x >= mobX1){
+		if(pos.y <= enemyPos(1) && pos.y >= enemyPos(1))
+			return true;
+		else if(pos.y <= enemyPos(1) && pos.y >= enemyPos(1))
+			return true;
+	}
+	else if(pos.x <= mobX2 && pos.x >= mobX1){
+		if(pos.y <= enemyPos(1) && pos.y >= enemyPos(1))
+			return true;
+		else if(pos.y <= enemyPos(1) && pos.y >= enemyPos(1))
+			return true;
+	}
+
+	return false;
 }
 

@@ -345,6 +345,7 @@ void Player::updatePOV(){
 
 
 void Player::shootProjectile() {
+	/*
 	if(projectiles.size() < 1) {
 		projectileCountdown = 0;
 	}
@@ -359,6 +360,7 @@ void Player::shootProjectile() {
 
 		std::cout << "projectile shot()" << std::endl;
 	}
+	*/
 }
 
 void Player::removeDeadProjectiles() {

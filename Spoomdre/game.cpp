@@ -93,6 +93,21 @@ void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 		}
 		e->update();
 	}
+
+    if(keys.at(10) == true){
+        Vector3f playerPos = player.position();
+        Vector3f direction(0,0,0);
+        direction(0) += player.anglecos();  
+        direction(1)  += player.anglesin();
+        direction.normalize();
+
+        for(Enemy* enemy : enemies){
+        	//bool isHit = gfx_util::hitScan();
+	        bool isHit = gfx_util::hitScan(player.position(), enemy->position(),enemy->getRect(), direction);
+	        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
+    	}
+    	
+    }
 	//player.move(0,0);
 	player.update();
 }

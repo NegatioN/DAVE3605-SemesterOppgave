@@ -4,8 +4,6 @@
 #include <cmath>
 #include "player.hpp"
 
-//SDL_Rect enemySprite;
-
 using namespace std;
 
 void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){

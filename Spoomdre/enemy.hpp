@@ -7,6 +7,7 @@
 #include "vertex.hpp"
 #include "door.hpp"
 #include <math.h>
+#include <SDL2/SDL.h>
 
 using namespace Eigen;
 
@@ -21,6 +22,7 @@ class Enemy : public Entity {
 
 	float const BODYHEIGHT = 10; //size of enemy
 	float const KNEEHEIGHT = (BODYHEIGHT/2);
+	SDL_Rect renderRect;
 
 	int damageCountdown = 0;
 
@@ -52,6 +54,8 @@ public:
 	float y(){ return position()(1); };
 	float z(){ return position()(2); };
 	Entity* player(){ return player_; };
+	SDL_Rect getRect(){return renderRect;};
+	void setRect(SDL_Rect rect){renderRect = rect;};
 };
 
 #endif

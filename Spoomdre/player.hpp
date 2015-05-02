@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "entity.hpp"
+#include "enemy.hpp"
 #include "projectile.hpp"
 #include "gfx_util.hpp"
 #include "vertex.hpp"
@@ -61,8 +62,7 @@ public:
 	void respawn();						//respawns player - set position to startPos_
 	void takeDamage();					//deal dmg to player
 
-	void shootProjectile();
-	void removeDeadProjectiles();
+	void shoot(std::vector<Enemy*>* enemies);
 
 	void setMoveVector(std::vector<bool> &keys){ keys_ = keys; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }

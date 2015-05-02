@@ -1,4 +1,5 @@
 #include "gfx_util.hpp"
+#include <iostream>
 
 //if input is higher than max or lower than min, return closest option
 float gfx_util::clamp(float input, float min, float max){
@@ -38,13 +39,17 @@ bool gfx_util::hitScan(Vector3f position, Vector3f enemyPos, SDL_Rect hitBox, Ve
 	direction *= 100; //shot travels 100 in direction player is looking
 	direction += position; //add current position to this.
 
+
 	float halfWidth = hitBox.w/2;
 	float mobX1 = enemyPos(0)-halfWidth;
 	float mobX2 = enemyPos(0)+halfWidth;
 
 
-	xy pos = gfx_util::intersect( 
-		position(0), position(1),  direction(0),  direction(1), 
+	std::cout << "CheckValues X1=" << mobX1 << " X2=" << mobX2 << std::endl;
+	std::cout << "Mob X=" << enemyPos(0) << " Y=" << enemyPos(1) << " halfWidth=" << halfWidth << std::endl; 
+
+	//get intersection-point of line from player-->shot and enemyLeft-->enemyRight
+	xy pos = gfx_util::intersect(position(0), position(1),  direction(0),  direction(1), 
 	 	mobX1,  enemyPos(1),  mobX2, enemyPos(1));
 	
 	//are these intersection-points within the bounds of the specified second line?

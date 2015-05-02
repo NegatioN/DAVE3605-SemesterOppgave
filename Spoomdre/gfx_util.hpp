@@ -3,8 +3,11 @@
 
 #include <stdio.h>
 #include <Eigen/Core>
+#include <SDL2/SDL.h>
+
 //last ned eigen3 for matte. vectorer etc.    libeigen3-dev
 // ex: Eigen::Vector3f (tror jeg)
+using namespace Eigen;
 
 struct xy{float x,y;}; // struct used for returning a pos
 

@@ -24,9 +24,13 @@ void Game::makeRenderer(){
 	SDL_Texture* wallTexture = IMG_LoadTexture(renderer, "textures/Brick_Texture.png");
 	SDL_Texture* enemyTexture = IMG_LoadTexture(renderer, "textures/Enemy_Texture.png");
 	SDL_Texture* gunTexture = IMG_LoadTexture(renderer, "textures/Handgun_Texture.png");
+	SDL_Texture* doorTexture = IMG_LoadTexture(renderer, "textures/Door_Texture.png");
+	SDL_Texture* gunflashTexture = IMG_LoadTexture(renderer, "textures/Gunflash_Texture_Large.png");
 	textures.push_back(wallTexture);
 	textures.push_back(enemyTexture);
 	textures.push_back(gunTexture);
+	textures.push_back(doorTexture);
+	textures.push_back(gunflashTexture);
 }
 
 void Game::initialize(int height, int width) {
@@ -57,6 +61,13 @@ void Game::initialize(int height, int width) {
 	int gunY = (height_-gunH);
 	int gunX = (width_/2)+(gunW/2);
 	gunSpace = {gunX,gunY,gunW, gunH};
+
+	
+	int flashW = (width_/7);
+	int flashH = (height_/7);
+	int flashY = (height_- flashH) - 100;
+	int flashX = (width_/2)+(flashW/2);
+	gunFlash = {flashX, flashY, flashW, flashH};
 
 	if(MAP == 0)
 		sectors = mapmaker::createMap();
@@ -147,6 +158,7 @@ void Game::render() {
 
     //render gun-model
     SDL_RenderCopy(renderer, textures.at(2), NULL, &gunSpace);
+    SDL_RenderCopy(renderer, textures.at(4), NULL, &gunFlash);
 
     //Render to screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color

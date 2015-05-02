@@ -10,7 +10,8 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
 	SDL_Texture* wallTexture = textures[0];
 	SDL_Texture* enemyTexture = textures[1];
-
+	SDL_Texture* doorTexture = textures[3];
+	
 	//keeps track of y-coord for neighbour-sector
 	int ytop[screenWidth], ybottom[screenWidth];
 	for(int i = 0; i < screenWidth; ++i){ ybottom[i] = screenHeight-1; ytop[i] = 0;}
@@ -95,6 +96,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
         	sector* neighbour = currentSector->getWallNeighbour(a, b);
         	//is this wall a door?
         	door* door_ = currentSector->getWallDoor(a,b);
+        	bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 	        if (neighbour != NULL)
 	        {
 	            nbrCeil  = neighbour->ceiling()  - playerZ;
@@ -172,6 +174,12 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
                     }
 
+                    //If this opening is closed with a door, render door
+                    if(isDoorLocked)
+                    {
+                    	vLineTexture(renderer, doorTexture, x, nbrYCeil-1, nbrYFloor+1, beginx, wallHeight, top, bottom);
+                    }
+
                     // Shrink the remaining window below this ceiling and floor
 	                ytop[x] = gfx_util::clamp(std::max(cropYCeiling, nbrYCeil), top, screenHeight-1);
 	                ybottom[x] = gfx_util::clamp(std::min(cropYFloor, nbrYFloor), 0, bottom);          
@@ -185,9 +193,6 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
 	       	//if(e->getSector()->getId() == currentSector->getId()) 
     		
-
-	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
-
 	        //add sector-neighbours to renderQueue
 	        if(neighbour != NULL && endx >= beginx && !(isDoorLocked)){
 	        	sectorView nbrSectorView{neighbour, wallHeight, endx};
@@ -367,5 +372,9 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
 void render_util::render_projectiles(SDL_Renderer* renderer, Player* player){
 	for(Projectile* p : player->getProjectiles())
 		p->render(renderer);
+}
+
+void render_util::render_gunflash(SDL_Rect* flashpos_, SDL_Texture* gunflashTexture){
+	
 }
 

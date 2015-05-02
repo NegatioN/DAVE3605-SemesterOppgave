@@ -24,6 +24,7 @@ class Game{
 
 	//rectangle to render gun in.
 	SDL_Rect gunSpace;
+	SDL_Rect gunFlash;
 
 	void makeRenderer();					//simply creates the SDL_Surface
 

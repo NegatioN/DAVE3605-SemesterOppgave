@@ -337,29 +337,25 @@ void Player::updatePOV(){
 
 
 void Player::shoot(std::vector<Enemy*>* enemies){
-    if(keys_.at(10) == true){
-        Vector3f playerPos = position();
-        Vector3f direction(0,0,0);
-        direction(0) += anglecos();  
-        direction(1)  += anglesin();
-        direction.normalize();
+    Vector3f playerPos = position();
+    Vector3f direction(0,0,0);
+    direction(0) += anglecos();  
+    direction(1)  += anglesin();
+    direction.normalize();
 
 
-        for(int i = 0; i < enemies->size(); i++){
-        	Enemy* enemy = enemies->at(i);
-        	bool isHit = gfx_util::hitScan(playerPos, enemy->position(),enemy->getRect(), direction);
+    for(int i = 0; i < enemies->size(); i++){
+    	Enemy* enemy = enemies->at(i);
+    	bool isHit = gfx_util::hitScan(playerPos, enemy->position(),enemy->getRect(), direction);
 
 
-	        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
-	        if(isHit){
-	        	enemies->erase(enemies->begin()+i);
-	        	std::cout << "Mob killed" << std::endl;
-	        	break;
-	        }
+        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
+        if(isHit){
+        	enemies->erase(enemies->begin()+i);
+        	std::cout << "Mob killed" << std::endl;
+        	break;
         }
-    	
     }
-
 }
 
 void Player::respawn(){ // resets all important values for respawn

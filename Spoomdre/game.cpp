@@ -65,8 +65,8 @@ void Game::initialize(int height, int width) {
 	
 	int flashW = (width_/7);
 	int flashH = (height_/7);
-	int flashY = (height_- flashH) - 100;
-	int flashX = (width_/2)+(flashW/2);
+	int flashY = (height_- flashH) - 150;
+	int flashX = (width_/2)+(flashW/2) - 20;
 	gunFlash = {flashX, flashY, flashW, flashH};
 
 	if(MAP == 0)
@@ -114,9 +114,11 @@ void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 		e->update();
 	}
 
-	player.shoot(&enemies);
+	if(keys.at(10) && flashCountdown == 0){ // pressed shoot
+		player.shoot(&enemies);
+		flashCountdown = flash_time;
+	}
 
-	//player.move(0,0);
 	player.update();
 }
 
@@ -136,9 +138,15 @@ void Game::render() {
     SDL_RenderDrawLine(renderer, width_/2-10, height_/2, width_/2+10, height_/2);
     SDL_RenderDrawLine(renderer, width_/2, height_/2-10, width_/2, height_/2+10);
 
+    //if player just pressed shoot - render gunflash
+    if(flashCountdown > 0){
+		if(flashCountdown > 150)
+			SDL_RenderCopy(renderer, textures.at(4), NULL, &gunFlash);
+		flashCountdown--;
+	}
+
     //render gun-model
     SDL_RenderCopy(renderer, textures.at(2), NULL, &gunSpace);
-    SDL_RenderCopy(renderer, textures.at(4), NULL, &gunFlash);
 
     //Render to screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color

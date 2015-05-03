@@ -27,7 +27,6 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	//Sectors for enemies for rendering sectors after views
 	std::vector<enemyView> enemyViews;
 
-
 	int NumSectors = 64;
 	int renderedSectors[NumSectors];
 	for(unsigned n=0; n<NumSectors; ++n) renderedSectors[n] = 0;

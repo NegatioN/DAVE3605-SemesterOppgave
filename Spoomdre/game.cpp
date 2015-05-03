@@ -21,6 +21,8 @@ int MAP = 2;
 void Game::makeRenderer(){
 	//renderer = SDL_GetWindowSurface(window);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+
+	//load textures
 	SDL_Texture* wallTexture = IMG_LoadTexture(renderer, "textures/Brick_Texture.png");
 	SDL_Texture* enemyTexture = IMG_LoadTexture(renderer, "textures/Enemy_Texture.png");
 	SDL_Texture* gunTexture = IMG_LoadTexture(renderer, "textures/Handgun_Texture.png");
@@ -28,6 +30,8 @@ void Game::makeRenderer(){
 	SDL_Texture* gunflashTexture = IMG_LoadTexture(renderer, "textures/Gunflash_Texture_LargeV2.png");
 	SDL_Texture* gunTextureFired = IMG_LoadTexture(renderer, "textures/Handgun_Texture_FiredV3.png");
 	SDL_Texture* minimapTexture = IMG_LoadTexture(renderer, "textures/Minimap_Texture.png");
+
+	//push to texture vector
 	textures.push_back(wallTexture);
 	textures.push_back(enemyTexture);
 	textures.push_back(gunTexture);
@@ -65,13 +69,17 @@ void Game::initialize(int height, int width) {
 	int gunY = (height_-gunH);
 	int gunX = (width_/2)+(gunW/2);
 	gunSpace = {gunX,gunY,gunW, gunH};
-
 	
 	int flashW = (width_/2);
 	int flashH = (height_/2);
 	int flashY = (height_- flashH) - 50;
 	int flashX = (width_/2)+(flashW/2) - 240;
 	gunFlash = {flashX, flashY, flashW, flashH};
+
+	//sets size of minimap	
+    background.w = 180; background.h = 180;
+    background.x = (width_-100) - background.w / 2; background.y = (100) - background.h / 2;
+
 
 	if(MAP == 0)
 		sectors = mapmaker::createMap();
@@ -112,20 +120,33 @@ void Game::initialize(int height, int width) {
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 
 		Vector3f positionE1(80, 175, 20);
-		static Enemy enemy1;
-		enemy1.init(positionE1, velocity, acceleration, sectors[18]);
-
 		Vector3f positionE2(60, 95, 20);
-		static Enemy enemy2;
-		enemy2.init(positionE2, velocity, acceleration, sectors[38]);
-
 		Vector3f positionE3(60, 80, 20);
+		Vector3f positionE4(60, 20, 30);
+		Vector3f positionE5(85, 20, 5);
+		Vector3f positionE6(95, 20, 35);
+
+		static Enemy enemy1;
+		static Enemy enemy2;
 		static Enemy enemy3;
-		enemy3.init(positionE3, velocity, acceleration, sectors[40]);
+		static Enemy enemy4;
+		static Enemy enemy5;
+		static Enemy enemy6;
+		
+		enemy1.init(positionE1, velocity, acceleration, sectors[18]);
+		enemy2.init(positionE2, velocity, acceleration, sectors[41]);
+		enemy3.init(positionE3, velocity, acceleration, sectors[43]);
+		enemy4.init(positionE4, velocity, acceleration, sectors[27]);
+		enemy5.init(positionE5, velocity, acceleration, sectors[29]);
+		enemy6.init(positionE6, velocity, acceleration, sectors[30]);
+
 
 		enemies.push_back(&enemy1);
 		enemies.push_back(&enemy2);
 		enemies.push_back(&enemy3);
+		enemies.push_back(&enemy4);
+		enemies.push_back(&enemy5);
+		enemies.push_back(&enemy6);
 	}
 }
 
@@ -158,11 +179,7 @@ void Game::render() {
     // render world from player's POV
     render_util::renderView(renderer, textures, &player, enemies, height_, width_);
 
-      // Render minimapbackground
-    SDL_Rect background;
-    background.w = 180; background.h = 180;
-    background.x = (width_-100) - background.w / 2; background.y = (100) - background.h / 2;
-
+    //render minimap
     SDL_RenderCopy(renderer, textures.at(6), NULL, &background);
 
  	//render map
@@ -183,17 +200,12 @@ void Game::render() {
     	SDL_RenderCopy(renderer, textures.at(2), NULL, &gunSpace);
 	}
 
-    
-
     //render hp-bar
     render_util::render_player_hp(renderer, &player, height_, width_);
-
 
     //Render to screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw
-
-
 }
 
 void Game::terminate(){

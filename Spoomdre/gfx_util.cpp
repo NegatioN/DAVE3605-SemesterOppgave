@@ -46,10 +46,6 @@ bool gfx_util::hitScan(Vector3f position, Vector3f enemyPos, SDL_Rect hitBox, Ve
 	float mobY1 = enemyPos(1)-halfWidth;
 	float mobY2 = enemyPos(1)+halfWidth;
 
-
-	std::cout << "CheckValues player X=" << position(0) << " Y=" << position(1) << " destination X=" << direction(0) << " Y= " << direction(1) << " MobX1=" << mobX1 << " MobX2=" << mobX2 << " mobY1=" << mobY1 << " mobY2=" << mobY2 << std::endl;
-	std::cout << "Mob X=" << enemyPos(0) << " Y=" << enemyPos(1) << " halfWidth=" << halfWidth << std::endl; 
-
 	/* Hitbox works like this:
 	*	leftLine			RightLine
 	*	(mobX1, yPos-hwidth)(mobX2, yPos-hwidth) 			

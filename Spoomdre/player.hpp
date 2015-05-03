@@ -35,12 +35,7 @@ class Player : public Entity {
 	int const event_radius = 5;
 	int const max_hp = 100;
 
-public:
-	Player(){};
-	Player(Vector3f &pos) : Entity(pos){};
-	void init(Vector3f pos);
-	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
-	void update();						//updates all vectors and values for player
+private:
 	void move(Vector3f velo);			//add velocity to position of player
 	bool checkForWall(Vector3f& velo);	//collision-detection
 	bool checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b);
@@ -51,16 +46,21 @@ public:
 	void respawn();						//respawns player - set position to startPos_
 	void takeDamage();					//deal dmg to player
 
-	void shoot(std::vector<Enemy*>* enemies);
+	std::vector<float> closestToEvent(vertex a, vertex b, float middle_x, float middle_y);
 
+public:
+	Player(){};
+	Player(Vector3f &pos) : Entity(pos){};
+	void init(Vector3f pos);
+	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
+	void update();						//updates all vectors and values for player
+	void shoot(std::vector<Enemy*>* enemies);
 	void setMoveVector(std::vector<bool> &keys){ keys_ = keys; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }
 
-	std::vector<float> closestToEvent(vertex a, vertex b, float middle_x, float middle_y);
-
-	float angle(){ return angle_; };
 	float anglesin(){return anglesin_;};
 	float anglecos(){return anglecos_;};
+	float angle(){ return angle_; };
 	float yaw() { return yaw_; }
 	float x(){ return position()(0); };
 	float y(){ return position()(1); };

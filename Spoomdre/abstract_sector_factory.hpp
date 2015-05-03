@@ -8,7 +8,7 @@
 class AbstractSectorFactory {
 
  	public: 
-		virtual sector* createSector(int id, float floor_height, float ceiling_height, std::vector<vertex> v) = 0;
+		virtual sector* createSector(int id, float floor_height, float ceiling_height, std::vector<vertex> v, int texture) = 0;
 };
 
 #endif

@@ -8,7 +8,7 @@ class NormalSectorFactory : public AbstractSectorFactory {
 
 
 public: 
-	sector* createSector(int id, float floor_height, float ceiling_height, std::vector<vertex> v) override;
+	sector* createSector(int id, float floor_height, float ceiling_height, std::vector<vertex> v, int texture) override;
 };
 
 #endif

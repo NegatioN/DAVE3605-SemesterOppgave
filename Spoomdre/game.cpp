@@ -30,6 +30,8 @@ void Game::makeRenderer(){
 	SDL_Texture* gunflashTexture = IMG_LoadTexture(renderer, "textures/Gunflash_Texture_LargeV2.png");
 	SDL_Texture* gunTextureFired = IMG_LoadTexture(renderer, "textures/Handgun_Texture_FiredV3.png");
 	SDL_Texture* minimapTexture = IMG_LoadTexture(renderer, "textures/Minimap_Texture.png");
+	SDL_Texture* dirtTexture = IMG_LoadTexture(renderer, "textures/Dirt_Texture.png");
+	SDL_Texture* stoneWallTexture = IMG_LoadTexture(renderer, "textures/Wall_Stone_Texture.png");
 
 	//push to texture vector
 	textures.push_back(wallTexture);
@@ -39,6 +41,8 @@ void Game::makeRenderer(){
 	textures.push_back(gunflashTexture);
 	textures.push_back(gunTextureFired);
 	textures.push_back(minimapTexture);
+	textures.push_back(dirtTexture);
+	textures.push_back(stoneWallTexture);
 }
 
 void Game::initialize(int height, int width) {

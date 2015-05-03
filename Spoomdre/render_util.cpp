@@ -11,6 +11,8 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	SDL_Texture* wallTexture = textures[0];
 	SDL_Texture* enemyTexture = textures[1];
 	SDL_Texture* doorTexture = textures[3];
+	SDL_Texture* dirtTexture = textures[7];
+	SDL_Texture* stoneWallTexture = textures[8];
 	
 	//keeps track of y-coord for neighbour-sector
 	int ytop[screenWidth], ybottom[screenWidth];
@@ -184,12 +186,12 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
 	                // If our ceiling is higher than their ceiling, render upper wall     
                     if(cropYCeiling < nbrYCeil)    {
-                    	vLineTexture(renderer, wallTexture, x, yCeiling, nbrYCeil-1, x1, wallHeight, distanceIndex, top, bottom);
+                    	vLineTexture(renderer, textures[currentSector->texture()], x, yCeiling, nbrYCeil-1, x1, wallHeight, distanceIndex, top, bottom);
                     }       
 
 	                // If our floor is lower than their floor, render bottom wall
                     if(cropYFloor > nbrYFloor) {
-						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, yFloor, x1, wallHeight, distanceIndex, top, bottom);
+						vLineTexture(renderer, textures[currentSector->texture()], x, nbrYFloor+1, yFloor, x1, wallHeight, distanceIndex, top, bottom);
                     }
 					
 					//If this opening is closed with a door, render door
@@ -204,7 +206,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	            }
 	            else{
                     // No neighbors, render wall from top to bottom
-                    vLineTexture(renderer, wallTexture, x, yCeiling, yFloor, x1, wallHeight, distanceIndex, top, bottom);
+                    vLineTexture(renderer, textures[currentSector->texture()], x, yCeiling, yFloor, x1, wallHeight, distanceIndex, top, bottom);
 	            }
 	        }
 
@@ -366,8 +368,6 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, SDL_Texture
     int yOffset = 100; // displaces map by a given y //-150 
     int xOffset = screenWidth - 100;  // displaces map by a give x  //250
 
-  
-
     // Render player on map
     SDL_Rect prect;
     prect.w = 5; prect.h = 5;
@@ -426,7 +426,10 @@ void render_util::render_player_hp(SDL_Renderer* renderer, Player* player, int s
     SDL_Rect hp_bar;
     hp_bar.w = player->hp()*1.6; hp_bar.h = 16;
     hp_bar.x = xOffset; hp_bar.y = yOffset;
-    SDL_SetRenderDrawColor(renderer, 0xD2, 0x05, 0x05, 0xFF); // hp color - maybe green? 0x00FF00
+    if(player->hp() > 50)
+    	SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF); // hp color - maybe green? 0x00FF00
+    else
+		SDL_SetRenderDrawColor(renderer, 0xD2, 0x05, 0x05, 0xFF); // hp color - maybe green? 0x00FF00
     SDL_RenderFillRect(renderer, &hp_bar); // fill bar
     SDL_RenderCopy(renderer, NULL, NULL, &hp_bar);
 }

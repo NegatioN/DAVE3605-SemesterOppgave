@@ -9,10 +9,10 @@
 #include <iostream>
 
 sector::sector(int id, float floor_height, float ceiling_height) : id_{id}, floor_height_{floor_height}, ceiling_height_{ceiling_height} {
-
+    texture_id = 0;
 };
 
-sector::sector(int id, float floor_height, float ceiling_height, std::vector<vertex> vert) : id_{id}, floor_height_{floor_height}, ceiling_height_{ceiling_height}, vertices{vert} {
+sector::sector(int id, float floor_height, float ceiling_height, std::vector<vertex> vert, int texture_) : id_{id}, floor_height_{floor_height}, ceiling_height_{ceiling_height}, vertices{vert}, texture_id{texture_} {
     vCount = vert.size();
 };
 

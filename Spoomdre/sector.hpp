@@ -12,6 +12,9 @@ class sector{
 //ID of sector, to identify neighbours
 int id_;
 
+//texture id- for rendering
+int texture_id;
+
 float floor_height_;
 float ceiling_height_;
 
@@ -36,7 +39,7 @@ std::vector<door*> doors;
 public:
 	sector(int id_, float floor_height, float ceiling_height);
 
-	sector(int id_, float floor_height, float ceiling_height, std::vector<vertex> vert);
+	sector(int id_, float floor_height, float ceiling_height, std::vector<vertex> vert, int texture_);
 
 	void addVertex(vertex v);
 	void addNeighbour(sector* s);
@@ -61,6 +64,7 @@ public:
 
 	float floor(){ return floor_height_; };
 	float ceiling(){ return ceiling_height_; };
+	int texture(){ return texture_id; };
 };
 
 #endif

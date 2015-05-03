@@ -25,6 +25,11 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	//std::queue<sector*> sectorRenderQueue;
 	sectorRenderQueue.push(playerSectorView);
 
+	struct enemyView {sectorView view; Enemy* enemy;};
+	//Sectors for enemies for rendering sectors after views
+	std::vector<enemyView> enemyViews;
+
+
 	int NumSectors = 26;
 	int renderedSectors[NumSectors];
 	for(unsigned n=0; n<NumSectors; ++n) renderedSectors[n] = 0;
@@ -81,6 +86,16 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	       
 	        int x1 = screenWidth / 2 - (int)(txA * xscale1); 
 	        int x2 = screenWidth / 2 - (int)(txB * xscale2);
+
+
+	        float dx = b.x()-a.x(), dy = b.y()-a.y();
+	        float wallLength = sqrt(dx*dx + dy*dy);
+			float playerWallLength = abs(x1-x2);
+	        float distanceIndex = playerWallLength/wallLength/20;
+	        if (wallLength == 25){
+				std::cout << "WallLength: " << wallLength << " PWL: " << playerWallLength << " Index: " << distanceIndex << std::endl;
+				std::cout << "x1: " << x1 << "x2: " << x2 << std::endl;
+			}
 
     		// Only render if it's visible (doesn't render the backside of walls)
         	if(x1 >= x2 || x2 < currentSectorView.leftCropX || x1 > currentSectorView.rightCropX) continue;
@@ -160,24 +175,18 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
 	                // If our ceiling is higher than their ceiling, render upper wall     
                     if(cropYCeiling < nbrYCeil)    {
-						if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-	                   	// drawVLine(renderer, x, cropYCeiling, nbrYCeil-1, r_, g_, b_, shade, screenHeight, screenWidth); // Between our and their ceiling
-                    	vLineTexture(renderer, wallTexture, x, yCeiling, nbrYCeil-1, beginx, wallHeight, top, bottom);
-
+                    	vLineTexture(renderer, wallTexture, x, yCeiling, nbrYCeil-1, x1, wallHeight, distanceIndex, top, bottom);
                     }       
 
 	                // If our floor is lower than their floor, render bottom wall
                     if(cropYFloor > nbrYFloor) {
-                    	if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-                        // drawVLine(renderer,x, nbrYFloor+1, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);  // Between their and our floor
-						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, yFloor, beginx, wallHeight, top, bottom);
-
+						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, yFloor, x1, wallHeight, distanceIndex, top, bottom);
                     }
-
-                    //If this opening is closed with a door, render door
+					
+					//If this opening is closed with a door, render door
                     if(isDoorLocked)
                     {
-                    	vLineTexture(renderer, doorTexture, x, nbrYCeil-1, nbrYFloor+1, beginx, wallHeight, top, bottom);
+                    	vLineTexture(renderer, doorTexture, x, nbrYCeil-1, nbrYFloor+1, beginx, wallHeight, distanceIndex, top, bottom);
                     }
 
                     // Shrink the remaining window below this ceiling and floor
@@ -186,8 +195,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	            }
 	            else{
                     // No neighbors, render wall from top to bottom
-                    //drawVLine(renderer, x, cropYCeiling, cropYFloor, r_, g_, b_, shade, screenHeight, screenWidth);
-                    vLineTexture(renderer, wallTexture, x, yCeiling, yFloor, beginx, wallHeight, top, bottom);
+                    vLineTexture(renderer, wallTexture, x, yCeiling, yFloor, x1, wallHeight, distanceIndex, top, bottom);
 	            }
 	        }
 
@@ -199,12 +207,12 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }
 		}
-
+        	
+        //Render enemies
 		if(!enemies.empty()){
-        	//Render enemies
         	for(Enemy* e : enemies)
-        		if(currentSector->getId() == e->getSector()->getId() ) 
-        			render_util::renderEnemy(renderer, enemyTexture, &currentSectorView, player, e, screenHeight, screenWidth);
+        		if(currentSector->getId() == e->getSector()->getId()) 
+        			enemyViews.push_back({currentSectorView, e});
 	    }
 
         //render projectiles
@@ -213,6 +221,10 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 		++renderedSectors[currentSector->getId()-1];
 		///END RENDER SECTOR
 	}
+	
+	for (enemyView ev: enemyViews)
+		render_util::renderEnemy(renderer, enemyTexture, &ev.view, player, ev.enemy, screenHeight, screenWidth);
+
 }
 
 // vline: Draw a vertical line on screen, with a different color pixel in top & bottom 
@@ -233,7 +245,7 @@ void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int r
     SDL_RenderDrawPoint(renderer, x1, y2);
 }
 
-void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int x, int y1, int y2, int beginx, float wallHeight, int top, int bottom)
+void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int x, int y1, int y2, int beginx, float wallHeight, float widthIndex, int top, int bottom)
 {
 	/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
 	int textureWidth = 256, textureHeight = 256;
@@ -241,7 +253,8 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int 
 	int yCeiling = gfx_util::clamp(y1, top, bottom);
 	int yFloor = gfx_util::clamp(y2, top, bottom);
 
-
+	// std::cout << "Index " << wallLength << std::endl;
+	int textureX = (x-beginx) / widthIndex;
 
 	//Set bounds for linerect
 	SDL_Rect line;
@@ -254,13 +267,13 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int 
 	float part = partWh/wallHeight;
 	float overFlowTop = (yCeiling-y1);
 	float offset = (overFlowTop/wallHeight)*textureHeight;
-	// std::cout << "Ofb: " << overFlowBot << " CropBot: " << cropBot << std::endl;
+	//std::cout << "yCeiling " << yCeiling << " y1 " << y1 << " X: " << x << " Oft: " << overFlowTop << " Offset: " << offset << std::endl;
 
 	//Set crop
 	SDL_Rect crop;
     crop.w = 1;
     crop.h = textureHeight*part;
-	crop.x = (x - beginx) % textureWidth;
+	crop.x = textureX % textureWidth;
 	crop.y = offset;
 
     SDL_RenderCopy(renderer, texture, &crop, &line);
@@ -294,7 +307,7 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	int enemyX = screenWidth / 2 - (int) (etx * exscale);
     int enemyY = screenHeight / 2 - (int) ((currentSector->floor() - pz + etz * player->yaw()) * eyscale);
 
-   
+    // std::cout << "EnemyX: " << enemyX << " EnemyY: " << enemyY << " Distance: " << distance << std::endl;
     // Rendering
 	SDL_Rect enemySprite;
 
@@ -328,12 +341,14 @@ void render_util::renderSector(sector currentSect){
 }
 
 //Temporary method for showing a top-down view on screen.
-void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector<vertex> vertices, int screenHeight, int screenWidth){
+void render_util::render_map(SDL_Renderer* renderer, Player* player, SDL_Texture* texture, std::vector<vertex> vertices, int screenHeight, int screenWidth){
 
 	int vCount = vertices.size();
     
     int yOffset = 100; // displaces map by a given y //-150 
     int xOffset = screenWidth - 100;  // displaces map by a give x  //250
+
+  
 
     // Render player on map
     SDL_Rect prect;
@@ -358,7 +373,7 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
             b = vertices[i+1];
 
 
-        int range = 70;
+        int range = 60;
         if(std::abs(a.x()- (std::abs(playerX))) > range || std::abs(a.y()- (std::abs(playerY))) > range ||
         	std::abs(a.x()- (std::abs(playerX))) > range || std::abs(b.y()- (std::abs(playerY))) > range)
         	continue;
@@ -374,6 +389,7 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
 
         SDL_SetRenderDrawColor(renderer, 0x00, 0x77, 0xFF, 0xFF); // map-color, Blue/green-ish
         SDL_RenderDrawLine(renderer, -txa + xOffset, -tza + yOffset, -txb + xOffset, -tzb + yOffset); // render map
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
     }
 }
 

@@ -26,11 +26,13 @@ void Game::makeRenderer(){
 	SDL_Texture* gunTexture = IMG_LoadTexture(renderer, "textures/Handgun_Texture.png");
 	SDL_Texture* doorTexture = IMG_LoadTexture(renderer, "textures/Door_Texture.png");
 	SDL_Texture* gunflashTexture = IMG_LoadTexture(renderer, "textures/Gunflash_Texture_LargeV2.png");
+	SDL_Texture* gunTextureFired = IMG_LoadTexture(renderer, "textures/Handgun_Texture_FiredV2.png");
 	textures.push_back(wallTexture);
 	textures.push_back(enemyTexture);
 	textures.push_back(gunTexture);
 	textures.push_back(doorTexture);
 	textures.push_back(gunflashTexture);
+	textures.push_back(gunTextureFired);
 }
 
 void Game::initialize(int height, int width) {
@@ -150,10 +152,13 @@ void Game::render() {
     //if player just pressed shoot - render gunflash
     if(flashCountdown > 22){ // only render the first few frames
 		SDL_RenderCopy(renderer, textures.at(4), NULL, &gunFlash);
+		SDL_RenderCopy(renderer, textures.at(5), NULL, &gunSpace);
+	} else {
+		//render gun-model
+    	SDL_RenderCopy(renderer, textures.at(2), NULL, &gunSpace);
 	}
 
-    //render gun-model
-    SDL_RenderCopy(renderer, textures.at(2), NULL, &gunSpace);
+    
 
     //render hp-bar
     render_util::render_player_hp(renderer, &player, height_, width_);

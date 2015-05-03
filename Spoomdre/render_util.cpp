@@ -328,12 +328,14 @@ void render_util::renderSector(sector currentSect){
 }
 
 //Temporary method for showing a top-down view on screen.
-void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector<vertex> vertices, int screenHeight, int screenWidth){
+void render_util::render_map(SDL_Renderer* renderer, Player* player, SDL_Texture* texture, std::vector<vertex> vertices, int screenHeight, int screenWidth){
 
 	int vCount = vertices.size();
     
     int yOffset = 100; // displaces map by a given y //-150 
     int xOffset = screenWidth - 100;  // displaces map by a give x  //250
+
+  
 
     // Render player on map
     SDL_Rect prect;
@@ -358,7 +360,7 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
             b = vertices[i+1];
 
 
-        int range = 70;
+        int range = 60;
         if(std::abs(a.x()- (std::abs(playerX))) > range || std::abs(a.y()- (std::abs(playerY))) > range ||
         	std::abs(a.x()- (std::abs(playerX))) > range || std::abs(b.y()- (std::abs(playerY))) > range)
         	continue;

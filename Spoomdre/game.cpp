@@ -15,7 +15,7 @@ std::vector<sector*> sectors;
 std::vector<SDL_Texture*> textures;
 SDL_Rect rect;
 
-int MAP = 2;
+int MAP = 0;
 
 //get window surface
 void Game::makeRenderer(){
@@ -27,12 +27,14 @@ void Game::makeRenderer(){
 	SDL_Texture* doorTexture = IMG_LoadTexture(renderer, "textures/Door_Texture.png");
 	SDL_Texture* gunflashTexture = IMG_LoadTexture(renderer, "textures/Gunflash_Texture_LargeV2.png");
 	SDL_Texture* gunTextureFired = IMG_LoadTexture(renderer, "textures/Handgun_Texture_FiredV3.png");
+	SDL_Texture* minimapTexture = IMG_LoadTexture(renderer, "textures/Minimap_Texture.png");
 	textures.push_back(wallTexture);
 	textures.push_back(enemyTexture);
 	textures.push_back(gunTexture);
 	textures.push_back(doorTexture);
 	textures.push_back(gunflashTexture);
 	textures.push_back(gunTextureFired);
+	textures.push_back(minimapTexture);
 }
 
 void Game::initialize(int height, int width) {
@@ -140,9 +142,16 @@ void Game::render() {
     // render world from player's POV
     render_util::renderView(renderer, textures, &player, enemies, height_, width_);
 
+      // Render minimapbackground
+    SDL_Rect background;
+    background.w = 180; background.h = 180;
+    background.x = (width_-100) - background.w / 2; background.y = (100) - background.h / 2;
+
+    SDL_RenderCopy(renderer, textures.at(6), NULL, &background);
+
  	//render map
 	for(auto s : sectors)
-		render_util::render_map(renderer, &player, s->getVertices(), height_, width_);
+		render_util::render_map(renderer, &player, textures.at(6), s->getVertices(), height_, width_);
 
     // render crosshair
     SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xAA);

@@ -154,11 +154,10 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	            //if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
 	             {r_ = 0xEE/3; g_ = 0xBB; b_ = 0x77;}//Wall brown
 
-				/*
+				
 	            // Calculate the Z coordinate for this point. (Only used for lighting.) 
-	            int z_ = ((x - x1) * (tzB-tzA) / (x2-x1) + tzA) * 8;
-	            int shade = (z_ - 16) / 4; // calculated from the Z-distance
-	            */
+	            int z_ = ((x - x1) * (tzB-tzA) / (x2-x1) + tzA) * 3;
+	            int alpha = gfx_util::clamp(255-z_, 63, 255); //(z_ - 16) / 4; // calculated from the Z-distance
 
 	            // Acquire the Y coordinates for our ceiling & floor for this X coordinate. 
 	            int yCeiling = (x - x1) * (y2Ceil-y1Ceil) / (x2-x1) + y1Ceil;// top
@@ -185,19 +184,19 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 					nbrYFloor = gfx_util::clamp(nbrYFloor, top, bottom); //clamp floor of neighbour to our POV
 
 	                // If our ceiling is higher than their ceiling, render upper wall     
-                    if(cropYCeiling < nbrYCeil)    {
-                    	vLineTexture(renderer, textures[currentSector->texture()], x, yCeiling, nbrYCeil-1, x1, wallHeight, distanceIndex, top, bottom);
+                    if(cropYCeiling < nbrYCeil) {   
+                    	vLineTexture(renderer, textures[currentSector->texture()], x, yCeiling, nbrYCeil-1, x1, wallHeight, distanceIndex, top, bottom, alpha);
                     }       
 
 	                // If our floor is lower than their floor, render bottom wall
                     if(cropYFloor > nbrYFloor) {
-						vLineTexture(renderer, textures[currentSector->texture()], x, nbrYFloor+1, yFloor, x1, wallHeight, distanceIndex, top, bottom);
+						vLineTexture(renderer, textures[currentSector->texture()], x, nbrYFloor+1, yFloor, x1, wallHeight, distanceIndex, top, bottom, alpha);
                     }
 					
 					//If this opening is closed with a door, render door
                     if(isDoorLocked)
                     {
-                    	vLineTexture(renderer, doorTexture, x, nbrYCeil-1, nbrYFloor+1, beginx, wallHeight, distanceIndex, top, bottom);
+                    	vLineTexture(renderer, doorTexture, x, nbrYCeil-1, nbrYFloor+1, beginx, wallHeight, distanceIndex, top, bottom, alpha);
                     }
 
                     // Shrink the remaining window below this ceiling and floor
@@ -206,7 +205,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	            }
 	            else{
                     // No neighbors, render wall from top to bottom
-                    vLineTexture(renderer, textures[currentSector->texture()], x, yCeiling, yFloor, x1, wallHeight, distanceIndex, top, bottom);
+                    vLineTexture(renderer, textures[currentSector->texture()], x, yCeiling, yFloor, x1, wallHeight, distanceIndex, top, bottom, alpha);
 	            }
 	        }
 
@@ -253,7 +252,7 @@ void render_util::drawVLine(SDL_Renderer* renderer, int x1, int y1,int y2, int r
     SDL_RenderDrawPoint(renderer, x1, y2);
 }
 
-void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int x, int y1, int y2, int beginx, float wallHeight, float widthIndex, int top, int bottom)
+void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int x, int y1, int y2, int beginx, float wallHeight, float widthIndex, int top, int bottom, int alpha)
 {
 	/* vline: Draw a vertical line on screen, with a different color pixel in top & bottom */
 	int textureWidth = 256, textureHeight = 256;
@@ -283,6 +282,10 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int 
     crop.h = textureHeight*part;
 	crop.x = textureX % textureWidth;
 	crop.y = offset;
+
+
+	SDL_SetTextureColorMod(texture, alpha, alpha, alpha);
+
 
     SDL_RenderCopy(renderer, texture, &crop, &line);
 }

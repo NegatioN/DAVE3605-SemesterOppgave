@@ -55,6 +55,12 @@ Man kan også bruke musa for å se rundt, og skyte med venstre muse-knapp
 
 ### Diagrammer:
 
+#### Klasse-diagram:
+![alt text](https://raw.githubusercontent.com/NegatioN/DAVE3605-SemesterOppgave/master/class-chart.png?token=AD2ciRRAq8GnoXs3G8IweqfIaIAJSZyGks5VT89wwA%3D%3D "Klasse-diagram")
+
+#### Flyt-diagram:
+![alt text](https://raw.githubusercontent.com/NegatioN/DAVE3605-SemesterOppgave/master/flow-chart.png?token=AD2ciXU_FrPgca3Yiungrlo1j4-J7lY3ks5VT8-JwA%3D%3D "Flyt-diagram")
+
 
 ### Hva er bra?
 Vi har nådd minstekravene våre med å lage et spill som rendrer 3D-grafikk, hvor spiller kan bevege seg rundt i rommet, og skyte enemies som beveger seg på egenhånd. Vi er også generelt fornøyd med mengde funksjonalitet vi har fått med i programmet.

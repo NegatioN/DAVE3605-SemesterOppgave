@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "entity.hpp"
+#include "enemy.hpp"
 #include "projectile.hpp"
 #include "gfx_util.hpp"
 #include "vertex.hpp"
@@ -24,7 +25,7 @@ class Player : public Entity {
 	bool isFalling = false;
 
 	float const normalspeed_ = 1.5f;
-	float const sprintspeed_ = 2.8f;
+	float const sprintspeed_ = 2.0f;
 	float activespeed_ = normalspeed_;
 
 	float const HEADSIZE = 3;
@@ -61,8 +62,7 @@ public:
 	void respawn();						//respawns player - set position to startPos_
 	void takeDamage();					//deal dmg to player
 
-	void shootProjectile();
-	void removeDeadProjectiles();
+	void shoot(std::vector<Enemy*>* enemies);
 
 	void setMoveVector(std::vector<bool> &keys){ keys_ = keys; }
 	void setMouseValues(float mx, float my) { mouse_x = mx; mouse_y = my; }
@@ -76,6 +76,7 @@ public:
 	float x(){ return position()(0); };
 	float y(){ return position()(1); };
 	float z(){ return position()(2); }
+	int hp(){ return hp_; };
 	std::vector<Projectile*> getProjectiles(){return projectiles;};
 
 };

@@ -69,7 +69,7 @@ void Player::update() {
 	    if (keys_.at(3)) { vecAddition(0) -= anglesin_ * activespeed_; vecAddition(1) += anglecos_  * activespeed_; } 	// D
 	    if (keys_.at(8)) { isCrouching = true;}													//Crouch, Z-axis
 	    if (keys_.at(9)) { isJumping = true; } 													//Jump, Z-axis
-	    if (keys_.at(10)) { shootProjectile(); }												//Shoot
+	    //if (keys_.at(10)) { shootProjectile(); }												//Shoot
 	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }							//Interact
 	    if (keys_.at(12)){ activespeed_ = sprintspeed_; } else {activespeed_ = normalspeed_;}	//Sprint
 	    if (keys_.at(13)){ respawn();}	
@@ -106,14 +106,6 @@ void Player::update() {
 		else
 			crouchMove(isCrouching);
 	}
-	// update and remove (if appropriate) projectiles if any exists
-	if(projectiles.size() > 0) {
-		projectileCountdown--;
-		for(Projectile* p : projectiles) 
-			p->update();
-			
-		removeDeadProjectiles();
-	}
 }
 //true, hits wall or goto next sector
 bool Player::checkForWall(Vector3f& velo){
@@ -141,17 +133,22 @@ bool Player::checkForWall(Vector3f& velo){
 			float xd = b.x() - a.x(), yd = b.y() - a.y();
 			velo(0) =  xd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
 			velo(1) =  yd * (velo(0)*xd + yd*velo(1)) / (xd*xd + yd*yd);
-			//std::cout << "Hopper, men treffer vegg" << std::endl;
 
-			//will you slide past this wall?
+			// //will you slide past this wall?
 			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
 				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
 				//but will you hit new sector? - need test
 				velo(0) = 0;
 				velo(1) = 0;
 			}
-			return true;
 		}
+		//forsøk på å håndtere dette gjennom "utstående" hjørner - funker, men tar trapper osv
+		// if(( std::abs((x() + velo(0))-a.x()) < 1 )&& ( std::abs((y() + velo(1))-a.y()) < 1 ) ||
+		// 	( std::abs((x() + velo(0))-b.x()) < 1 )&& ( std::abs((y() + velo(1))-b.y()) < 1 )){
+		// 	std::cout << "TREFFER VERTEX!!!!!!!!!!!!!!!" << std::endl;
+		// 	velo(0) = 0;
+		// 	velo(1) = 0;	
+		// }
     }
     return false;
 }
@@ -172,6 +169,13 @@ bool Player::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
 		{
 			std::cout << "entered sector=" << n->getId() << std::endl;
 		   	setSector(n);
+		   	//after changing sector, will you hit a wall?
+			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
+				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
+				//but will you hit new sector? - need test
+				velo(0) = 0;
+				velo(1) = 0;
+			}
 			move(velo);
 
 		   	//sets default_z to floor + BodyHeight. Player will move towards this next frame
@@ -344,35 +348,26 @@ void Player::updatePOV(){
 }
 
 
-void Player::shootProjectile() {
-	/*
-	if(projectiles.size() < 1) {
-		projectileCountdown = 0;
-	}
-	if(projectileCountdown < 1) {
-		Projectile* proj = new Projectile();
-		Vector3f pos = position();
-		Vector3f bulletSpeed(0.01,0.01,0);
-		proj->init(pos, bulletSpeed);
-		projectiles.push_back(proj);
-		
-		projectileCountdown = projectileCooldown;
+void Player::shoot(std::vector<Enemy*>* enemies){
+    Vector3f playerPos = position();
+    Vector3f direction(0,0,0);
+    direction(0) += anglecos();  
+    direction(1)  += anglesin();
+    direction.normalize();
 
-		std::cout << "projectile shot()" << std::endl;
-	}
-	*/
-}
 
-void Player::removeDeadProjectiles() {
-	for(int i = 0; i < projectiles.size(); i++) {
-		if(projectiles.at(i)->isDead()) {
-			Projectile* p = projectiles.at(i);
-			projectiles.erase(projectiles.begin() + i);
-			delete p;
-			i--;
-			std::cout << "projectile removed()" << std::endl;
-		}
-	}
+    for(int i = 0; i < enemies->size(); i++){
+    	Enemy* enemy = enemies->at(i);
+    	bool isHit = gfx_util::hitScan(playerPos, enemy->position(),enemy->getRect(), direction);
+
+
+        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
+        if(isHit){
+        	enemies->erase(enemies->begin()+i);
+        	std::cout << "Mob killed" << std::endl;
+        	break;
+        }
+    }
 }
 
 void Player::respawn(){ // resets all important values for respawn

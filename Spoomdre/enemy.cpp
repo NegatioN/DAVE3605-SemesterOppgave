@@ -12,12 +12,7 @@ void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setAcceleration(acc);
 	setSector(sec);
 
-	angle_ = ((double)rand() / 6.2);
-
-//	enemySprite.w = 100;
-	//enemySprite.h = 50;
-	//enemySprite.x = 10;
-	//enemySprite.y = 20;
+	angle_ = ((double)rand() / TAU);
 }
 
 void Enemy::update() {
@@ -51,7 +46,6 @@ void Enemy::update() {
 	
 }
 
-//can handle dmg to player
 bool Enemy::checkForPlayer(Vector3f& velo){
 	//hits player
 	if(player_ != NULL && player()->getSector()->getId() == getSector()->getId())
@@ -139,19 +133,18 @@ bool Enemy::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
 		bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 		// can player walk/jump through opening?
 		// std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
-  //   	if(((hole_high - hole_low) >= ((isCrouching ? CROUCHHEIGHT : BODYHEIGHT)+HEADSIZE)) && (z() <= hole_high) && !isDoorLocked &&
-  //   		((!isFalling && floor_diff <= KNEEHEIGHT) || (isFalling && z()-KNEEHEIGHT >= hole_low))) 
-		// {
-		// 	std::cout << "entered sector=" << n->getId() << std::endl;
-		//    	setSector(n);
-		// 	move(velo);
+    	if(((hole_high - hole_low) >= BODYHEIGHT) && (z() <= hole_high) && !isDoorLocked ) 
+		{
+			std::cout << "entered sector=" << n->getId() << std::endl;
+		   	setSector(n);
+			move(velo);
 
-		//    	//sets default_z to floor + BodyHeight. Player will move towards this next frame
-		//    	default_z = getSector()->floor() + BODYHEIGHT;
-		//    	//velo /= 2;
-		//    	setVelocity(velo);		//if we fall after sector-change we fall forward.
-	 //    	return true;
-  //  		}	
+		   	//sets default_z to floor + BodyHeight. Player will move towards this next frame
+		   	default_z = getSector()->floor() + BODYHEIGHT;
+		   	//velo /= 2;
+		   	setVelocity(velo);		//if we fall after sector-change we fall forward.
+	    	return true;
+   		}	
 	}
 	return false;
 }

@@ -10,7 +10,8 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
 	SDL_Texture* wallTexture = textures[0];
 	SDL_Texture* enemyTexture = textures[1];
-
+	SDL_Texture* doorTexture = textures[3];
+	
 	//keeps track of y-coord for neighbour-sector
 	int ytop[screenWidth], ybottom[screenWidth];
 	for(int i = 0; i < screenWidth; ++i){ ybottom[i] = screenHeight-1; ytop[i] = 0;}
@@ -54,7 +55,6 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 			// x & y of sector-edge endpoints
 	        float vertexAx = a.x() - player->x(); float vertexAy = a.y() - player->y();
 	        float vertexBx = b.x() - player->x(); float vertexBy = b.y() - player->y();
-
 
 	        float psin = player->anglesin(); float pcos = player->anglecos();
 	      	//player translated coordinates of vertexes
@@ -106,6 +106,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
         	sector* neighbour = currentSector->getWallNeighbour(a, b);
         	//is this wall a door?
         	door* door_ = currentSector->getWallDoor(a,b);
+        	bool isDoorLocked = (door_ != NULL && door_->doorLocked());
 	        if (neighbour != NULL)
 	        {
 	            nbrCeil  = neighbour->ceiling()  - playerZ;
@@ -176,6 +177,12 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
                     if(cropYFloor > nbrYFloor) {
 						vLineTexture(renderer, wallTexture, x, nbrYFloor+1, yFloor, x1, wallHeight, distanceIndex, top, bottom);
                     }
+					
+					//If this opening is closed with a door, render door
+                    if(isDoorLocked)
+                    {
+                    	vLineTexture(renderer, doorTexture, x, nbrYCeil-1, nbrYFloor+1, beginx, wallHeight, distanceIndex, top, bottom);
+                    }
 
                     // Shrink the remaining window below this ceiling and floor
 	                ytop[x] = gfx_util::clamp(std::max(cropYCeiling, nbrYCeil), top, screenHeight-1);
@@ -189,11 +196,9 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
 	       	//if(e->getSector()->getId() == currentSector->getId()) 
     		
-	        bool isDoorLocked = (door_ != NULL && door_->doorLocked());
-
 	        //add sector-neighbours to renderQueue
 	        if(neighbour != NULL && endx >= beginx && !(isDoorLocked)){
-	        	sectorView nbrSectorView{neighbour, wallHeight, endx};
+	        	sectorView nbrSectorView{neighbour, beginx, endx};
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }
 		}
@@ -201,8 +206,8 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 		if(!enemies.empty()){
         	//Render enemies
         	for(Enemy* e : enemies)
-        		if(currentSector->getId() == e->getSector()->getId()) 
-        			render_util::renderEnemy(renderer, enemyTexture, currentSector, player, e, screenHeight, screenWidth);
+        		if(currentSector->getId() == e->getSector()->getId() ) 
+        			render_util::renderEnemy(renderer, enemyTexture, &currentSectorView, player, e, screenHeight, screenWidth);
 	    }
 
         //render projectiles
@@ -265,9 +270,10 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int 
     SDL_RenderCopy(renderer, texture, &crop, &line);
 }
 
-void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sector* currentSector, Player* player, Enemy* enemy, int screenHeight, int screenWidth) {
+void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sectorView* sectorV, Player* player, Enemy* enemy, int screenHeight, int screenWidth) {
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
 	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
+	sector* currentSector = sectorV->thisSector;
 
 	float px = player->x(), py = player->y(), pz = player->z();
 	float ex = enemy->x(), ey = enemy->y(), ez = enemy->z();
@@ -301,6 +307,14 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
     enemySprite.h = (int) distance*2;
     enemySprite.x = enemyX - enemySprite.w/2;
 	enemySprite.y = enemyY - enemySprite.h + (enemySprite.h/10);
+	//std::cout << "EnemyX: " << enemySprite.x << " Width: " << enemySprite.w << " Distance: " << distance << std::endl;
+
+	std::cout << "Sector ID=" << currentSector->getId() << " Enemy.x=" << enemySprite.x << " cropLeft=" << sectorV->leftCropX << " cropRight=" << sectorV->rightCropX << std::endl;
+	//if enemy not in render-room for sector. dont render
+	if(!(enemySprite.x > sectorV->leftCropX && (enemySprite.x+enemySprite.w) < sectorV->rightCropX)){
+		std::cout << " NORENDER" << std::endl;
+		return;
+	}
 
 	enemy->setRect(enemySprite);
 
@@ -371,5 +385,25 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
 void render_util::render_projectiles(SDL_Renderer* renderer, Player* player){
 	for(Projectile* p : player->getProjectiles())
 		p->render(renderer);
+}
+
+void render_util::render_player_hp(SDL_Renderer* renderer, Player* player, int screenHeight, int screenWidth){
+	int yOffset = 30; 
+    int xOffset = 30; 
+
+    // background and hp bars
+    SDL_Rect background;
+    background.w = 100*1.6; background.h = 16;
+    background.x = xOffset; background.y = yOffset;
+    SDL_SetRenderDrawColor(renderer, 0x5A, 0x5A, 0x5A, 0xFF);
+    SDL_RenderFillRect(renderer, &background); // fill bar
+    SDL_RenderCopy(renderer, NULL, NULL, &background);
+
+    SDL_Rect hp_bar;
+    hp_bar.w = player->hp()*1.6; hp_bar.h = 16;
+    hp_bar.x = xOffset; hp_bar.y = yOffset;
+    SDL_SetRenderDrawColor(renderer, 0xD2, 0x05, 0x05, 0xFF); // hp color - maybe green? 0x00FF00
+    SDL_RenderFillRect(renderer, &hp_bar); // fill bar
+    SDL_RenderCopy(renderer, NULL, NULL, &hp_bar);
 }
 

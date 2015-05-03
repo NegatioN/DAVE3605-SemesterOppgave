@@ -24,6 +24,11 @@ class Game{
 
 	//rectangle to render gun in.
 	SDL_Rect gunSpace;
+	SDL_Rect gunFlash;
+
+	//how long gunflash will last after shooting
+	const int flash_time = 25; // twice per second
+	int flashCountdown = 0;
 
 	void makeRenderer();					//simply creates the SDL_Surface
 

@@ -25,7 +25,7 @@ class Player : public Entity {
 	int portalCountdown = 0; // The next time the player can check for a level-portal
 
 	//Player constants
-	float const normalspeed_ = 1.5f;
+	float const normalspeed_ = 1.2f;
 	float const sprintspeed_ = 2.0f;
 	float const max_yaw = 5.5;
 	float const HEADSIZE = 3;

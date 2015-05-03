@@ -9,32 +9,21 @@
 
 class sector{
 
-//ID of sector, to identify neighbours
-int id_;
 
-//texture id- for rendering
-int texture_id;
-
-float floor_height_;
-float ceiling_height_;
-
+int id_; //ID of sector, to identify neighbours
+int vCount; //Number of vertexes in the sector (4 for cubical sector)
 int H = 480; // window-height
 int W = 640; // window-width
-
+int texture_id; //texture id- for rendering
+float floor_height_;
+float ceiling_height_;
 float hfov = 0.73f*H;  		// Horizontal fov (Field of Vision)
 float vfov = 0.2f*H;    	// Vertical fov (Field of Vision)
 
-//Number of vertexes in the sector (4 for cubical sector)
-int vCount;
 
-//All vertexes in the sector
-std::vector<vertex> vertices;
-
-//Id of all neighbouring sectors
-std::vector<sector*> neighbours;
-
-//all doors in this sector
-std::vector<door*> doors;
+std::vector<vertex> vertices; //All vertexes in the sector
+std::vector<sector*> neighbours;//Id of all neighbouring sectors
+std::vector<door*> doors; //all doors in this sector
 
 public:
 	sector(int id_, float floor_height, float ceiling_height);

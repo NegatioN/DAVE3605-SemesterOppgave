@@ -656,7 +656,7 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sector* s23 = factory->createSector(id++, 25.f, 70.f, s23_vertex, 7);
 	sector* s24 = factory->createSector(id++, 25.f, 60.f, s24_vertex, 7);
 	sector* s25 = factory->createSector(id++, 25.f, 60.f, s25_vertex, 0);
-	sector* s26 = factory->createSector(id++, 25.f, 60.f, s26_vertex, 0);
+	sector* s26 = factory->createSector(id++, 25.f, 60.f, s26_vertex, 8);
 	sector* s27 = factory->createSector(id++, 25.f, 75.f, s27_vertex, 8);
 	sector* s28 = factory->createSector(id++, 30.f, 80.f, s28_vertex, 8);
 	sector* s29 = factory->createSector(id++, 25.f, 60.f, s29_vertex, 7);

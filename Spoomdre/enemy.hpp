@@ -11,24 +11,17 @@
 
 using namespace Eigen;
 
-//Abstract class for entities. Meaning "Player", "Mob", "Moose"
-//should this extend properties? "Position_Vector", "Velocity_vector", "Moveable"
 class Enemy : public Entity {
-
-	float angle_, anglesin_, anglecos_;
-	float default_z;
-	bool isRender = false;
-
+	// constants
 	float const speed_ = 0.5f;
-
-	float const BODYHEIGHT = 10; //size of enemy
-	float const KNEEHEIGHT = (BODYHEIGHT/2);
-	SDL_Rect renderRect;
-
-	int damageCountdown = 0;
-
 	const double TAU=M_PI*2;
 
+	//variables
+	float angle_, anglesin_, anglecos_;
+	float default_z;
+	int damageCountdown = 0; //countdown for damaging player
+	bool isRender = false;
+	SDL_Rect renderRect;
 	Entity* player_;
 
 public:

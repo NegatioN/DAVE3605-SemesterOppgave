@@ -13,6 +13,7 @@ void Player::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setSector(sec); setStartPos(pos); setStartSector(sec);
 	default_z = sec->floor() + BODYHEIGHT; 
 	yaw_ = 0;
+	hp_ = max_hp;
 }
 
 //Take input accelleration-vector?

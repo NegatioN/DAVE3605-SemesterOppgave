@@ -6,19 +6,18 @@
 
 
 using namespace Eigen;
-//Abstract class for entities. Meaning "Player", "Mob", "Moose"
-//should this extend properties? "Position_Vector", "Velocity_vector", "Moveable"
+//Abstract class for entities. Super for player and entity
+
+//forward declaration of class sector - prevents seg.fault
 class sector;
 class Entity{
 
-//float x_, y_, z_; //coordinates for entity
 Vector3f position_, velocity_, acceleration_, startpos_; //(math)vectors of floats of length = 3
 sector* sector_;				//sector of entity
-sector* startsector_;
+sector* startsector_;			//start sector - for respawn
 
 public:
 	Entity(){};
-	//TODO create override constructor with start-position
 	Entity(Vector3f pos){
 		position_ = pos;
 	};
@@ -37,7 +36,7 @@ public:
 	sector* getSector(){return sector_;};					//return current sector
 	Vector3f& getStartPos(){return startpos_;};				//return startpos, for respawn
 	sector* getStartSector(){return startsector_;}; 		//return startsector, for respawn 
-	void setPosition(Vector3f pos){position_ = pos;};		//sets position-vector
+	void setPosition(Vector3f pos){position_ = pos;};
 	void setStartPos(Vector3f pos){startpos_ = pos;};
 	void setVelocity(Vector3f vel){velocity_ = vel;};
 	void setAcceleration(Vector3f acc){acceleration_ = acc;};	

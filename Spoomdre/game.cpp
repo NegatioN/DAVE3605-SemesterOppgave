@@ -15,7 +15,7 @@ std::vector<sector*> sectors;
 std::vector<SDL_Texture*> textures;
 SDL_Rect rect;
 
-int MAP = 0;
+int MAP = 2;
 
 //get window surface
 void Game::makeRenderer(){
@@ -73,15 +73,13 @@ void Game::initialize(int height, int width) {
 		sectors = mapmaker::createMap();
 	else if(MAP == 1)
 		sectors = mapmaker::createTestMap();
+	else if(MAP == 2)
+		sectors = mapmaker::createShowcaseMap();
 
 	Vector3f velocity(0, 0, 0);
 	Vector3f acceleration(0, 0, -0.2);
 
-	if (MAP == 1){
-		Vector3f position(5, 5, 20);
-		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
-	}
-	else{
+	if (MAP == 0){
 		Vector3f position(80, 75, 20);
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 	
@@ -100,6 +98,14 @@ void Game::initialize(int height, int width) {
 
 		std::cout << "Enemy coordinates: " << enemy1.x() << " " << enemy1.y() << " " << enemy1.z() << std::endl;
 		//std::cout << "InitP: " << en->x() << " " << en->y() << " " << en->z() << std::endl;
+	}
+	else if (MAP == 1){
+		Vector3f position(5, 5, 20);
+		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
+	}
+	else if (MAP == 2) {
+		Vector3f position(5, 5, 20);
+		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 	}
 }
 

@@ -11,6 +11,7 @@ class mapmaker{
 public:
 	static std::vector<sector*> createMap();
 	static std::vector<sector*> createTestMap();
+	static std::vector<sector*> createShowcaseMap();
 };
 
 

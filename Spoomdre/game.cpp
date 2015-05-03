@@ -25,7 +25,7 @@ void Game::makeRenderer(){
 	SDL_Texture* enemyTexture = IMG_LoadTexture(renderer, "textures/Enemy_Texture.png");
 	SDL_Texture* gunTexture = IMG_LoadTexture(renderer, "textures/Handgun_Texture.png");
 	SDL_Texture* doorTexture = IMG_LoadTexture(renderer, "textures/Door_Texture.png");
-	SDL_Texture* gunflashTexture = IMG_LoadTexture(renderer, "textures/Gunflash_Texture_Large.png");
+	SDL_Texture* gunflashTexture = IMG_LoadTexture(renderer, "textures/Gunflash_Texture_LargeV2.png");
 	textures.push_back(wallTexture);
 	textures.push_back(enemyTexture);
 	textures.push_back(gunTexture);
@@ -63,10 +63,10 @@ void Game::initialize(int height, int width) {
 	gunSpace = {gunX,gunY,gunW, gunH};
 
 	
-	int flashW = (width_/7);
-	int flashH = (height_/7);
-	int flashY = (height_- flashH) - 150;
-	int flashX = (width_/2)+(flashW/2) - 20;
+	int flashW = (width_/2);
+	int flashH = (height_/2);
+	int flashY = (height_- flashH) - 50;
+	int flashX = (width_/2)+(flashW/2) - 240;
 	gunFlash = {flashX, flashY, flashW, flashH};
 
 	if(MAP == 0)
@@ -125,6 +125,9 @@ void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 		flashCountdown = flash_time;
 	}
 
+	if(flashCountdown > 0)
+		flashCountdown--;
+
 	player.update();
 }
 
@@ -145,10 +148,8 @@ void Game::render() {
     SDL_RenderDrawLine(renderer, width_/2, height_/2-10, width_/2, height_/2+10);
 
     //if player just pressed shoot - render gunflash
-    if(flashCountdown > 0){
-		if(flashCountdown > 150)
-			SDL_RenderCopy(renderer, textures.at(4), NULL, &gunFlash);
-		flashCountdown--;
+    if(flashCountdown > 22){ // only render the first few frames
+		SDL_RenderCopy(renderer, textures.at(4), NULL, &gunFlash);
 	}
 
     //render gun-model

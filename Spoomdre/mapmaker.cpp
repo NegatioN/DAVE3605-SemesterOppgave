@@ -230,6 +230,14 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	vertex v80 = vertex{120, 40};
 	vertex v81 = vertex{140, 40};
 
+	vertex v182 = vertex{60, 0};
+	vertex v183 = vertex{75, 0};
+	vertex v184 = vertex{90, 0};
+	vertex v185 = vertex{90, 40};
+	vertex v186 = vertex{75, 40};
+	vertex v187 = vertex{70, 40};
+	vertex v188 = vertex{70, 0};
+
 
 	std::vector<vertex> s1_vertex;
 	std::vector<vertex> s2_vertex;
@@ -261,6 +269,9 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	std::vector<vertex> s28_vertex;
 	std::vector<vertex> s29_vertex;
 	std::vector<vertex> s30_vertex;
+	std::vector<vertex> s131_vertex;
+	std::vector<vertex> s132_vertex;
+	std::vector<vertex> s133_vertex;
 
 
 	// FIRST-ROOM STAIRS 1ST SIDE
@@ -454,12 +465,14 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 
 	// ROOM-3
 	s28_vertex.push_back(v72);
-	s28_vertex.push_back(v73);
-	s28_vertex.push_back(v74);
-	s28_vertex.push_back(v75);
-	s28_vertex.push_back(v71);
+	//182?
+	s28_vertex.push_back(v188);
+	s28_vertex.push_back(v187);
 	s28_vertex.push_back(v70);
-	s28_vertex.push_back(v69);
+	s28_vertex.push_back(v69); //75
+	// s28_vertex.push_back(v71);
+	// s28_vertex.push_back(v70);
+	// s28_vertex.push_back(v69);
 
 	// HALLWAY FROM ROOM-3 TO ROOM-4
 	s29_vertex.push_back(v74);
@@ -474,6 +487,26 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s30_vertex.push_back(v80);
 	s30_vertex.push_back(v77);
 	s30_vertex.push_back(v76);
+
+	//Fallpitt in room 28-stairs
+	s133_vertex.push_back(v188);
+	s133_vertex.push_back(v183);
+	s133_vertex.push_back(v186);
+	s133_vertex.push_back(v187);
+
+	//Deep pitt, rom 28
+	s132_vertex.push_back(v183);
+	s132_vertex.push_back(v184);
+	s132_vertex.push_back(v185);
+	s132_vertex.push_back(v186);
+
+	//platform 2, room 28
+	s131_vertex.push_back(v184);
+	s131_vertex.push_back(v73);
+	s131_vertex.push_back(v74);
+	s131_vertex.push_back(v75);
+	s131_vertex.push_back(v71);
+	s131_vertex.push_back(v185);
 
 
 	sector* s1 = factory->createSector(id++, 10.f, 100.f, s1_vertex);
@@ -503,10 +536,14 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sector* s25 = factory->createSector(id++, 25.f, 60.f, s25_vertex);
 	sector* s26 = factory->createSector(id++, 25.f, 60.f, s26_vertex);
 	sector* s27 = factory->createSector(id++, 25.f, 60.f, s27_vertex);
-	sector* s28 = factory->createSector(id++, 25.f, 60.f, s28_vertex);
-	sector* s29 = factory->createSector(id++, 25.f, 60.f, s29_vertex);
+	sector* s28 = factory->createSector(id++, 30.f, 80.f, s28_vertex);
+	sector* s29 = factory->createSector(id++, 25.f, 49.f, s29_vertex);
 	sector* s30 = factory->createSector(id++, 25.f, 60.f, s30_vertex);
 
+	sector* s133 = factory->createSector(id++, 18.f, 80.f, s133_vertex);
+	sector* s132 = factory->createSector(id++, 5.f, 80.f, s132_vertex);
+	sector* s131 = factory->createSector(id++, 35.f, 80.f, s131_vertex);
+	
 	static door d1{v19, v20, true}; // "smallest" point first
 	s7->addDoor(&d1);
 	s12->addDoor(&d1);
@@ -622,9 +659,18 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s27->addNeighbour(s28);
 
 	s28->addNeighbour(s27);
-	s28->addNeighbour(s29);
+	s28->addNeighbour(s133);//29
+	//NEW
+	s133->addNeighbour(s28);
+	s133->addNeighbour(s132);
 
-	s29->addNeighbour(s28);
+	s132->addNeighbour(s133);
+	s132->addNeighbour(s131);
+
+	s131->addNeighbour(s132);
+	s131->addNeighbour(s29);
+	//*****//
+	s29->addNeighbour(s131);//28
 	s29->addNeighbour(s30);
 
 	s30->addNeighbour(s29);
@@ -657,6 +703,9 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sectors.push_back(s26);
 	sectors.push_back(s27);
 	sectors.push_back(s28);
+	sectors.push_back(s133);
+	sectors.push_back(s132);
+	sectors.push_back(s131);
 	sectors.push_back(s29);
 	sectors.push_back(s30);
 

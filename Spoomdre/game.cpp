@@ -118,6 +118,23 @@ void Game::initialize(int height, int width) {
 	else if (MAP == 2) {
 		Vector3f position(5, 5, 20);
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
+
+		Vector3f positionE4(60, 20, 30);
+		Vector3f positionE6(95, 20, 35);
+		Vector3f positionE5(85, 20, 5);
+
+		static Enemy enemy4;
+		static Enemy enemy5;
+		static Enemy enemy6;
+		// static Enemy enemy3;
+		enemy4.init(positionE4, velocity, acceleration, sectors[27]);
+		enemy5.init(positionE5, velocity, acceleration, sectors[29]);
+		enemy6.init(positionE6, velocity, acceleration, sectors[30]);
+
+		// enemy3.init(positionE3, velocity, acceleration, sectors[0]);
+		enemies.push_back(&enemy4);
+		enemies.push_back(&enemy5);
+		enemies.push_back(&enemy6);
 	}
 }
 

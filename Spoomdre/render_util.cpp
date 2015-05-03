@@ -30,7 +30,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	std::vector<enemyView> enemyViews;
 
 
-	int NumSectors = 32;
+	int NumSectors = 35;
 	int renderedSectors[NumSectors];
 	for(unsigned n=0; n<NumSectors; ++n) renderedSectors[n] = 0;
 

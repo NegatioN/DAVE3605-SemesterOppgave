@@ -82,15 +82,15 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	        int x1 = screenWidth / 2 - (int)(txA * xscale1); 
 	        int x2 = screenWidth / 2 - (int)(txB * xscale2);
 
-	        
+
 	        float dx = b.x()-a.x(), dy = b.y()-a.y();
 	        float wallLength = sqrt(dx*dx + dy*dy);
-			float playerWallLength = abs(x2-x1);
+			float playerWallLength = abs(x1-x2);
 	        float distanceIndex = playerWallLength/wallLength/20;
-	        if (wallLength == 25)
+	        if (wallLength == 25){
 				std::cout << "WallLength: " << wallLength << " PWL: " << playerWallLength << " Index: " << distanceIndex << std::endl;
-
-
+				std::cout << "x1: " << x1 << "x2: " << x2 << std::endl;
+			}
 
     		// Only render if it's visible (doesn't render the backside of walls)
         	if(x1 >= x2 || x2 < currentSectorView.leftCropX || x1 > currentSectorView.rightCropX) continue;

@@ -25,6 +25,8 @@ class Game{
 	//rectangle to render gun in.
 	SDL_Rect gunSpace;
 	SDL_Rect gunFlash;
+	//render background for minimap
+	SDL_Rect background;
 
 	//how long gunflash will last after shooting
 	const int flash_time = 25; // twice per second

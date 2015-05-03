@@ -8,10 +8,8 @@ EIGENLOCAL=-I/usr/include/eigen3
 
 ##FILES FOR OUTPUT
 SPOOMDRE_OUT=spoomdre
-TEST_OUT=test
 
 OFILES= mapmaker.o render_util.o game.o spoomdre_main.o player.o enemy.o sector.o gfx_util.o entity.o door.o normal_sector_factory.o 
-OTEST= hello_world.o keyboard_handler.o
 
 
 
@@ -25,13 +23,8 @@ all: $(SPOOMDRE_OUT)
 spoomdre: $(OFILES)
 	$(GPP) $(GPPOPT) $(OFILES) -o $(SPOOMDRE_OUT) $(DEPENDENCIES)
 
-test: $(OTEST)
-	$(GPP) $(GPPOPT)  $(OTEST) -o $(TEST_OUT) $(DEPENDENCIES)
-
 clean: 
 	-$(RM) $(SPOOMDRE_OUT)
-	-$(RM) $(TEST_OUT)
 	-$(RM) $(OFILES)
-	-$(RM) $(OTEST)
 	
 again: clean spoomdre

@@ -15,7 +15,7 @@ std::vector<sector*> sectors;
 std::vector<SDL_Texture*> textures;
 SDL_Rect rect;
 
-int MAP = 0;
+int MAP = 2;
 
 //get window surface
 void Game::makeRenderer(){

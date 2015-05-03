@@ -188,6 +188,47 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	vertex v44 = vertex{50, 150};
 	vertex v45 = vertex{50, 130};
 
+	vertex v46 = vertex{100, 180};
+	vertex v47 = vertex{120, 180};
+	vertex v48 = vertex{100, 170};
+	vertex v49 = vertex{100, 110};
+	vertex v50 = vertex{100, 100};
+	vertex v51 = vertex{120, 100};
+
+	vertex v52 = vertex{90, 110};
+	vertex v53 = vertex{90, 100};
+	vertex v54 = vertex{50, 120};
+	vertex v55 = vertex{90, 120};
+	vertex v56 = vertex{50, 70};
+	vertex v57 = vertex{90, 70};
+	vertex v58 = vertex{90, 80};
+	vertex v59 = vertex{90, 90};
+	vertex v60 = vertex{100, 80};
+	vertex v61 = vertex{100, 90};
+
+	vertex v62 = vertex{120, 90};
+	vertex v63 = vertex{100, 60};
+	vertex v64 = vertex{100, 50};
+	vertex v65 = vertex{120, 50};
+
+	vertex v66 = vertex{50, 60};
+	vertex v67 = vertex{50, 50};
+	vertex v68 = vertex{60, 50};
+	vertex v69 = vertex{50, 40};
+	vertex v70 = vertex{60, 40};
+
+	vertex v71 = vertex{100, 40};
+	vertex v72 = vertex{50, 0};
+	vertex v73 = vertex{100, 0};
+	vertex v74 = vertex{100, 20};
+	vertex v75 = vertex{100, 30};
+
+	vertex v76 = vertex{120, 20};
+	vertex v77 = vertex{120, 30};
+	vertex v78 = vertex{120, 10};
+	vertex v79 = vertex{140, 10};
+	vertex v80 = vertex{120, 40};
+	vertex v81 = vertex{140, 40};
 
 
 	std::vector<vertex> s1_vertex;
@@ -209,6 +250,17 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	std::vector<vertex> s17_vertex;
 	std::vector<vertex> s18_vertex;
 	std::vector<vertex> s19_vertex;
+	std::vector<vertex> s20_vertex;
+	std::vector<vertex> s21_vertex;
+	std::vector<vertex> s22_vertex;
+	std::vector<vertex> s23_vertex;
+	std::vector<vertex> s24_vertex;
+	std::vector<vertex> s25_vertex;
+	std::vector<vertex> s26_vertex;
+	std::vector<vertex> s27_vertex;
+	std::vector<vertex> s28_vertex;
+	std::vector<vertex> s29_vertex;
+	std::vector<vertex> s30_vertex;
 
 
 	// FIRST-ROOM STAIRS 1ST SIDE
@@ -343,6 +395,86 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s19_vertex.push_back(v39);
 	s19_vertex.push_back(v35);
 
+	// HALLWAY-8
+	s20_vertex.push_back(v38);
+	s20_vertex.push_back(v48);
+	s20_vertex.push_back(v46);
+	s20_vertex.push_back(v40);
+
+	// HALLWAY-9
+	s21_vertex.push_back(v50);
+	s21_vertex.push_back(v51);
+	s21_vertex.push_back(v47);
+	s21_vertex.push_back(v46);
+	s21_vertex.push_back(v48);
+	s21_vertex.push_back(v49);
+
+	// HALLWAY-10
+	s22_vertex.push_back(v53);
+	s22_vertex.push_back(v50);
+	s22_vertex.push_back(v49);
+	s22_vertex.push_back(v52);
+
+	// ROOM-2
+	s23_vertex.push_back(v56);
+	s23_vertex.push_back(v57);
+	s23_vertex.push_back(v58);
+	s23_vertex.push_back(v59);
+	s23_vertex.push_back(v53);
+	s23_vertex.push_back(v52);
+	s23_vertex.push_back(v55);
+	s23_vertex.push_back(v54);
+	
+	// HALLWAY-1 FROM ROOM-2
+	s24_vertex.push_back(v58);
+	s24_vertex.push_back(v60);
+	s24_vertex.push_back(v61);
+	s24_vertex.push_back(v59);
+
+	// HALLWAY-2 FROM ROOM-2
+	s25_vertex.push_back(v64);
+	s25_vertex.push_back(v65);
+	s25_vertex.push_back(v62);
+	s25_vertex.push_back(v61);
+	s25_vertex.push_back(v60);
+	s25_vertex.push_back(v63);
+
+	// HALLWAY-3 FROM ROOM-2
+	s26_vertex.push_back(v67);
+	s26_vertex.push_back(v68);
+	s26_vertex.push_back(v64);
+	s26_vertex.push_back(v63);
+	s26_vertex.push_back(v66);
+
+	// HALLWAY ENTRANCE TO ROOM-3
+	s27_vertex.push_back(v69);
+	s27_vertex.push_back(v70);
+	s27_vertex.push_back(v68);
+	s27_vertex.push_back(v67);
+
+	// ROOM-3
+	s28_vertex.push_back(v72);
+	s28_vertex.push_back(v73);
+	s28_vertex.push_back(v74);
+	s28_vertex.push_back(v75);
+	s28_vertex.push_back(v71);
+	s28_vertex.push_back(v70);
+	s28_vertex.push_back(v69);
+
+	// HALLWAY FROM ROOM-3 TO ROOM-4
+	s29_vertex.push_back(v74);
+	s29_vertex.push_back(v76);
+	s29_vertex.push_back(v77);
+	s29_vertex.push_back(v75);
+
+	// ROOM-4 (GOAAAL!)
+	s30_vertex.push_back(v78);
+	s30_vertex.push_back(v79);
+	s30_vertex.push_back(v81);
+	s30_vertex.push_back(v80);
+	s30_vertex.push_back(v77);
+	s30_vertex.push_back(v76);
+
 
 	sector* s1 = factory->createSector(id++, 10.f, 100.f, s1_vertex);
 	sector* s2 = factory->createSector(id++, 10.f, 100.f, s2_vertex);
@@ -363,6 +495,17 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sector* s17 = factory->createSector(id++, 25.f, 60.f, s17_vertex);
 	sector* s18 = factory->createSector(id++, 25.f, 60.f, s18_vertex);
 	sector* s19 = factory->createSector(id++, 25.f, 60.f, s19_vertex);
+	sector* s20 = factory->createSector(id++, 25.f, 60.f, s20_vertex);
+	sector* s21 = factory->createSector(id++, 25.f, 60.f, s21_vertex);
+	sector* s22 = factory->createSector(id++, 25.f, 60.f, s22_vertex);
+	sector* s23 = factory->createSector(id++, 25.f, 60.f, s23_vertex);
+	sector* s24 = factory->createSector(id++, 25.f, 60.f, s24_vertex);
+	sector* s25 = factory->createSector(id++, 25.f, 60.f, s25_vertex);
+	sector* s26 = factory->createSector(id++, 25.f, 60.f, s26_vertex);
+	sector* s27 = factory->createSector(id++, 25.f, 60.f, s27_vertex);
+	sector* s28 = factory->createSector(id++, 25.f, 60.f, s28_vertex);
+	sector* s29 = factory->createSector(id++, 25.f, 60.f, s29_vertex);
+	sector* s30 = factory->createSector(id++, 25.f, 60.f, s30_vertex);
 
 	static door d1{v19, v20, true}; // "smallest" point first
 	s7->addDoor(&d1);
@@ -452,6 +595,39 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s18->addNeighbour(s19);
 
 	s19->addNeighbour(s18);
+	s19->addNeighbour(s20);
+
+	s20->addNeighbour(s19);
+	s20->addNeighbour(s21);
+
+	s21->addNeighbour(s20);
+	s21->addNeighbour(s22);
+
+	s22->addNeighbour(s21);
+	s22->addNeighbour(s23);
+
+	s23->addNeighbour(s22);
+	s23->addNeighbour(s24);
+
+	s24->addNeighbour(s23);
+	s24->addNeighbour(s25);
+
+	s25->addNeighbour(s24);
+	s25->addNeighbour(s26);
+
+	s26->addNeighbour(s25);
+	s26->addNeighbour(s27);
+
+	s27->addNeighbour(s26);
+	s27->addNeighbour(s28);
+
+	s28->addNeighbour(s27);
+	s28->addNeighbour(s29);
+
+	s29->addNeighbour(s28);
+	s29->addNeighbour(s30);
+
+	s30->addNeighbour(s29);
 
 	sectors.push_back(s1);
 	sectors.push_back(s2);
@@ -472,6 +648,17 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sectors.push_back(s17);
 	sectors.push_back(s18);
 	sectors.push_back(s19);
+	sectors.push_back(s20);
+	sectors.push_back(s21);
+	sectors.push_back(s22);
+	sectors.push_back(s23);
+	sectors.push_back(s24);
+	sectors.push_back(s25);
+	sectors.push_back(s26);
+	sectors.push_back(s27);
+	sectors.push_back(s28);
+	sectors.push_back(s29);
+	sectors.push_back(s30);
 
 
 	return sectors;

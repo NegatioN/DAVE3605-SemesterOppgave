@@ -40,9 +40,6 @@ void Player::update() {
 	else
 		setVelocity(vecAddition); //set velocity (0,0,0). No sliding movement
 
-	//handy debug-line
-	//std::cout << "Player Sector=" << getSector()->getId() << " isFalling=" << isFalling << " x=" << x() << " y=" << y() << " z=" << z() << " default_z=" << default_z << std::endl;
-
 	if(isFalling){
 		 //Crouching while jumping. Not visible, but makes it possible to jump into small openings.
 		if (keys_.at(8)) { isCrouching = true;}
@@ -69,7 +66,6 @@ void Player::update() {
 	    if (keys_.at(3)) { vecAddition(0) -= anglesin_ * activespeed_; vecAddition(1) += anglecos_  * activespeed_; } 	// D
 	    if (keys_.at(8)) { isCrouching = true;}													//Crouch, Z-axis
 	    if (keys_.at(9)) { isJumping = true; } 													//Jump, Z-axis
-	    //if (keys_.at(10)) { shootProjectile(); }												//Shoot
 	    if (keys_.at(11)){ if(doorCountdown == 0) checkForEvent(); }							//Interact
 	    if (keys_.at(12)){ activespeed_ = sprintspeed_; } else {activespeed_ = normalspeed_;}	//Sprint
 	    if (keys_.at(13)){ respawn();}	
@@ -109,8 +105,6 @@ void Player::update() {
 }
 //true, hits wall or goto next sector
 bool Player::checkForWall(Vector3f& velo){
-	//float px, float py, float& dx, float& dy
-	//Vector3f position = position();
 	std::vector<vertex> vertices = getSector()->getVertices();
 	std::vector<sector*> neighbours = getSector()->getNeighbours();
 
@@ -142,13 +136,6 @@ bool Player::checkForWall(Vector3f& velo){
 				velo(1) = 0;
 			}
 		}
-		//forsøk på å håndtere dette gjennom "utstående" hjørner - funker, men tar trapper osv
-		// if(( std::abs((x() + velo(0))-a.x()) < 1 )&& ( std::abs((y() + velo(1))-a.y()) < 1 ) ||
-		// 	( std::abs((x() + velo(0))-b.x()) < 1 )&& ( std::abs((y() + velo(1))-b.y()) < 1 )){
-		// 	std::cout << "TREFFER VERTEX!!!!!!!!!!!!!!!" << std::endl;
-		// 	velo(0) = 0;
-		// 	velo(1) = 0;	
-		// }
     }
     return false;
 }
@@ -180,7 +167,6 @@ bool Player::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
 
 		   	//sets default_z to floor + BodyHeight. Player will move towards this next frame
 		   	default_z = getSector()->floor() + BODYHEIGHT;
-		   	//velo /= 2;
 		   	setVelocity(velo);		//if we fall after sector-change we fall forward.
 	    	return true;
    		}	
@@ -209,6 +195,7 @@ void Player::crouchMove(bool isCrouch){
 		move(-crouch);
 }
 
+//make player jump, move player according to velo
 void Player::jump(Vector3f& velo){
 	velo(2) = 2.8;
 	setVelocity(velo);
@@ -227,7 +214,13 @@ void Player::move(Vector3f velo) {
 	setPosition(pos);
 }
 
+/**
+*This method is called if player presses 'e'
+*Checks for any "events"(for now just doors) close by
+*if it finds any event, activate it(open door)
+*/
 void Player::checkForEvent(){
+	//so door cant be spammed
 	doorCountdown = 10;
 	//all doors
 	std::vector<door*> doors = getSector()->getDoors();
@@ -238,6 +231,7 @@ void Player::checkForEvent(){
 		float margin_x = 0, margin_y = 0;
 
 		float x_, y_;
+		//loops through all doors, one in range. if more, finds closest
 		for(door* e : doors)
 		{
 			vertex a = e->getDoorA();
@@ -245,14 +239,17 @@ void Player::checkForEvent(){
 
 			float x_middle, y_middle;
 
+			//mid point of event(door)
 			x_middle = (std::abs(b.x()-a.x())/2) + min(a.x(),b.x());
 			y_middle = (std::abs(b.y()-a.y())/2) + min(a.y(),b.y());
 
+			//returns closest of the three points, a, middle or b
 			std::vector<float> closest_point = closestToEvent(a,b,x_middle,y_middle);
 
 			float temp_x = closest_point.at(0);
 			float temp_y = closest_point.at(1);
 
+			//checks if in range, and if closer than the others
 			if(temp_x <= event_radius && temp_y <= event_radius){
 				if(active == NULL)
 				{
@@ -269,6 +266,7 @@ void Player::checkForEvent(){
 			}
 		}
 
+		//if a event it found, use it
 		if(active != NULL)
 		{
 			active->setDoorLocked();
@@ -286,18 +284,22 @@ std::vector<float> Player::closestToEvent(vertex a, vertex b, float middle_x, fl
 	float x = pos(0);
 	float y = pos(1);
 
+	//margin from player to point a
 	margin_a_x = std::abs(x - a.x());
 	margin_a_y = std::abs(y - a.y());
 	total_a = margin_a_x + margin_a_y;
 
+	//margin from player to point middle
 	margin_middle_x = std::abs(x - middle_x);
 	margin_middle_y = std::abs(y - middle_y);
 	total_middle = margin_middle_x + margin_middle_y;
 
+	//margin from player to point b
 	margin_b_x = std::abs(x - b.x());
 	margin_b_y = std::abs(y - b.y());
 	total_b = margin_b_x + margin_b_y;
 
+	//returns the point with the least margin to player
 	if(total_a < total_b && total_a < total_middle)
 	{
 		//a is closest
@@ -354,7 +356,7 @@ void Player::shoot(std::vector<Enemy*>* enemies){
     }
 }
 
-void Player::respawn(){ // resets all important values for respawn
+void Player::respawn(){ // resets all important values(for player) for respawn
 	setSector(getStartSector());
 	setPosition(getStartPos());
 	default_z = getSector()->floor() + BODYHEIGHT; 
@@ -366,9 +368,9 @@ void Player::respawn(){ // resets all important values for respawn
 }
 
 void Player::takeDamage(){
-	hp_ -= 20;
+	hp_ -= (max_hp/3);
 
-	if(hp_ <= 0){
+	if(hp_ <= 1){
 		std::cout << "Player is dead!" << std::endl;
 		respawn();
 	}

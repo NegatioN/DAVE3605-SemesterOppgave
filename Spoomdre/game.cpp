@@ -32,6 +32,7 @@ void Game::makeRenderer(){
 	SDL_Texture* minimapTexture = IMG_LoadTexture(renderer, "textures/Minimap_Texture.png");
 	SDL_Texture* dirtTexture = IMG_LoadTexture(renderer, "textures/Dirt_Texture.png");
 	SDL_Texture* stoneWallTexture = IMG_LoadTexture(renderer, "textures/Wall_Stone_Texture.png");
+	SDL_Texture* goldWallTexture = IMG_LoadTexture(renderer, "textures/Gold_Wall_Texture.png");
 
 	//push to texture vector
 	textures.push_back(wallTexture);
@@ -43,6 +44,7 @@ void Game::makeRenderer(){
 	textures.push_back(minimapTexture);
 	textures.push_back(dirtTexture);
 	textures.push_back(stoneWallTexture);
+	textures.push_back(goldWallTexture);
 }
 
 void Game::initialize(int height, int width) {

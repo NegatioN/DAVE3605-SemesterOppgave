@@ -56,7 +56,6 @@ bool Enemy::checkForPlayer(Vector3f& velo){
 		if((diff_x > -1 && diff_x <= 1) &&
 		   (diff_y > -1 && diff_y <= 1) ){
 		   	if(damageCountdown == 0){
-		   		std::cout << "TREFFER PLAYER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
 		   		player_->takeDamage();
 		   		damageCountdown = 50;
 		   	}
@@ -70,8 +69,6 @@ bool Enemy::checkForPlayer(Vector3f& velo){
 
 //true, hits wall or goto next sector
 bool Enemy::checkForWall(Vector3f& velo){
-	//float px, float py, float& dx, float& dy
-	//Vector3f position = position();
 	std::vector<vertex> vertices = getSector()->getVertices();
 	std::vector<sector*> neighbours = getSector()->getNeighbours();
 
@@ -85,11 +82,6 @@ bool Enemy::checkForWall(Vector3f& velo){
         if( gfx_util::intersectBox(x(), y(), x()+velo(0),y()+velo(1), a.x(), a.y(), b.x(), b.y()) && 
             gfx_util::pointSide(x()+velo(0), y()+velo(1), a.x(), a.y(), b.x(), b.y()) < 0)
         { 
-			// for (sector* n: neighbours){
-			// 	if(checkForPortal(n, velo, a, b)) //did we hit a portal?
-			// 		return true;
-			// }
-
 			//hits wall, uses normal vector(wall) and direction to calculate new direction and angle
 			float xd = b.x() - a.x(), yd = b.y() - a.y();
 
@@ -120,33 +112,6 @@ bool Enemy::checkForWall(Vector3f& velo){
 		}
     }
     return false;
-}
-//should enemy pass through sector?
-bool Enemy::checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b){
-	if (n->containsVertices(a, b)){ 
-		float hole_low  = n < 0 ?  9e9 : max(getSector()->floor(), n->floor());//height of the heigest floor - gives opening
-		float hole_high = n < 0 ? -9e9 : min(getSector()->ceiling(),  n->ceiling());//height of the lowest floor- gives opening
-		float floor_diff = n->floor() - getSector()->floor();// height differens of sector floors
-		
-		//is this wall a door? and if so, is it locked?
-		door* door_ = n->getWallDoor(a,b);
-		bool isDoorLocked = (door_ != NULL && door_->doorLocked());
-		// can player walk/jump through opening?
-		// std::cout << " Positions relative to sector=" << n->getId() << " kneeheight=" << KNEEHEIGHT << " floor_diff=" << floor_diff << " Hole height" << (hole_high - hole_low) << std::endl;
-    	if(((hole_high - hole_low) >= BODYHEIGHT) && (z() <= hole_high) && !isDoorLocked ) 
-		{
-			std::cout << "entered sector=" << n->getId() << std::endl;
-		   	setSector(n);
-			move(velo);
-
-		   	//sets default_z to floor + BodyHeight. Player will move towards this next frame
-		   	default_z = getSector()->floor() + BODYHEIGHT;
-		   	//velo /= 2;
-		   	setVelocity(velo);		//if we fall after sector-change we fall forward.
-	    	return true;
-   		}	
-	}
-	return false;
 }
 
 void Enemy::move(Vector3f velo) {

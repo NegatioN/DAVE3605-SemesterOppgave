@@ -52,8 +52,3 @@ bool sector::containsVertices(vertex v1, vertex v2){
     return found == 2;
 }
 
-
-void sector::render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, float yaw, window win[]){
-
-}
-

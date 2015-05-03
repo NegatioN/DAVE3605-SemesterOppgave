@@ -45,13 +45,6 @@ public:
 	void addNeighbour(sector* s);
 	void addDoor(door* d);
 
-	struct window {int top, bottom;};
-
-	void render(SDL_Renderer* renderer, Eigen::Vector3f pos, float angle, float yaw, window win[]);
-	void render_map(SDL_Renderer* renderer, float px, float py, float pz, float angle);
-
-	void drawline(SDL_Renderer* renderer, int x,int y1, int y2, int red, int green, int blue, int alpha);
-
 	sector* getWallNeighbour(vertex v1, vertex v2);
 	door* getWallDoor(vertex v1, vertex v2);
 	bool containsVertices(vertex v1, vertex v2);

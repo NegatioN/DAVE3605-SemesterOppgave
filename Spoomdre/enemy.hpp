@@ -39,11 +39,10 @@ public:
 
 	void update();						//updates all vectors and values for enemy
 	void move(Vector3f velo);			//add velocity to position of enemy
-	void takeDamage();					//deal dmg to player
+	void takeDamage();					//deal dmg to enemy
 	void render(SDL_Renderer* renderer);
 
 	bool checkForWall(Vector3f& velo);	//collision-detection
-	bool checkForPortal(sector* n, Vector3f& velo, vertex a, vertex b);
 	bool checkForPlayer(Vector3f& velo);
 
 	void setPlayer(Entity* p){ player_ = p; };

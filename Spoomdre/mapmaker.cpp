@@ -574,14 +574,10 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 
 	// ROOM-3
 	s28_vertex.push_back(v72);
-	//182?
 	s28_vertex.push_back(v188);
 	s28_vertex.push_back(v187);
 	s28_vertex.push_back(v70);
-	s28_vertex.push_back(v69); //75
-	// s28_vertex.push_back(v71);
-	// s28_vertex.push_back(v70);
-	// s28_vertex.push_back(v69);
+	s28_vertex.push_back(v69); 
 
 	// HALLWAY FROM ROOM-3 TO ROOM-4
 	s29_vertex.push_back(v74);
@@ -647,7 +643,7 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sector* s27 = factory->createSector(id++, 25.f, 75.f, s27_vertex, 8);
 	sector* s28 = factory->createSector(id++, 30.f, 80.f, s28_vertex, 8);
 	sector* s29 = factory->createSector(id++, 25.f, 60.f, s29_vertex, 7);
-	sector* s30 = factory->createSector(id++, 25.f, 60.f, s30_vertex, 7);
+	sector* s30 = factory->createSector(id++, 25.f, 60.f, s30_vertex, 9);
 	sector* s31 = factory->createSector(id++, 35.f, 70.f, s31_vertex, 7);
 	sector* s32 = factory->createSector(id++, 25.f, 70.f, s32_vertex, 7);
 	sector* s33 = factory->createSector(id++, 25.f, 35.f, s33_vertex, 7);
@@ -671,6 +667,14 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	static door d2{v21, v22, true}; // "smallest" point first
 	s8->addDoor(&d2);
 	s13->addDoor(&d2);
+
+	static door d3{v67, v68, true}; // "smallest" point first
+	s26->addDoor(&d3);
+	s27->addDoor(&d3);
+
+	static door d4{v76, v77, true}; // "smallest" point first
+	s29->addDoor(&d4);
+	s20->addDoor(&d4);
 
 	s1->addNeighbour(s3);
 	s1->addNeighbour(s4);

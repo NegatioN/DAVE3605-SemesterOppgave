@@ -151,10 +151,8 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 
 	            int r_, g_, b_;
 	            //Paint corners black
-	            //if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
-	             {r_ = 0xEE/3; g_ = 0xBB; b_ = 0x77;}//Wall brown
+	            r_ = 0xEE/3; g_ = 0xBB; b_ = 0x77;//Wall brown
 
-				
 	            // Calculate the Z coordinate for this point. (Only used for lighting.) 
 	            int z_ = ((x - x1) * (tzB-tzA) / (x2-x1) + tzA) * 3;
 	            int alpha = gfx_util::clamp(255-z_, 63, 255); //(z_ - 16) / 4; // calculated from the Z-distance

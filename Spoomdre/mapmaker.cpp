@@ -364,6 +364,14 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sector* s18 = factory->createSector(id++, 25.f, 60.f, s18_vertex);
 	sector* s19 = factory->createSector(id++, 25.f, 60.f, s19_vertex);
 
+	static door d1{v19, v20, true}; // "smallest" point first
+	s7->addDoor(&d1);
+	s12->addDoor(&d1);
+	
+	static door d2{v21, v22, true}; // "smallest" point first
+	s8->addDoor(&d2);
+	s13->addDoor(&d2);
+
 	s1->addNeighbour(s3);
 	s1->addNeighbour(s4);
 	s1->addNeighbour(s5);

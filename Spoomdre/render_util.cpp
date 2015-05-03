@@ -393,8 +393,8 @@ void render_util::render_player_hp(SDL_Renderer* renderer, Player* player, int s
 
     // background and hp bars
     SDL_Rect background;
-    background.w = 100*1.6; background.h = 16;
-    background.x = xOffset; background.y = yOffset;
+    background.w = (100*1.6) + 2; background.h = 18;
+    background.x = xOffset-1; background.y = yOffset-1;
     SDL_SetRenderDrawColor(renderer, 0x5A, 0x5A, 0x5A, 0xFF);
     SDL_RenderFillRect(renderer, &background); // fill bar
     SDL_RenderCopy(renderer, NULL, NULL, &background);

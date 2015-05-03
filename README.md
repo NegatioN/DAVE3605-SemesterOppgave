@@ -15,24 +15,40 @@ libeigen3-dev
 
 
 ### Kontrollere:
-Bevegelse:
+
+####Bevegelse:
+
 Fram		-	W
+
 Bakover	-	S
+
 Høyre		-	D
+
 Venstre	-	A
+
 Hopp		-	Mellomromstasten
+
 Dukk/Knebøy 	- 	Venstre-CTRL eller C
+
 Løp		-	Venstre-Shift
 
-Se rundt:   
+
+#### Se rundt:   
+
 Snu til høyre 	- 	Pil-høyre, L
+
 Snu til venstre - 	Pil-venstre, K
+
 Se opp		-	Pil-opp
+
 Se ned		-	Pil-ned
 
-Mer action:
+#### Mer action:
+
 Interager	-	E
+
 Skyt		-	Enter
+
 
 Man kan også bruke musa for å se rundt, og skyte med venstre muse-knapp
 

@@ -12,12 +12,7 @@ void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
 	setAcceleration(acc);
 	setSector(sec);
 
-	angle_ = ((double)rand() / 6.2);
-
-//	enemySprite.w = 100;
-	//enemySprite.h = 50;
-	//enemySprite.x = 10;
-	//enemySprite.y = 20;
+	angle_ = ((double)rand() / TAU);
 }
 
 void Enemy::update() {
@@ -51,7 +46,6 @@ void Enemy::update() {
 	
 }
 
-//can handle dmg to player
 bool Enemy::checkForPlayer(Vector3f& velo){
 	//hits player
 	if(player_ != NULL && player()->getSector()->getId() == getSector()->getId())

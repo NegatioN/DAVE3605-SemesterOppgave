@@ -374,7 +374,6 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, std::vector
 
         SDL_SetRenderDrawColor(renderer, 0x00, 0x77, 0xFF, 0xFF); // map-color, Blue/green-ish
         SDL_RenderDrawLine(renderer, -txa + xOffset, -tza + yOffset, -txb + xOffset, -tzb + yOffset); // render map
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
     }
 }
 
@@ -383,7 +382,23 @@ void render_util::render_projectiles(SDL_Renderer* renderer, Player* player){
 		p->render(renderer);
 }
 
-void render_util::render_gunflash(SDL_Rect* flashpos_, SDL_Texture* gunflashTexture){
-	
+void render_util::render_player_hp(SDL_Renderer* renderer, Player* player, int screenHeight, int screenWidth){
+	int yOffset = 30; 
+    int xOffset = 30; 
+
+    // background and hp bars
+    SDL_Rect background;
+    background.w = 100*1.6; background.h = 16;
+    background.x = xOffset; background.y = yOffset;
+    SDL_SetRenderDrawColor(renderer, 0x5A, 0x5A, 0x5A, 0xFF);
+    SDL_RenderFillRect(renderer, &background); // fill bar
+    SDL_RenderCopy(renderer, NULL, NULL, &background);
+
+    SDL_Rect hp_bar;
+    hp_bar.w = player->hp()*1.6; hp_bar.h = 16;
+    hp_bar.x = xOffset; hp_bar.y = yOffset;
+    SDL_SetRenderDrawColor(renderer, 0xD2, 0x05, 0x05, 0xFF); // hp color - maybe green? 0x00FF00
+    SDL_RenderFillRect(renderer, &hp_bar); // fill bar
+    SDL_RenderCopy(renderer, NULL, NULL, &hp_bar);
 }
 

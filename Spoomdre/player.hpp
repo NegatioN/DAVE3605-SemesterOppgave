@@ -76,6 +76,7 @@ public:
 	float x(){ return position()(0); };
 	float y(){ return position()(1); };
 	float z(){ return position()(2); }
+	int hp(){ return hp_; };
 	std::vector<Projectile*> getProjectiles(){return projectiles;};
 
 };

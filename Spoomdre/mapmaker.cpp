@@ -808,7 +808,7 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s32->addNeighbour(s17);
 
 	s33->addNeighbour(s37);
-	s33->addNeighbour(s35);
+	//s33->addNeighbour(s35);
 	s33->addNeighbour(s21);
 
 	s34->addNeighbour(s21);
@@ -816,7 +816,7 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s34->addNeighbour(s38);
 
 	s35->addNeighbour(s37);
-	s35->addNeighbour(s33);
+	//s35->addNeighbour(s33);
 	s35->addNeighbour(s21);
 
 	s36->addNeighbour(s21);

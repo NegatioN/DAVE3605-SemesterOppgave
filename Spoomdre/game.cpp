@@ -119,38 +119,34 @@ void Game::initialize(int height, int width) {
 		Vector3f position(5, 5, 20);
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 
+		Vector3f positionE1(80, 175, 20);
+		Vector3f positionE2(60, 95, 20);
+		Vector3f positionE3(60, 80, 20);
 		Vector3f positionE4(60, 20, 30);
-		Vector3f positionE6(95, 20, 35);
 		Vector3f positionE5(85, 20, 5);
+		Vector3f positionE6(95, 20, 35);
 
+		static Enemy enemy1;
+		static Enemy enemy2;
+		static Enemy enemy3;
 		static Enemy enemy4;
 		static Enemy enemy5;
 		static Enemy enemy6;
-		// static Enemy enemy3;
+		
+		enemy1.init(positionE1, velocity, acceleration, sectors[18]);
+		enemy2.init(positionE2, velocity, acceleration, sectors[41]);
+		enemy3.init(positionE3, velocity, acceleration, sectors[43]);
 		enemy4.init(positionE4, velocity, acceleration, sectors[27]);
 		enemy5.init(positionE5, velocity, acceleration, sectors[29]);
 		enemy6.init(positionE6, velocity, acceleration, sectors[30]);
 
-		// enemy3.init(positionE3, velocity, acceleration, sectors[0]);
-		enemies.push_back(&enemy4);
-		enemies.push_back(&enemy5);
-		enemies.push_back(&enemy6);
-
-		Vector3f positionE1(80, 175, 20);
-		static Enemy enemy1;
-		enemy1.init(positionE1, velocity, acceleration, sectors[18]);
-
-		Vector3f positionE2(60, 95, 20);
-		static Enemy enemy2;
-		enemy2.init(positionE2, velocity, acceleration, sectors[38]);
-
-		Vector3f positionE3(60, 80, 20);
-		static Enemy enemy3;
-		enemy3.init(positionE3, velocity, acceleration, sectors[40]);
 
 		enemies.push_back(&enemy1);
 		enemies.push_back(&enemy2);
 		enemies.push_back(&enemy3);
+		enemies.push_back(&enemy4);
+		enemies.push_back(&enemy5);
+		enemies.push_back(&enemy6);
 	}
 }
 

@@ -25,6 +25,11 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	//std::queue<sector*> sectorRenderQueue;
 	sectorRenderQueue.push(playerSectorView);
 
+	struct enemyView {sectorView view; Enemy* enemy;};
+	//Sectors for enemies for rendering sectors after views
+	std::vector<enemyView> enemyViews;
+
+
 	int NumSectors = 26;
 	int renderedSectors[NumSectors];
 	for(unsigned n=0; n<NumSectors; ++n) renderedSectors[n] = 0;
@@ -202,12 +207,12 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }
 		}
-
+        	
+        //Render enemies
 		if(!enemies.empty()){
-        	//Render enemies
         	for(Enemy* e : enemies)
-        		if(currentSector->getId() == e->getSector()->getId() ) 
-        			render_util::renderEnemy(renderer, enemyTexture, &currentSectorView, player, e, screenHeight, screenWidth);
+        		if(currentSector->getId() == e->getSector()->getId()) 
+        			enemyViews.push_back({currentSectorView, e});
 	    }
 
         //render projectiles
@@ -216,6 +221,10 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 		++renderedSectors[currentSector->getId()-1];
 		///END RENDER SECTOR
 	}
+	
+	for (enemyView ev: enemyViews)
+		render_util::renderEnemy(renderer, enemyTexture, &ev.view, player, ev.enemy, screenHeight, screenWidth);
+
 }
 
 // vline: Draw a vertical line on screen, with a different color pixel in top & bottom 

@@ -31,6 +31,13 @@ class Enemy : public Entity {
 
 	Entity* player_;
 
+private:
+	bool checkForWall(Vector3f& velo);	//collision-detection
+	bool checkForPlayer(Vector3f& velo);
+	void move(Vector3f velo);			//add velocity to position of enemy
+	void takeDamage();					//deal dmg to enemy
+	void render(SDL_Renderer* renderer);
+
 public:
 	Enemy(){};
 	Enemy(Vector3f &pos) : Entity(pos){};
@@ -38,13 +45,6 @@ public:
 	void init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec);
 
 	void update();						//updates all vectors and values for enemy
-	void move(Vector3f velo);			//add velocity to position of enemy
-	void takeDamage();					//deal dmg to enemy
-	void render(SDL_Renderer* renderer);
-
-	bool checkForWall(Vector3f& velo);	//collision-detection
-	bool checkForPlayer(Vector3f& velo);
-
 	void setPlayer(Entity* p){ player_ = p; };
 
 	float angle(){ return angle_; };
@@ -55,6 +55,7 @@ public:
 	float z(){ return position()(2); };
 	Entity* player(){ return player_; };
 	SDL_Rect getRect(){return renderRect;};
+
 	void setRect(SDL_Rect rect){renderRect = rect;};
 	void setRender(bool shouldRender){isRender = shouldRender;};
 	bool getRender(){return isRender;};

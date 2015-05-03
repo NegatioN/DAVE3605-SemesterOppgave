@@ -178,7 +178,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 					//If this opening is closed with a door, render door
                     if(isDoorLocked)
                     {
-                    	vLineTexture(renderer, doorTexture, x, nbrYCeil-1, nbrYFloor+1, beginx, wallHeight, distanceIndex, top, bottom, alpha);
+                    	vLineTexture(renderer, doorTexture, x, std::max(yCeiling, nbrYCeil), std::min(yFloor, nbrYFloor), beginx, wallHeight, distanceIndex, top, bottom, alpha);
                     }
 
                     // Shrink the remaining window below this ceiling and floor

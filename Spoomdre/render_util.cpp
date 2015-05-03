@@ -19,13 +19,11 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	//get sector of player
 	sector* playerSector = player->getSector();
 	//define view of first sector (whole screen)
-	sectorView playerSectorView{playerSector, 0, screenWidth-1};
+	sectorView playerSectorView{playerSector, 0, screenWidth-1, 0, screenHeight-1};
 
 	std::queue<sectorView> sectorRenderQueue;
 	//std::queue<sector*> sectorRenderQueue;
 	sectorRenderQueue.push(playerSectorView);
-
-	struct enemyView {sectorView view; Enemy* enemy;};
 	//Sectors for enemies for rendering sectors after views
 	std::vector<enemyView> enemyViews;
 
@@ -92,10 +90,12 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 	        float wallLength = sqrt(dx*dx + dy*dy);
 			float playerWallLength = abs(x1-x2);
 	        float distanceIndex = playerWallLength/wallLength/20;
+	        /*
 	        if (wallLength == 25){
 				std::cout << "WallLength: " << wallLength << " PWL: " << playerWallLength << " Index: " << distanceIndex << std::endl;
 				std::cout << "x1: " << x1 << "x2: " << x2 << std::endl;
 			}
+			*/
 
     		// Only render if it's visible (doesn't render the backside of walls)
         	if(x1 >= x2 || x2 < currentSectorView.leftCropX || x1 > currentSectorView.rightCropX) continue;
@@ -135,19 +135,29 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
         	int beginx = std::max(x1, currentSectorView.leftCropX);
         	int endx = std::min(x2, currentSectorView.rightCropX);
         	int wallHeight = 0;
+        	//find apporx limits of y-values to render mob in
+        	int minTopY = screenHeight-1;
+        	int maxBotY = 0;
 	        for(int x = beginx; x <= endx; ++x)
 	        {
 	            int top = ytop[x];
 	            int bottom = ybottom[x];
+
+	            if(top < minTopY)
+	            	minTopY = top;
+	            if(bottom > maxBotY)
+	            	maxBotY = bottom;
 
 	            int r_, g_, b_;
 	            //Paint corners black
 	            //if (x == beginx || x == endx){ r_ = 5; g_ = 5; b_ = 5; }
 	             {r_ = 0xEE/3; g_ = 0xBB; b_ = 0x77;}//Wall brown
 
+				/*
 	            // Calculate the Z coordinate for this point. (Only used for lighting.) 
 	            int z_ = ((x - x1) * (tzB-tzA) / (x2-x1) + tzA) * 8;
 	            int shade = (z_ - 16) / 4; // calculated from the Z-distance
+	            */
 
 	            // Acquire the Y coordinates for our ceiling & floor for this X coordinate. 
 	            int yCeiling = (x - x1) * (y2Ceil-y1Ceil) / (x2-x1) + y1Ceil;// top
@@ -203,7 +213,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
     		
 	        //add sector-neighbours to renderQueue
 	        if(neighbour != NULL && endx >= beginx && !(isDoorLocked)){
-	        	sectorView nbrSectorView{neighbour, beginx, endx};
+	        	sectorView nbrSectorView{neighbour, beginx, endx, minTopY, maxBotY};
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }
 		}
@@ -318,12 +328,22 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	enemySprite.y = enemyY - enemySprite.h + (enemySprite.h/10);
 	//std::cout << "EnemyX: " << enemySprite.x << " Width: " << enemySprite.w << " Distance: " << distance << std::endl;
 
-	std::cout << "Sector ID=" << currentSector->getId() << " Enemy.x=" << enemySprite.x << " cropLeft=" << sectorV->leftCropX << " cropRight=" << sectorV->rightCropX << std::endl;
+	//std::cout << "Sector ID=" << currentSector->getId() << " Enemy.x=" << enemySprite.x << " cropLeft=" << sectorV->leftCropX << " cropRight=" << sectorV->rightCropX << std::endl;
 	//if enemy not in render-room for sector. dont render
-	if(!(enemySprite.x > sectorV->leftCropX && (enemySprite.x+enemySprite.w) < sectorV->rightCropX)){
+	// y1 = y, y2= y+enemysprite.h, 
+	int x2 = enemySprite.x + enemySprite.w;
+	int y2 = enemySprite.y + enemySprite.h;
+	bool isIntersect = gfx_util::intersectBox(enemySprite.x, enemySprite.y, x2, y2, sectorV->leftCropX, sectorV->topCropY, sectorV->rightCropX, sectorV->botCropY);
+	if(!isIntersect){
 		std::cout << " NORENDER" << std::endl;
 		return;
 	}
+	/*
+	if(!(enemySprite.x > sectorV->leftCropX && (enemySprite.x+enemySprite.w) < sectorV->rightCropX)){
+		//std::cout << " NORENDER" << std::endl;
+		return;
+	}
+	*/
 
 	enemy->setRect(enemySprite);
 

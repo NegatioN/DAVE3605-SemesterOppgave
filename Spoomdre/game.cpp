@@ -9,13 +9,13 @@
 #include <sstream>
 #include <fstream>
 
-Player player;
-std::vector<Enemy*> enemies;
-std::vector<sector*> sectors;
-std::vector<SDL_Texture*> textures;
-SDL_Rect rect;
+	//GameVariables
+Player player;						//Player
+std::vector<Enemy*> enemies;		//all enemies
+std::vector<sector*> sectors;		//all sectors
+std::vector<SDL_Texture*> textures;	//all textures
 
-int MAP = 2;
+int MAP = 2;						//which map is used
 
 //get window surface
 void Game::makeRenderer(){
@@ -76,17 +76,18 @@ void Game::initialize(int height, int width) {
 	int gunX = (width_/2)+(gunW/2);
 	gunSpace = {gunX,gunY,gunW, gunH};
 	
+	//init muzzleFlash of gun
 	int flashW = (width_/2);
 	int flashH = (height_/2);
 	int flashY = (height_- flashH) - 50;
-	int flashX = (width_/2)+(flashW/2) - 240;
+	int flashX = (width_/2)+(flashW/2) - (width_/2.66);
 	gunFlash = {flashX, flashY, flashW, flashH};
 
 	//sets size of minimap	
-    background.w = 180; background.h = 180;
+    background.w = width_/3.5; background.h = width_/3.5;
     background.x = (width_-100) - background.w / 2; background.y = (100) - background.h / 2;
 
-
+    //create map-sectors
 	if(MAP == 0)
 		sectors = mapmaker::createMap();
 	else if(MAP == 1)
@@ -94,30 +95,11 @@ void Game::initialize(int height, int width) {
 	else if(MAP == 2)
 		sectors = mapmaker::createShowcaseMap();
 
+	//initiate movement/accelleration/position vectors
 	Vector3f velocity(0, 0, 0);
 	Vector3f acceleration(0, 0, -0.2);
 
-	if (MAP == 0){
-		Vector3f position(80, 75, 20);
-		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
-	
-		Vector3f positionE1(70, 80, 20);
-		Vector3f positionE2(50, 50, 20);
-		Vector3f positionE3(85, 90, 20);
-		static Enemy enemy1;
-		static Enemy enemy2;
-		// static Enemy enemy3;
-		enemy1.init(positionE1, velocity, acceleration, sectors[0]);
-		enemy2.init(positionE2, velocity, acceleration, sectors[0]);
-		// enemy3.init(positionE3, velocity, acceleration, sectors[0]);
-		enemies.push_back(&enemy1);
-		enemies.push_back(&enemy2);
-		// enemies.push_back(&enemy3);
-
-		std::cout << "Enemy coordinates: " << enemy1.x() << " " << enemy1.y() << " " << enemy1.z() << std::endl;
-		//std::cout << "InitP: " << en->x() << " " << en->y() << " " << en->z() << std::endl;
-	}
-	else if (MAP == 1){
+	if (MAP == 1){
 		Vector3f position(5, 5, 20);
 		player.init(position, velocity, acceleration, sectors[0]); // x, y, z
 	}
@@ -156,6 +138,10 @@ void Game::initialize(int height, int width) {
 	}
 }
 
+/*
+* Takes in user-input
+* Handles all variable-updates in the gameloop.
+*/
 void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 	player.setMoveVector(keys);
 	player.setMouseValues(mouse_x, mouse_y);
@@ -178,6 +164,9 @@ void Game::update(std::vector<bool> keys, int mouse_x, int mouse_y){
 	player.update();
 }
 
+/*
+* Simply calls all render-functions we need for each frame
+*/
 void Game::render() {
 	// empty renderer from previous iteration
     SDL_RenderClear(renderer);
@@ -237,37 +226,4 @@ void Game::terminate(){
 }
 void Game::wait(int milliseconds){
 	SDL_Delay(milliseconds);
-}
-
-void fpsCounter(){
-	
-}
-
-using namespace std;
-
-void Game::loadMap(string mapname) {
-	cout << "reading " << mapname << endl;
-	
-	ifstream infile(mapname);
-	string line;
-
-	while(std::getline(infile, line)) {
-		switch(line.at(0)) { // read first letter in line
-			case 'v': // vector
-
-				cout << "vector-line - " << line << endl;
-			break;
-			case 's': // sector
-
-				cout << "sector-line - " << line << endl;
-			break;
-			case 'p': // player
-
-				cout << "player-line - " << line << endl;
-			break;
-		}
-
-	}
-
-	cout << "finished reading " << mapname << endl;
 }

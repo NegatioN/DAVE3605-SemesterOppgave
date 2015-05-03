@@ -41,6 +41,8 @@ int main(int argc, char* args[]){
 	Uint32 fps = 50;                  // wanted fps
 	double interval = 1000 / fps;     // time between each tick in msec
 
+    //Limit mouse to being inside window-bounds
+    //this unfortunately doesn't work perfectly on linux VM, it seems
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	//START GAME-LOOP
@@ -87,7 +89,7 @@ int main(int argc, char* args[]){
                         // Pressed ESC-key, close program
                         else if (code == SDLK_ESCAPE && state) running = false;
                     break;
-                    // Mouse-Event
+                    // Mouse-Events
                     case SDL_MOUSEBUTTONDOWN:
                         state = true;
                     case SDL_MOUSEBUTTONUP:
@@ -105,8 +107,6 @@ int main(int argc, char* args[]){
             // get any mouse-changes since last frame
             int mx; int my;
             SDL_GetRelativeMouseState(&mx, &my);
-
-            //std::cout << "mx=" << mx << " my=" << my << std::endl;
 
             // update game logic
             game.update(keys, mx, my);
@@ -130,6 +130,7 @@ int main(int argc, char* args[]){
 
 	} // end of game-loop
 
+    //finalize SDL-variables
 	game.terminate();
 
 	return 0;

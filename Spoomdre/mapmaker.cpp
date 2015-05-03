@@ -808,8 +808,8 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s27->addNeighbour(s28);
 
 	s28->addNeighbour(s27);
-	s28->addNeighbour(s133);//29
-	//NEW
+	s28->addNeighbour(s133);
+	
 	s133->addNeighbour(s28);
 	s133->addNeighbour(s132);
 
@@ -818,8 +818,8 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 
 	s131->addNeighbour(s132);
 	s131->addNeighbour(s29);
-	//*****//
-	s29->addNeighbour(s131);//28
+	
+	s29->addNeighbour(s131);
 	s29->addNeighbour(s30);
 
 	s30->addNeighbour(s29);

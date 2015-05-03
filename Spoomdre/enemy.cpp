@@ -47,8 +47,8 @@ bool Enemy::checkForPlayer(Vector3f& velo){
 		Vector3f player_pos = player_->position();
 		//stands next to player
 		float diff_x = std::abs(x() - player_pos(0)), diff_y = std::abs(y() - player_pos(1));
-		if((diff_x > -1 && diff_x <= 1) &&
-		   (diff_y > -1 && diff_y <= 1) ){
+		if((diff_x > -2 && diff_x <= 2) &&
+		   (diff_y > -2 && diff_y <= 2) ){
 		   	if(damageCountdown == 0){
 		   		player_->takeDamage();
 		   		damageCountdown = 50;

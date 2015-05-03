@@ -42,7 +42,7 @@ public:
 	void wait(int seconds);			//pause render for x seconds
 
 
-	~Game(){terminate()};
+	~Game(){terminate();};
 };
 
 

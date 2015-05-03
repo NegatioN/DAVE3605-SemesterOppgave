@@ -42,8 +42,6 @@ public:
 	void render();
 	void terminate();				//terminate screen
 	void wait(int seconds);			//pause render for x seconds
-	
-	void loadMap(std::string mapname);	// Loads map from a txt-file
 
 };
 

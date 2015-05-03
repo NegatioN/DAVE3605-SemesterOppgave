@@ -230,6 +230,33 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	vertex v80 = vertex{120, 40};
 	vertex v81 = vertex{140, 40};
 
+	// Obstacle in sector 16-hallway
+	vertex v82 = vertex{30, 150};
+	vertex v83 = vertex{40, 150};
+	vertex v84 = vertex{30, 160};
+	vertex v85 = vertex{40, 160};
+
+	// Obstacle-1 in sector 21-hallway
+	vertex v86 = vertex{100, 160};
+	vertex v87 = vertex{110, 160};
+	vertex v88 = vertex{120, 160};
+	vertex v89 = vertex{100, 150};
+	vertex v90 = vertex{110, 150};
+	vertex v91 = vertex{120, 150};
+	// Obstacle-2 in sector 21-hallway
+	vertex v92 = vertex{100, 130};
+	vertex v93 = vertex{110, 130};
+	vertex v94 = vertex{120, 130};
+	vertex v95 = vertex{110, 110};
+	vertex v96 = vertex{120, 110};
+
+	// Obstacle in sector 23
+	vertex v97 = vertex{50, 90};
+	vertex v98 = vertex{70, 90};
+	vertex v99 = vertex{50, 100};
+	vertex v100 = vertex{70, 100};
+
+
 
 	std::vector<vertex> s1_vertex;
 	std::vector<vertex> s2_vertex;
@@ -261,6 +288,20 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	std::vector<vertex> s28_vertex;
 	std::vector<vertex> s29_vertex;
 	std::vector<vertex> s30_vertex;
+
+	std::vector<vertex> s31_vertex;
+	std::vector<vertex> s32_vertex;
+
+	std::vector<vertex> s33_vertex;
+	std::vector<vertex> s34_vertex;
+	std::vector<vertex> s35_vertex;
+	std::vector<vertex> s36_vertex;
+	std::vector<vertex> s37_vertex;
+	std::vector<vertex> s38_vertex;
+
+	std::vector<vertex> s39_vertex;
+	std::vector<vertex> s40_vertex;
+	std::vector<vertex> s41_vertex;
 
 
 	// FIRST-ROOM STAIRS 1ST SIDE
@@ -367,12 +408,25 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s15_vertex.push_back(v32);
 	s15_vertex.push_back(v31);
 
-	// HALLWAY-4
+	// HALLWAY-4-1
 	s16_vertex.push_back(v30);
-	s16_vertex.push_back(v44);
-	s16_vertex.push_back(v41);
-	s16_vertex.push_back(v36);
+	s16_vertex.push_back(v82);
+	s16_vertex.push_back(v84);
 	s16_vertex.push_back(v32);
+
+	// HALLWAY-4-OBSTACLE
+	s31_vertex.push_back(v82);
+	s31_vertex.push_back(v83);
+	s31_vertex.push_back(v85);
+	s31_vertex.push_back(v84);
+	
+	// HALLWAY-4-2
+	s32_vertex.push_back(v83);
+	s32_vertex.push_back(v44);
+	s32_vertex.push_back(v41);
+	s32_vertex.push_back(v36);
+	s32_vertex.push_back(v85);
+
 
 	// HALLWAY-5
 	s17_vertex.push_back(v45);
@@ -401,13 +455,54 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s20_vertex.push_back(v46);
 	s20_vertex.push_back(v40);
 
+
 	// HALLWAY-9
-	s21_vertex.push_back(v50);
-	s21_vertex.push_back(v51);
-	s21_vertex.push_back(v47);
-	s21_vertex.push_back(v46);
-	s21_vertex.push_back(v48);
-	s21_vertex.push_back(v49);
+	s21_vertex.push_back(v92);
+	s21_vertex.push_back(v93);
+	s21_vertex.push_back(v94);
+	s21_vertex.push_back(v91);
+	s21_vertex.push_back(v90);
+	s21_vertex.push_back(v89);
+
+	// HALLWAY-9 OBSTACLE-1
+	s37_vertex.push_back(v86);
+	s37_vertex.push_back(v87);
+	s37_vertex.push_back(v88);
+	s37_vertex.push_back(v47);
+	s37_vertex.push_back(v46);
+	s37_vertex.push_back(v48);
+
+	// HALLWAY-9 OBSTACLE-1
+	s35_vertex.push_back(v89);
+	s35_vertex.push_back(v90);
+	s35_vertex.push_back(v87);
+	s35_vertex.push_back(v86);
+
+	// HALLWAY-9 OBSTACLE-1
+	s33_vertex.push_back(v90);
+	s33_vertex.push_back(v91);
+	s33_vertex.push_back(v88);
+	s33_vertex.push_back(v87);
+
+	// HALLWAY-9 OBSTACLE-2
+	s34_vertex.push_back(v49);
+	s34_vertex.push_back(v95);
+	s34_vertex.push_back(v93);
+	s34_vertex.push_back(v92);
+
+	// HALLWAY-9 OBSTACLE-2
+	s36_vertex.push_back(v95);
+	s36_vertex.push_back(v96);
+	s36_vertex.push_back(v94);
+	s36_vertex.push_back(v93);
+
+	// HALLWAY-9 OBSTACLE-2
+	s38_vertex.push_back(v50);
+	s38_vertex.push_back(v51);
+	s38_vertex.push_back(v96);
+	s38_vertex.push_back(v95);
+	s38_vertex.push_back(v49);
+
 
 	// HALLWAY-10
 	s22_vertex.push_back(v53);
@@ -416,14 +511,33 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s22_vertex.push_back(v52);
 
 	// ROOM-2
-	s23_vertex.push_back(v56);
-	s23_vertex.push_back(v57);
-	s23_vertex.push_back(v58);
-	s23_vertex.push_back(v59);
+	s23_vertex.push_back(v99);
+	s23_vertex.push_back(v100);
 	s23_vertex.push_back(v53);
 	s23_vertex.push_back(v52);
 	s23_vertex.push_back(v55);
 	s23_vertex.push_back(v54);
+	
+	// ROOM-2 - OBSTACLE
+	s39_vertex.push_back(v97);
+	s39_vertex.push_back(v98);
+	s39_vertex.push_back(v100);
+	s39_vertex.push_back(v99);
+
+	// ROOM-2 - OBSTACLE
+	s40_vertex.push_back(v98);
+	s40_vertex.push_back(v59);
+	s40_vertex.push_back(v53);
+	s40_vertex.push_back(v100);
+
+	// ROOM-2 - OBSTACLE
+	s41_vertex.push_back(v56);
+	s41_vertex.push_back(v57);
+	s41_vertex.push_back(v58);
+	s41_vertex.push_back(v59);
+	s41_vertex.push_back(v98);
+	s41_vertex.push_back(v97);
+
 	
 	// HALLWAY-1 FROM ROOM-2
 	s24_vertex.push_back(v58);
@@ -491,14 +605,14 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sector* s13 = factory->createSector(id++, 25.f, 60.f, s13_vertex);
 	sector* s14 = factory->createSector(id++, 25.f, 60.f, s14_vertex);
 	sector* s15 = factory->createSector(id++, 25.f, 60.f, s15_vertex);
-	sector* s16 = factory->createSector(id++, 25.f, 60.f, s16_vertex);
+	sector* s16 = factory->createSector(id++, 25.f, 70.f, s16_vertex);
 	sector* s17 = factory->createSector(id++, 25.f, 60.f, s17_vertex);
 	sector* s18 = factory->createSector(id++, 25.f, 60.f, s18_vertex);
 	sector* s19 = factory->createSector(id++, 25.f, 60.f, s19_vertex);
 	sector* s20 = factory->createSector(id++, 25.f, 60.f, s20_vertex);
 	sector* s21 = factory->createSector(id++, 25.f, 60.f, s21_vertex);
 	sector* s22 = factory->createSector(id++, 25.f, 60.f, s22_vertex);
-	sector* s23 = factory->createSector(id++, 25.f, 60.f, s23_vertex);
+	sector* s23 = factory->createSector(id++, 25.f, 70.f, s23_vertex);
 	sector* s24 = factory->createSector(id++, 25.f, 60.f, s24_vertex);
 	sector* s25 = factory->createSector(id++, 25.f, 60.f, s25_vertex);
 	sector* s26 = factory->createSector(id++, 25.f, 60.f, s26_vertex);
@@ -506,6 +620,17 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sector* s28 = factory->createSector(id++, 25.f, 60.f, s28_vertex);
 	sector* s29 = factory->createSector(id++, 25.f, 60.f, s29_vertex);
 	sector* s30 = factory->createSector(id++, 25.f, 60.f, s30_vertex);
+	sector* s31 = factory->createSector(id++, 35.f, 70.f, s31_vertex);
+	sector* s32 = factory->createSector(id++, 25.f, 70.f, s32_vertex);
+	sector* s33 = factory->createSector(id++, 25.f, 35.f, s33_vertex);
+	sector* s34 = factory->createSector(id++, 40.f, 70.f, s34_vertex);
+	sector* s35 = factory->createSector(id++, 50.f, 60.f, s35_vertex);
+	sector* s36 = factory->createSector(id++, 35.f, 70.f, s36_vertex);
+	sector* s37 = factory->createSector(id++, 25.f, 70.f, s37_vertex);
+	sector* s38 = factory->createSector(id++, 25.f, 70.f, s38_vertex);
+	sector* s39 = factory->createSector(id++, 25.f, 70.f, s39_vertex);
+	sector* s40 = factory->createSector(id++, 40.f, 70.f, s40_vertex);
+	sector* s41 = factory->createSector(id++, 25.f, 70.f, s41_vertex);
 
 	static door d1{v19, v20, true}; // "smallest" point first
 	s7->addDoor(&d1);
@@ -586,9 +711,9 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s15->addNeighbour(s16);
 
 	s16->addNeighbour(s15);
-	s16->addNeighbour(s17);
+	s16->addNeighbour(s31);
 
-	s17->addNeighbour(s16);
+	s17->addNeighbour(s32);
 	s17->addNeighbour(s18);
 
 	s18->addNeighbour(s17);
@@ -598,18 +723,21 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s19->addNeighbour(s20);
 
 	s20->addNeighbour(s19);
-	s20->addNeighbour(s21);
+	s20->addNeighbour(s37);
 
-	s21->addNeighbour(s20);
-	s21->addNeighbour(s22);
+	s21->addNeighbour(s35);
+	s21->addNeighbour(s33);
+	s21->addNeighbour(s34);
+	s21->addNeighbour(s36);
 
-	s22->addNeighbour(s21);
+	s22->addNeighbour(s38);
 	s22->addNeighbour(s23);
 
 	s23->addNeighbour(s22);
-	s23->addNeighbour(s24);
+	s23->addNeighbour(s39);
+	s23->addNeighbour(s40);
 
-	s24->addNeighbour(s23);
+	s24->addNeighbour(s41);
 	s24->addNeighbour(s25);
 
 	s25->addNeighbour(s24);
@@ -628,6 +756,50 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	s29->addNeighbour(s30);
 
 	s30->addNeighbour(s29);
+
+	s31->addNeighbour(s16);
+	s31->addNeighbour(s32);
+
+	s32->addNeighbour(s31);
+	s32->addNeighbour(s17);
+
+	s33->addNeighbour(s37);
+	s33->addNeighbour(s35);
+	s33->addNeighbour(s21);
+
+	s34->addNeighbour(s21);
+	s34->addNeighbour(s36);
+	s34->addNeighbour(s38);
+
+	s35->addNeighbour(s37);
+	s35->addNeighbour(s33);
+	s35->addNeighbour(s21);
+
+	s36->addNeighbour(s21);
+	s36->addNeighbour(s34);
+	s36->addNeighbour(s38);
+
+	s37->addNeighbour(s20);
+	s37->addNeighbour(s35);
+	s37->addNeighbour(s33);
+
+	s38->addNeighbour(s34);
+	s38->addNeighbour(s36);
+	s38->addNeighbour(s22);
+
+
+	s39->addNeighbour(s23);
+	s39->addNeighbour(s40);
+	s39->addNeighbour(s41);
+
+	s40->addNeighbour(s23);
+	s40->addNeighbour(s39);
+	s40->addNeighbour(s41);
+
+	s41->addNeighbour(s39);
+	s41->addNeighbour(s40);
+	s41->addNeighbour(s24);
+
 
 	sectors.push_back(s1);
 	sectors.push_back(s2);
@@ -659,6 +831,17 @@ std::vector<sector*> mapmaker::createShowcaseMap(){
 	sectors.push_back(s28);
 	sectors.push_back(s29);
 	sectors.push_back(s30);
+	sectors.push_back(s31);
+	sectors.push_back(s32);
+	sectors.push_back(s33);
+	sectors.push_back(s34);
+	sectors.push_back(s35);
+	sectors.push_back(s36);
+	sectors.push_back(s37);
+	sectors.push_back(s38);
+	sectors.push_back(s39);
+	sectors.push_back(s40);
+	sectors.push_back(s41);
 
 
 	return sectors;

@@ -148,6 +148,10 @@ void Game::render() {
     //render gun-model
     SDL_RenderCopy(renderer, textures.at(2), NULL, &gunSpace);
 
+    //render hp-bar
+    render_util::render_player_hp(renderer, &player, height_, width_);
+
+
     //Render to screen
 	SDL_SetRenderDrawColor(renderer, 0,0,0,0); // background-color
     SDL_RenderPresent(renderer); // draw

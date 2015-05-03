@@ -335,9 +335,11 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	int y2 = enemySprite.y + enemySprite.h;
 	bool isIntersect = gfx_util::intersectBox(enemySprite.x, enemySprite.y, x2, y2, sectorV->leftCropX, sectorV->topCropY, sectorV->rightCropX, sectorV->botCropY);
 	if(!isIntersect){
-		std::cout << " NORENDER" << std::endl;
+		enemy->setRender(false);
+		//std::cout << " NORENDER" << std::endl;
 		return;
 	}
+	enemy->setRender(true);
 	/*
 	if(!(enemySprite.x > sectorV->leftCropX && (enemySprite.x+enemySprite.w) < sectorV->rightCropX)){
 		//std::cout << " NORENDER" << std::endl;

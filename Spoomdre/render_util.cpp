@@ -195,7 +195,7 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
     		
 	        //add sector-neighbours to renderQueue
 	        if(neighbour != NULL && endx >= beginx && !(isDoorLocked)){
-	        	sectorView nbrSectorView{neighbour, wallHeight, endx};
+	        	sectorView nbrSectorView{neighbour, beginx, endx};
 	        	sectorRenderQueue.push(nbrSectorView);
 	        }
 		}
@@ -203,8 +203,8 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
 		if(!enemies.empty()){
         	//Render enemies
         	for(Enemy* e : enemies)
-        		if(currentSector->getId() == e->getSector()->getId()) 
-        			render_util::renderEnemy(renderer, enemyTexture, currentSector, player, e, screenHeight, screenWidth);
+        		if(currentSector->getId() == e->getSector()->getId() ) 
+        			render_util::renderEnemy(renderer, enemyTexture, &currentSectorView, player, e, screenHeight, screenWidth);
 	    }
 
         //render projectiles
@@ -266,9 +266,10 @@ void render_util::vLineTexture(SDL_Renderer* renderer, SDL_Texture* texture,int 
     SDL_RenderCopy(renderer, texture, &crop, &line);
 }
 
-void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sector* currentSector, Player* player, Enemy* enemy, int screenHeight, int screenWidth) {
+void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sectorView* sectorV, Player* player, Enemy* enemy, int screenHeight, int screenWidth) {
 	float hfov = 0.73f*screenHeight; 		// Horizontal fov (Field of Vision)
 	float vfov = 0.2f*screenHeight;    		// Vertical fov (Field of Vision)
+	sector* currentSector = sectorV->thisSector;
 
 	float px = player->x(), py = player->y(), pz = player->z();
 	float ex = enemy->x(), ey = enemy->y(), ez = enemy->z();
@@ -293,7 +294,7 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
 	int enemyX = screenWidth / 2 - (int) (etx * exscale);
     int enemyY = screenHeight / 2 - (int) ((currentSector->floor() - pz + etz * player->yaw()) * eyscale);
 
-    // std::cout << "EnemyX: " << enemyX << " EnemyY: " << enemyY << " Distance: " << distance << std::endl;
+   
     // Rendering
 	SDL_Rect enemySprite;
 
@@ -302,6 +303,14 @@ void render_util::renderEnemy(SDL_Renderer* renderer, SDL_Texture* texture, sect
     enemySprite.h = (int) distance*2;
     enemySprite.x = enemyX - enemySprite.w/2;
 	enemySprite.y = enemyY - enemySprite.h + (enemySprite.h/10);
+	//std::cout << "EnemyX: " << enemySprite.x << " Width: " << enemySprite.w << " Distance: " << distance << std::endl;
+
+	std::cout << "Sector ID=" << currentSector->getId() << " Enemy.x=" << enemySprite.x << " cropLeft=" << sectorV->leftCropX << " cropRight=" << sectorV->rightCropX << std::endl;
+	//if enemy not in render-room for sector. dont render
+	if(!(enemySprite.x > sectorV->leftCropX && (enemySprite.x+enemySprite.w) < sectorV->rightCropX)){
+		std::cout << " NORENDER" << std::endl;
+		return;
+	}
 
 	enemy->setRect(enemySprite);
 

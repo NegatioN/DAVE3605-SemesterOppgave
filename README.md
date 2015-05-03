@@ -9,8 +9,11 @@ Vi har laget en DOOM-klone fra bunnen av, ved hjelp av grafikkbiblioteket SDL2. 
 
 ### Dependencies:
 Lastes ned med ‘sudo apt-get install’:
+
 libsdl2-dev
+
 libsdl2-image-dev
+
 libeigen3-dev 
 
 

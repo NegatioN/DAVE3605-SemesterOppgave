@@ -25,7 +25,7 @@ class Player : public Entity {
 	bool isFalling = false;
 
 	float const normalspeed_ = 1.5f;
-	float const sprintspeed_ = 2.8f;
+	float const sprintspeed_ = 2.0f;
 	float activespeed_ = normalspeed_;
 
 	float const HEADSIZE = 3;

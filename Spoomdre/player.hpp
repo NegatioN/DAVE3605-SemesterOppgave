@@ -14,30 +14,26 @@
 //represents the player and everything related
 //should probably contain the user-input in some way.
 class Player : public Entity {
+	//Player variables
 	float angle_, anglesin_, anglecos_, yaw_, mouse_x, mouse_y;
 	float default_z;
-
-	float const max_yaw = 5.5;
-	//sector * sector_; -> is in entity 
 	std::vector<bool> keys_;
-
 	bool isFalling = false;
+	float activespeed_ = normalspeed_;
+	int hp_ = max_hp;
+	int doorCountdown = 0;
+	int portalCountdown = 0; // The next time the player can check for a level-portal
 
+	//Player constants
 	float const normalspeed_ = 1.5f;
 	float const sprintspeed_ = 2.0f;
-	float activespeed_ = normalspeed_;
-
+	float const max_yaw = 5.5;
 	float const HEADSIZE = 3;
 	float const BODYHEIGHT = 10; //size of player
 	float const CROUCHHEIGHT = BODYHEIGHT/2; //size of player
 	float const KNEEHEIGHT = (BODYHEIGHT/2);
-
 	int const event_radius = 5;
 	int const max_hp = 100;
-	int hp_ = max_hp;
-
-	int doorCountdown = 0;
-	int portalCountdown = 0; // The next time the player can check for a level-portal
 
 public:
 	Player(){};

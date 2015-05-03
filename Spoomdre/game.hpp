@@ -41,6 +41,8 @@ public:
 	void terminate();				//terminate screen
 	void wait(int seconds);			//pause render for x seconds
 
+
+	~Game(){terminate();};
 };
 
 

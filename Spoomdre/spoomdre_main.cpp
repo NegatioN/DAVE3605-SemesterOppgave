@@ -130,8 +130,5 @@ int main(int argc, char* args[]){
 
 	} // end of game-loop
 
-    //finalize SDL-variables
-	game.terminate();
-
 	return 0;
 }

@@ -7,10 +7,8 @@
 using namespace std;
 
 void Enemy::init(Vector3f pos, Vector3f vel, Vector3f acc, sector* sec){
-	setPosition(pos);
-	setVelocity(vel);
-	setAcceleration(acc);
-	setSector(sec);
+	setPosition(pos); setVelocity(vel);
+	setAcceleration(acc); setSector(sec);
 
 	angle_ = ((double)rand() / TAU);
 }
@@ -25,16 +23,12 @@ void Enemy::update() {
 	if(player() != NULL && player()->getSector()->getId() == getSector()->getId()){
 		//calculate angle to point towards player
 		Vector3f player_pos = player_->position();
-		float xd = player_pos(0)-x();
-		float yd = player_pos(1)-y();
+		float xd = player_pos(0)-x(); float yd = player_pos(1)-y();
 		angle_ = std::atan2(yd,xd)*(TAU/2)/ M_PI; // 
 	}
+	anglesin_ = sin(angle_); anglecos_ = cos(angle_);
 
-	anglesin_ = sin(angle_);
-	anglecos_ = cos(angle_);
-
-	vecAddition(0) += anglecos_  * speed_;
-	vecAddition(1)  += anglesin_ * speed_;
+	vecAddition(0) += anglecos_  * speed_; vecAddition(1)  += anglesin_ * speed_;
 	Vector3f vel = velocity();
 
 	vel(0) = vel(0) * (1 - 0.2) + vecAddition(0) * 0.2;
@@ -59,8 +53,7 @@ bool Enemy::checkForPlayer(Vector3f& velo){
 		   		player_->takeDamage();
 		   		damageCountdown = 50;
 		   	}
-			velo(0) = 0;
-			velo(1) = 0;
+			velo(0) = 0; velo(1) = 0;
 			return true; 
 		}
 	}
@@ -103,11 +96,8 @@ bool Enemy::checkForWall(Vector3f& velo){
 			if( (min(a.x(), b.x()) > x()+velo(0) || x()+velo(0) > max(a.x(), b.x())) && 
 				(min(a.y(), b.y()) > y()+velo(1) || y()+velo(1) > max(a.y(), b.y()))  ){
 				//but will you hit new sector? - need test
-				velo(0) = 0;
-				velo(1) = 0;
-			}
-
-			
+				velo(0) = 0; velo(1) = 0;
+			}		
 			return true;
 		}
     }

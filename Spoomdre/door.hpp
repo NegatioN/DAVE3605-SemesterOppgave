@@ -2,7 +2,6 @@
 #define CLASS_DOOR_H
 
 #include "vertex.hpp"
-#include "linedef.hpp"
 #include <SDL2/SDL.h>
 #include <vector>
 #include <Eigen/Core>

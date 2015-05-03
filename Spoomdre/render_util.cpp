@@ -224,9 +224,6 @@ void render_util::renderView(SDL_Renderer* renderer, std::vector<SDL_Texture*> t
         		if(currentSector->getId() == e->getSector()->getId()) 
         			enemyViews.push_back({currentSectorView, e});
 	    }
-
-        //render projectiles
-        render_projectiles(renderer, player);
 	    
 		++renderedSectors[currentSector->getId()-1];
 		///END RENDER SECTOR
@@ -413,11 +410,6 @@ void render_util::render_map(SDL_Renderer* renderer, Player* player, SDL_Texture
         SDL_RenderDrawLine(renderer, -txa + xOffset, -tza + yOffset, -txb + xOffset, -tzb + yOffset); // render map
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0xFF); // wall-color, Yellow
     }
-}
-
-void render_util::render_projectiles(SDL_Renderer* renderer, Player* player){
-	for(Projectile* p : player->getProjectiles())
-		p->render(renderer);
 }
 
 void render_util::render_player_hp(SDL_Renderer* renderer, Player* player, int screenHeight, int screenWidth){

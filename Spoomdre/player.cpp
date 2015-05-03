@@ -227,25 +227,6 @@ void Player::move(Vector3f velo) {
 	setPosition(pos);
 }
 
-void Player::checkForLevelPortal() {
-	portalCountdown = 10;
-
-	LevelPortal* lvlPortal = getSector()->getLevelPortal();
-
-	if(lvlPortal == NULL) return;
-
-	Vector3f pos = position();
-	float px = pos(0); float py = pos(1);
-	float porX = lvlPortal->getX(); float porY = lvlPortal->getY();
-
-	float distanceToPortal = sqrt(pow(px-porX,2) + pow(py-porY,2));
-	std::cout << distanceToPortal << std::endl;
-
-	if(distanceToPortal < 100) {
-		std::cout << "Under 100 dist" << std::endl;
-	}
-}
-
 void Player::checkForEvent(){
 	doorCountdown = 10;
 	//all doors

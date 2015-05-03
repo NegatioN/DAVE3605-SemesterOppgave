@@ -4,7 +4,6 @@
 #include <vector>
 #include "entity.hpp"
 #include "enemy.hpp"
-#include "projectile.hpp"
 #include "gfx_util.hpp"
 #include "vertex.hpp"
 #include "door.hpp"
@@ -36,11 +35,6 @@ class Player : public Entity {
 	int const event_radius = 5;
 	int const max_hp = 100;
 	int hp_ = max_hp;
-	// list of projectiles (i.e bullets)
-	std::vector<Projectile*> projectiles;
-	// variables for cooldown between each projectile-shoot
-	int projectileCooldown = 50;
-	int projectileCountdown = 0;
 
 	int doorCountdown = 0;
 	int portalCountdown = 0; // The next time the player can check for a level-portal
@@ -57,7 +51,6 @@ public:
 	void crouchMove(bool isCrouch);		//crouch
 	void jump(Vector3f& velo);			//jumps. Updates Z-axis etc
 	void checkForEvent();				//checks for events close by
-	void checkForLevelPortal();			//checks for levelportals close by
 	void updatePOV();					//updates player POV (angle+yaw)
 	void respawn();						//respawns player - set position to startPos_
 	void takeDamage();					//deal dmg to player
@@ -77,7 +70,6 @@ public:
 	float y(){ return position()(1); };
 	float z(){ return position()(2); }
 	int hp(){ return hp_; };
-	std::vector<Projectile*> getProjectiles(){return projectiles;};
 
 };
 

@@ -30,10 +30,6 @@ void sector::addDoor(door* d){
     doors.push_back(d);
 };
 
-void sector::setLevelPortal(LevelPortal* lp){
-    levelPortal = lp;
-};
-
 sector* sector::getWallNeighbour(vertex v1, vertex v2){
     for (sector* n : neighbours)
         if(n->containsVertices(v1,v2))

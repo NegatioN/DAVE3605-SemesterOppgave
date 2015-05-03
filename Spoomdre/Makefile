@@ -10,7 +10,7 @@ EIGENLOCAL=-I/usr/include/eigen3
 SPOOMDRE_OUT=spoomdre
 TEST_OUT=test
 
-OFILES= mapmaker.o linedef.o render_util.o game.o spoomdre_main.o keyboard_handler.o player.o enemy.o sector.o gfx_util.o entity.o door.o projectile.o normal_sector_factory.o level_portal.o
+OFILES= mapmaker.o render_util.o game.o spoomdre_main.o player.o enemy.o sector.o gfx_util.o entity.o door.o normal_sector_factory.o 
 OTEST= hello_world.o keyboard_handler.o
 
 

@@ -17,6 +17,7 @@ class Enemy : public Entity {
 
 	float angle_, anglesin_, anglecos_;
 	float default_z;
+	bool isRender = false;
 
 	float const speed_ = 0.5f;
 
@@ -56,6 +57,8 @@ public:
 	Entity* player(){ return player_; };
 	SDL_Rect getRect(){return renderRect;};
 	void setRect(SDL_Rect rect){renderRect = rect;};
+	void setRender(bool shouldRender){isRender = shouldRender;};
+	bool getRender(){return isRender;};
 };
 
 #endif

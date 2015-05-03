@@ -14,8 +14,10 @@
 #include <queue>
 #include <Eigen/Core>
 
-struct sectorView{ sector* thisSector; int leftCropX, rightCropX;};
-
+//the x,y parts of a sector we can see and render
+struct sectorView{ sector* thisSector; int leftCropX, rightCropX, topCropY, botCropY;};
+//used to render an enemy after everything else
+struct enemyView {sectorView view; Enemy* enemy;}; 
 
 class render_util{
 	void renderSector(sector currentSect);

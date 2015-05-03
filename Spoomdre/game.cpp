@@ -135,6 +135,22 @@ void Game::initialize(int height, int width) {
 		enemies.push_back(&enemy4);
 		enemies.push_back(&enemy5);
 		enemies.push_back(&enemy6);
+
+		Vector3f positionE1(80, 175, 20);
+		static Enemy enemy1;
+		enemy1.init(positionE1, velocity, acceleration, sectors[18]);
+
+		Vector3f positionE2(60, 95, 20);
+		static Enemy enemy2;
+		enemy2.init(positionE2, velocity, acceleration, sectors[38]);
+
+		Vector3f positionE3(60, 80, 20);
+		static Enemy enemy3;
+		enemy3.init(positionE3, velocity, acceleration, sectors[40]);
+
+		enemies.push_back(&enemy1);
+		enemies.push_back(&enemy2);
+		enemies.push_back(&enemy3);
 	}
 }
 

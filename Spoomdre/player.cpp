@@ -357,16 +357,19 @@ void Player::shoot(std::vector<Enemy*>* enemies){
 
 
     for(int i = 0; i < enemies->size(); i++){
+
     	Enemy* enemy = enemies->at(i);
-    	bool isHit = gfx_util::hitScan(playerPos, enemy->position(),enemy->getRect(), direction);
+    	if(enemy->getRender()){
+	    	bool isHit = gfx_util::hitScan(playerPos, enemy->position(),enemy->getRect(), direction);
 
 
-        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
-        if(isHit){
-        	enemies->erase(enemies->begin()+i);
-        	std::cout << "Mob killed" << std::endl;
-        	break;
-        }
+	        std::cout << "direction X=" << direction(0) << " Y=" << direction(1) << " isHit=" << isHit <<std::endl;
+	        if(isHit){
+	        	enemies->erase(enemies->begin()+i);
+	        	std::cout << "Mob killed" << std::endl;
+	        	break;
+	        }
+	    }
     }
 }
 

@@ -1,10 +1,18 @@
 # DAVE3605-SemesterOppgave
 C++ Doom-clone
 
+## Screenshots
+A few screenshots of how the game looks like. It doesn't seem like the controls for the mouse is working in Ubuntu, so they are a bit limited :)
+
+![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss.png "Screenshot of the game")
+![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss2.png "Screenshot of the game")
+
+
 ## Dokumentasjon
 
+
 ### Innledning
-Vi har laget en DOOM-klone fra bunnen av, ved hjelp av grafikkbiblioteket SDL2. Utviklingen har i all hovedsak dreid seg mer om spillmotoren, enn å lage et komplett spill. Å få spillmiljøet opp og gå med mulighet for utvidelse av morsomme funksjoner har vært hovedfokus, og dette føler vi at vi har fått til. Vi har ikke optimalisert med tanke på ytelse eller perfekt struktur, men heller å utforske muligheten. Vi visste ikke helt hva vi bega oss ut på med dette prosjektet, da ingen av oss har prøvd oss på spillutvikling tidligere, så det var også vanskelig å sette en konkret avgrensning for prosjektet. Spesielt ble dette klart med tanke på hvordan koden utviklet seg. Det skulle gjerne vært brukt mer objektorientert kode i map og rendering. Vi valgte ofte å utvide funksjonaliteten litt underveis, noe som har vært både til positiv og negativ overaskelse for gruppen. Vi har klart mer enn vi trodde vi skulle få til ved starten, men det har vært vanskelig å bygge på et ugjevnt fundament til tider. Det gjenstår noen bugs og utjevninger i programmet ennå (disse er beskrevet under “bugs” i dokumentasjonen), men helhetlig syns vi vi har lagt et godt grunnlag. 
+Vi har laget en DOOM-klone fra bunnen av, ved hjelp av grafikkbiblioteket SDL2. Utviklingen har i all hovedsak dreid seg mer om spillmotoren, enn å lage et komplett spill. Å få spillmiljøet opp og gå med mulighet for utvidelse av morsomme funksjoner har vært hovedfokus, og dette føler vi at vi har fått til. Vi har ikke optimalisert med tanke på ytelse eller perfekt struktur, men heller å utforske muligheten. Vi visste ikke helt hva vi bega oss ut på med dette prosjektet, da ingen av oss har prøvd oss på spillutvikling tidligere, så det var også vanskelig å sette en konkret avgrensning for prosjektet. Spesielt ble dette klart med tanke på hvordan koden utviklet seg. Det skulle gjerne vært brukt mer objektorientert kode i map og rendering. Vi valgte ofte å utvide funksjonaliteten litt underveis, noe som har vært både til positiv og negativ overaskelse for gruppen. Vi har klart mer enn vi trodde vi skulle få til ved starten, men det har vært vanskelig å bygge på et ugjevnt fundament til tider. Det gjenstår noen bugs og utjevninger i programmet ennå (disse er beskrevet under “bugs” i dokumentasjonen), men helhetlig syns vi vi har lagt et godt grunnlag.
 
 
 ### Dependencies:
@@ -14,7 +22,7 @@ libsdl2-dev
 
 libsdl2-image-dev
 
-libeigen3-dev 
+libeigen3-dev
 
 
 ### Kontrollere:
@@ -92,7 +100,7 @@ Rendering av textures utifra spillerbegelse fungerer ikke optimalt når deler av
 
 Når en sector renderes framfor en enemy vil av og til enemy renderes over veggen, slik at du vil se enemy selv om han er bak den veggen. For å løse dette problemet måtte vi ha implementert metoder for å croppe texture til enemy på mange mulige måter. Dette ville blitt en ganske omfattende oppgave så vi valgte å ikke prioritere den.
 
-Spillet har tester for å hindre spiller og andre entities å dette gjennom veggene. I de fleste situasjoner fungerer disse som de skal, men i enkelte hjørner er det fortsatt mulig å fall ut. Vi har en teori om at dette skyldes manglende test på om man treffer direkte i vinkelen etter man bytter sektor. Vi har forsøkt flere metoder for å fikse dette, men ingen har hittil fikset problemet uten å hindre bevegelighet på andre måter. 
+Spillet har tester for å hindre spiller og andre entities å dette gjennom veggene. I de fleste situasjoner fungerer disse som de skal, men i enkelte hjørner er det fortsatt mulig å fall ut. Vi har en teori om at dette skyldes manglende test på om man treffer direkte i vinkelen etter man bytter sektor. Vi har forsøkt flere metoder for å fikse dette, men ingen har hittil fikset problemet uten å hindre bevegelighet på andre måter.
 
 
 ### Rendering:
@@ -108,5 +116,3 @@ Enemies rendres enkelt som en 2D texture som tegnes ut ifra et koordinat på gul
 * http://en.wikipedia.org/wiki/Vector_projection
 * http://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
 * http://doom.wikia.com/wiki/Doom_rendering_engine#Node_building
-
-

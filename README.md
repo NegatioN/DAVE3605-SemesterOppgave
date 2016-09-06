@@ -2,10 +2,18 @@
 C++ Doom-clone
 
 ## Screenshots
-A few screenshots of how the game looks like. It doesn't seem like the controls for the mouse is working in Ubuntu, so they are a bit limited :)
+A few screenshots of how the game looks like.
+
+Mobs
 
 ![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss.png "Screenshot of the game")
+
+Shadowing of the textures based on distance away from the player.
+
 ![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss2.png "Screenshot of the game")
+
+Height-differences in the map.
+
 ![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss3.png "Screenshot of the game")
 ![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss4.png "Screenshot of the game")
 

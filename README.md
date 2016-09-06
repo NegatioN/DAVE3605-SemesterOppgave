@@ -6,6 +6,8 @@ A few screenshots of how the game looks like. It doesn't seem like the controls 
 
 ![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss.png "Screenshot of the game")
 ![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss2.png "Screenshot of the game")
+![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss3.png "Screenshot of the game")
+![alt text](https://raw.githubusercontent.com/NegatioN/Spoomdre-DoomClone/master/ss4.png "Screenshot of the game")
 
 
 ## Dokumentasjon
